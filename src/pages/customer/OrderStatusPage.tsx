@@ -32,6 +32,7 @@ export function OrderStatusPage() {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasPaidOnline, setHasPaidOnline] = useState(false);
 
   useEffect(() => {
     if (!orderId) return;
@@ -107,9 +108,48 @@ export function OrderStatusPage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-        {/* Status Header */}
-        <div className="text-center animate-fade-in-up">
+      {order.payment_method === 'online' && order.payment_status === 'pending' ? (
+        <main className="max-w-lg mx-auto px-4 sm:px-6 py-12 text-center animate-fade-in-up">
+          {!hasPaidOnline ? (
+            <div className="card-luxury p-8">
+              <h2 className="font-serif text-2xl text-gradient-gold mb-2">Complete Your Payment</h2>
+              <p className="text-ink-300 text-sm mb-6">
+                Please scan the QR code below to pay <strong className="text-nirvana-300">{formatCurrency(order.total_amount, currency)}</strong>
+              </p>
+              
+              {restaurant?.payment_qr_url ? (
+                <div className="w-64 h-64 mx-auto bg-white p-4 rounded-xl shadow-gold-lg mb-8 relative">
+                  <img src={restaurant.payment_qr_url} alt="Payment QR" className="w-full h-full object-contain" />
+                </div>
+              ) : (
+                <div className="w-64 h-64 mx-auto glass rounded-xl flex items-center justify-center text-ink-400 mb-8 border border-white/5">
+                  <span className="text-sm">QR Code not configured</span>
+                </div>
+              )}
+
+              <button 
+                onClick={() => setHasPaidOnline(true)}
+                className="btn-gold w-full !py-3 text-lg"
+              >
+                I Have Paid
+              </button>
+            </div>
+          ) : (
+            <div className="card-luxury p-8">
+              <div className="w-20 h-20 mx-auto glass-gold rounded-full flex items-center justify-center mb-6">
+                <Clock className="w-10 h-10 text-nirvana-400 animate-pulse" />
+              </div>
+              <h2 className="font-serif text-2xl text-gradient-gold mb-3">Verifying Payment...</h2>
+              <p className="text-ink-300">
+                We're waiting for the restaurant to confirm receipt of your payment. This page will update automatically once verified.
+              </p>
+            </div>
+          )}
+        </main>
+      ) : (
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          {/* Status Header */}
+          <div className="text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-4">
             {order.order_type === 'delivery' ? (
               <>
@@ -239,6 +279,7 @@ export function OrderStatusPage() {
           </div>
         )}
       </main>
+      )}
     </div>
   );
 }

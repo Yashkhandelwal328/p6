@@ -831,38 +831,24 @@ export function OrderPage() {
 
             <div className="mb-6">
               <label className="block text-sm text-ink-300 mb-2">Payment Method</label>
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="flex bg-ink-900 rounded-lg p-1 mt-2 border border-white/5">
                 <button
                   onClick={() => setPaymentMethod('cash')}
-                  className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${
-                    paymentMethod === 'cash' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'glass border border-white/5 text-ink-300 hover:bg-white/5'
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                    paymentMethod === 'cash' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'text-ink-400 hover:text-ink-200'
                   }`}
                 >
                   Pay with Cash
                 </button>
                 <button
                   onClick={() => setPaymentMethod('online')}
-                  className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${
-                    paymentMethod === 'online' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'glass border border-white/5 text-ink-300 hover:bg-white/5'
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                    paymentMethod === 'online' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'text-ink-400 hover:text-ink-200'
                   }`}
                 >
                   Pay Online
                 </button>
               </div>
-
-              {paymentMethod === 'online' && (
-                <div className="glass rounded-xl p-4 text-center animate-fade-in-up">
-                  {restaurant?.payment_qr_url ? (
-                    <>
-                      <p className="text-sm text-ink-300 mb-3">Scan the QR code to pay <span className="font-semibold text-nirvana-300">{formatCurrency(grandTotal, restaurant.currency)}</span></p>
-                      <img src={restaurant.payment_qr_url} alt="Payment QR Code" className="w-48 h-48 mx-auto rounded-lg bg-white p-2 mb-3 object-contain" />
-                      <p className="text-xs text-ink-400">After payment, click the button below to place your order.</p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-ink-400">Online payment is currently unavailable. Please pay with cash.</p>
-                  )}
-                </div>
-              )}
             </div>
 
             {error && (

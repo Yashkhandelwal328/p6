@@ -61,12 +61,6 @@ export function LandingPage() {
           >
             <Utensils className="w-5 h-5" /> Order Now
           </button>
-          <button
-            onClick={() => navigate('/register')}
-            className="btn-outline-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8"
-          >
-            <Store className="w-5 h-5" /> Register
-          </button>
         </div>
       </section>
 

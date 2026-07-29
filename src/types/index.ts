@@ -41,6 +41,8 @@ export interface Restaurant {
   max_delivery_radius_km: number;
   restaurant_latitude: number | null;
   restaurant_longitude: number | null;
+  payment_qr_url: string | null;
+  is_open: boolean;
   created_at: string;
   updated_at: string;
 }

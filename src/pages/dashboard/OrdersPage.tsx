@@ -64,6 +64,24 @@ export function OrdersPage() {
     setSelectedOrder({ order, items: data ?? [] });
   }
 
+  async function confirmPayment(orderId: string) {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ payment_status: 'paid' })
+        .eq('id', orderId);
+      if (error) throw error;
+      if (selectedOrder && selectedOrder.order.id === orderId) {
+        setSelectedOrder({
+          ...selectedOrder,
+          order: { ...selectedOrder.order, payment_status: 'paid' },
+        });
+      }
+    } catch (err: any) {
+      alert('Failed to confirm payment: ' + err.message);
+    }
+  }
+
   function exportPDF() {
     const doc = new jsPDF();
     doc.setFontSize(16);
@@ -299,11 +317,29 @@ export function OrdersPage() {
               </div>
             )}
 
-            <div className="mt-4 flex items-center justify-between glass rounded-lg p-3">
-              <span className="text-sm text-ink-400">Status</span>
-              <span className={`badge capitalize ${ORDER_STATUS_COLORS[selectedOrder.order.status]}`}>
-                {ORDER_STATUS_LABELS[selectedOrder.order.status]}
-              </span>
+            <div className="mt-4 flex flex-col gap-3 glass rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-ink-400">Payment Status</span>
+                <div className="flex items-center gap-2">
+                  <span className={`badge capitalize ${selectedOrder.order.payment_status === 'paid' ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-amber-500/15 text-amber-400 border-amber-500/30'}`}>
+                    {selectedOrder.order.payment_status}
+                  </span>
+                  {selectedOrder.order.payment_method === 'online' && selectedOrder.order.payment_status === 'pending' && (
+                    <button
+                      onClick={() => confirmPayment(selectedOrder.order.id)}
+                      className="btn-gold !py-1 !px-2 text-xs"
+                    >
+                      Confirm Payment
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-ink-400">Status</span>
+                <span className={`badge capitalize ${ORDER_STATUS_COLORS[selectedOrder.order.status]}`}>
+                  {ORDER_STATUS_LABELS[selectedOrder.order.status]}
+                </span>
+              </div>
             </div>
           </div>
         </div>

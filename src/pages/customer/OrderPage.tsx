@@ -28,6 +28,7 @@ export function OrderPage() {
   const [deliveryLat, setDeliveryLat] = useState<number | null>(null);
   const [deliveryLng, setDeliveryLng] = useState<number | null>(null);
   const [gettingLocation, setGettingLocation] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'>('cash');
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -199,6 +200,7 @@ export function OrderPage() {
         order_number: orderNumber,
         status: 'new',
         payment_status: 'pending',
+        payment_method: paymentMethod,
         subtotal: cartTotal,
         tax_amount: taxAmount,
         service_charge: 0,
@@ -285,6 +287,13 @@ export function OrderPage() {
                 Place Your Order
               </p>
             </div>
+            {!restaurant?.is_open && (
+              <div className="absolute left-1/2 -translate-x-1/2 top-4 hidden md:block">
+                <span className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-1.5 rounded-full">
+                  Currently Closed
+                </span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => navigate('/login')}
@@ -820,6 +829,42 @@ export function OrderPage() {
               </div>
             </div>
 
+            <div className="mb-6">
+              <label className="block text-sm text-ink-300 mb-2">Payment Method</label>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <button
+                  onClick={() => setPaymentMethod('cash')}
+                  className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                    paymentMethod === 'cash' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'glass border border-white/5 text-ink-300 hover:bg-white/5'
+                  }`}
+                >
+                  Pay with Cash
+                </button>
+                <button
+                  onClick={() => setPaymentMethod('online')}
+                  className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                    paymentMethod === 'online' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'glass border border-white/5 text-ink-300 hover:bg-white/5'
+                  }`}
+                >
+                  Pay Online
+                </button>
+              </div>
+
+              {paymentMethod === 'online' && (
+                <div className="glass rounded-xl p-4 text-center animate-fade-in-up">
+                  {restaurant?.payment_qr_url ? (
+                    <>
+                      <p className="text-sm text-ink-300 mb-3">Scan the QR code to pay <span className="font-semibold text-nirvana-300">{formatCurrency(grandTotal, restaurant.currency)}</span></p>
+                      <img src={restaurant.payment_qr_url} alt="Payment QR Code" className="w-48 h-48 mx-auto rounded-lg bg-white p-2 mb-3 object-contain" />
+                      <p className="text-xs text-ink-400">After payment, click the button below to place your order.</p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-ink-400">Online payment is currently unavailable. Please pay with cash.</p>
+                  )}
+                </div>
+              )}
+            </div>
+
             {error && (
               <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
                 {error}
@@ -830,13 +875,19 @@ export function OrderPage() {
               <button onClick={() => setCheckoutOpen(false)} className="btn-outline-gold flex-1">
                 Back
               </button>
-              <button
-                onClick={placeOrder}
-                disabled={placing || cart.length === 0}
-                className="btn-gold flex-1"
-              >
-                {placing ? 'Placing Order...' : 'Place Order'}
-              </button>
+              {!restaurant?.is_open ? (
+                <div className="flex-[2] text-center p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-medium">
+                  Sorry, we are currently closed
+                </div>
+              ) : (
+                <button
+                  onClick={placeOrder}
+                  disabled={placing || cart.length === 0 || (paymentMethod === 'online' && !restaurant?.payment_qr_url)}
+                  className="btn-gold flex-[2]"
+                >
+                  {placing ? 'Placing Order...' : paymentMethod === 'online' ? "I've Paid & Place Order" : 'Place Order'}
+                </button>
+              )}
             </div>
           </div>
         </div>

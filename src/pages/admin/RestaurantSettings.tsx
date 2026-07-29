@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Settings, Save, Check, Upload, Hash, Palette } from 'lucide-react';
+import { Settings, Save, Check, Upload, Hash, Palette, Power } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import type { Restaurant } from '@/types';
@@ -11,8 +11,10 @@ export function RestaurantSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingQr, setUploadingQr] = useState(false);
   const [gettingLocation, setGettingLocation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const qrInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     tagline: '',
@@ -31,6 +33,8 @@ export function RestaurantSettings() {
     max_delivery_radius_km: 5.0,
     restaurant_latitude: 19.0760,
     restaurant_longitude: 72.8777,
+    is_open: true,
+    payment_qr_url: '',
   });
 
   useEffect(() => {
@@ -60,6 +64,8 @@ export function RestaurantSettings() {
         max_delivery_radius_km: data.max_delivery_radius_km ?? 5.0,
         restaurant_latitude: data.restaurant_latitude ?? 19.0760,
         restaurant_longitude: data.restaurant_longitude ?? 72.8777,
+        is_open: data.is_open ?? true,
+        payment_qr_url: data.payment_qr_url ?? '',
       });
     }
     setLoading(false);
@@ -91,6 +97,35 @@ export function RestaurantSettings() {
       alert(`Failed to upload logo: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setUploadingLogo(false);
+    }
+  }
+
+  async function handleQrUpload(file: File) {
+    if (!restaurantId) return;
+    setUploadingQr(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `qr-${Date.now()}.${ext}`;
+      const filePath = `${restaurantId}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('menu-images')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('menu-images')
+        .getPublicUrl(filePath);
+
+      if (urlData.publicUrl) {
+        setFormData((prev) => ({ ...prev, payment_qr_url: urlData.publicUrl }));
+        await supabase.from('restaurants').update({ payment_qr_url: urlData.publicUrl }).eq('id', restaurantId);
+      }
+    } catch (err) {
+      alert(`Failed to upload QR code: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setUploadingQr(false);
     }
   }
 
@@ -138,6 +173,8 @@ export function RestaurantSettings() {
       max_delivery_radius_km: Number(formData.max_delivery_radius_km),
       restaurant_latitude: Number(formData.restaurant_latitude) || null,
       restaurant_longitude: Number(formData.restaurant_longitude) || null,
+      is_open: formData.is_open,
+      payment_qr_url: formData.payment_qr_url || null,
     }).eq('id', restaurantId);
     setSaving(false);
     setSaved(true);
@@ -154,11 +191,30 @@ export function RestaurantSettings() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
-          <Settings className="w-7 h-7" /> Restaurant Settings
-        </h1>
-        <p className="text-sm text-ink-400">Configure your restaurant details and preferences</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+            <Settings className="w-7 h-7" /> Restaurant Settings
+          </h1>
+          <p className="text-sm text-ink-400">Configure your restaurant details and preferences</p>
+        </div>
+        <button
+          onClick={async () => {
+            const newState = !formData.is_open;
+            setFormData({ ...formData, is_open: newState });
+            if (restaurantId) {
+              await supabase.from('restaurants').update({ is_open: newState }).eq('id', restaurantId);
+            }
+          }}
+          className={`px-4 py-2 rounded-xl border flex items-center gap-2 transition-all ${
+            formData.is_open 
+              ? 'bg-green-500/10 border-green-500/30 text-green-400 hover:bg-green-500/20' 
+              : 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20'
+          }`}
+        >
+          <Power className="w-4 h-4" />
+          <span className="font-medium text-sm">{formData.is_open ? 'Restaurant is Open' : 'Restaurant is Closed'}</span>
+        </button>
       </div>
 
       {/* Restaurant ID Card */}
@@ -358,6 +414,50 @@ export function RestaurantSettings() {
               <label className="block text-sm text-ink-300 mb-1.5">Closing Time</label>
               <input type="time" value={formData.closing_time} onChange={(e) => setFormData({ ...formData, closing_time: e.target.value })} className="input-luxury w-full" />
             </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Payment Settings</h3>
+          <div className="card-luxury p-6 border border-white/5 bg-ink-950/30">
+            <label className="block text-sm text-ink-300 mb-2">Payment QR Code (for online payments)</label>
+            <p className="text-xs text-ink-400 mb-4">Upload your UPI or Bank QR code so customers can pay online.</p>
+            {formData.payment_qr_url ? (
+              <div className="relative rounded-xl overflow-hidden h-40 w-40 group border border-white/10">
+                <img src={formData.payment_qr_url} alt="Payment QR" className="w-full h-full object-contain bg-ink-900" />
+                <div className="absolute inset-0 bg-ink-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button type="button" onClick={() => qrInputRef.current?.click()} className="btn-gold !py-1.5 !px-3 text-xs flex items-center gap-1">
+                    <Upload className="w-3.5 h-3.5" /> Replace
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => qrInputRef.current?.click()}
+                disabled={uploadingQr}
+                className="w-40 h-40 rounded-xl border border-dashed border-nirvana-400/30 hover:border-nirvana-400/50 hover:bg-nirvana-400/5 transition-all flex flex-col items-center justify-center gap-2"
+              >
+                {uploadingQr ? (
+                  <div className="w-6 h-6 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Upload className="w-6 h-6 text-nirvana-400" />
+                    <span className="text-xs text-ink-400">Upload QR</span>
+                  </>
+                )}
+              </button>
+            )}
+            <input
+              ref={qrInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleQrUpload(file);
+              }}
+            />
           </div>
         </div>
 

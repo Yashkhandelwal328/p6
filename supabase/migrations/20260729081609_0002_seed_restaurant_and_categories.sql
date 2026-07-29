@@ -78,7 +78,7 @@ SELECT
   n,
   'Table ' || n,
   CASE WHEN n <= 5 THEN 2 WHEN n <= 10 THEN 4 ELSE 6 END,
-  'nirvana-tbl-' || lpad(n::text, 3, '0') || '-' || encode(gen_random_bytes(4), 'hex'),
+  'nirvana-tbl-' || lpad(n::text, 3, '0') || '-' || substring(gen_random_uuid()::text, 1, 8),
   'available'
 FROM generate_series(1, 15) AS n
 ON CONFLICT (restaurant_id, table_number) DO NOTHING;

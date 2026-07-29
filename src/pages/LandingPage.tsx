@@ -56,16 +56,10 @@ export function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           <button
-            onClick={() => navigate('/order?table=1')}
-            className="btn-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8"
-          >
-            <Utensils className="w-5 h-5" /> Dine-in Demo
-          </button>
-          <button
-            onClick={() => navigate('/order?type=delivery')}
+            onClick={() => navigate('/order')}
             className="btn-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8 bg-gradient-to-r from-orange-500 to-amber-500 border-none text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
           >
-            <ShoppingBag className="w-5 h-5" /> Order Delivery
+            <Utensils className="w-5 h-5" /> Order Now
           </button>
           <button
             onClick={() => navigate('/register')}

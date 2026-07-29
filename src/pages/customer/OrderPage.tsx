@@ -8,9 +8,8 @@ import type { Category, MenuItem, CartItem, Portion, Restaurant, Table } from '@
 export function OrderPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigateRouter();
-  const orderType = searchParams.get('type') === 'delivery' ? 'delivery' : 'dine_in';
-  const tableNumber = parseInt(searchParams.get('table') || '1', 10);
-
+  const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>('dine_in');
+  const [tableNumber, setTableNumber] = useState<number>(1);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [table, setTable] = useState<Table | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -278,7 +277,7 @@ export function OrderPage() {
                 {restaurant?.name ?? 'Nirvana'}
               </h1>
               <p className="text-xs sm:text-sm text-nirvana-300/70 font-display">
-                {orderType === 'delivery' ? 'Delivery Order' : `Ordering from Table ${tableNumber}`}
+                Place Your Order
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -704,15 +703,38 @@ export function OrderPage() {
               </button>
             </div>
 
+            <div className="flex bg-ink-900 rounded-lg p-1 mb-6 border border-white/5">
+              <button
+                onClick={() => setOrderType('dine_in')}
+                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                  orderType === 'dine_in' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'text-ink-400 hover:text-ink-200'
+                }`}
+              >
+                Dine-in
+              </button>
+              <button
+                onClick={() => setOrderType('delivery')}
+                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                  orderType === 'delivery' ? 'bg-gradient-gold text-ink-950 shadow-md' : 'text-ink-400 hover:text-ink-200'
+                }`}
+              >
+                Delivery
+              </button>
+            </div>
+
             {orderType === 'dine_in' ? (
-              <div className="mb-4 glass rounded-xl p-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-nirvana-400/15 flex items-center justify-center">
-                  <Utensils className="w-5 h-5 text-nirvana-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-ink-400">Table Number</p>
-                  <p className="text-lg font-serif text-nirvana-300">Table {tableNumber}</p>
-                </div>
+              <div className="mb-4 glass rounded-xl p-4">
+                <label className="block text-sm text-ink-300 mb-1.5 flex items-center gap-1">
+                  <Utensils className="w-4 h-4" /> Table Number
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={tableNumber}
+                  onChange={(e) => setTableNumber(parseInt(e.target.value) || 1)}
+                  className="input-luxury w-full"
+                  placeholder="Enter your table number"
+                />
               </div>
             ) : (
               <div className="mb-4 space-y-4">

@@ -85,6 +85,9 @@ export function KitchenDashboard() {
       title: `Order ${ORDER_STATUS_LABELS[status]}`,
       message: `Order status updated to ${ORDER_STATUS_LABELS[status]}`,
     });
+
+    // Instantly refresh the UI
+    loadOrders();
   }, [restaurantId]);
 
   const filteredOrders = orders.filter((o) => {

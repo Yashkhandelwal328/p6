@@ -189,28 +189,33 @@ export function OrderPage() {
     try {
       const orderNumber = `NV${new Date().toISOString().slice(2, 10).replace(/-/g, '')}${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
 
+      const orderPayload: any = {
+        restaurant_id: DEFAULT_RESTAURANT_ID,
+        table_id: orderType === 'dine_in' ? table?.id : null,
+        table_number: orderType === 'dine_in' ? tableNumber : null,
+        order_type: orderType,
+        customer_name: customerName || null,
+        customer_phone: customerPhone || null,
+        order_number: orderNumber,
+        status: 'new',
+        payment_status: 'pending',
+        subtotal: cartTotal,
+        tax_amount: taxAmount,
+        service_charge: 0,
+        total_amount: grandTotal,
+        special_instructions: specialInstructions || null,
+        items_count: cartCount,
+      };
+
+      if (orderType === 'delivery') {
+        orderPayload.delivery_address = deliveryAddress;
+        orderPayload.delivery_latitude = deliveryLat;
+        orderPayload.delivery_longitude = deliveryLng;
+      }
+
       const { data: order, error: orderError } = await supabase
         .from('orders')
-        .insert({
-          restaurant_id: DEFAULT_RESTAURANT_ID,
-          table_id: orderType === 'dine_in' ? table?.id : null,
-          table_number: orderType === 'dine_in' ? tableNumber : null,
-          order_type: orderType,
-          delivery_address: orderType === 'delivery' ? deliveryAddress : null,
-          delivery_latitude: orderType === 'delivery' ? deliveryLat : null,
-          delivery_longitude: orderType === 'delivery' ? deliveryLng : null,
-          customer_name: customerName || null,
-          customer_phone: customerPhone || null,
-          order_number: orderNumber,
-          status: 'new',
-          payment_status: 'pending',
-          subtotal: cartTotal,
-          tax_amount: taxAmount,
-          service_charge: 0,
-          total_amount: grandTotal,
-          special_instructions: specialInstructions || null,
-          items_count: cartCount,
-        })
+        .insert(orderPayload)
         .select()
         .single();
 

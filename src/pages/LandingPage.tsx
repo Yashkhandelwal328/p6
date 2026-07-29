@@ -92,33 +92,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Demo Login Card */}
-      <section className="relative z-10 max-w-md mx-auto px-4 sm:px-6 pb-20">
-        <div className="card-luxury p-6 text-center">
-          <h3 className="font-serif text-lg text-nirvana-300 mb-2">Demo Owner Account</h3>
-          <p className="text-sm text-ink-400 mb-4">
-            Try the full dashboard with our demo restaurant.
-          </p>
-          <div className="glass-dark rounded-xl p-4 text-left space-y-1 mb-4">
-            <p className="text-xs text-ink-400">Restaurant: <span className="text-ink-200">Nirvana – The Family Restaurant</span></p>
-            <p className="text-xs text-ink-400">Restaurant ID: <span className="text-nirvana-300 font-mono">NRV-0001</span></p>
-            <p className="text-xs text-ink-400">Email: <span className="text-ink-200">owner@nirvana.com</span></p>
-            <p className="text-xs text-ink-400">Password: <span className="text-ink-200">Nirvana@123</span></p>
-          </div>
-          <button
-            onClick={async () => {
-              const { error } = await supabase.auth.signInWithPassword({
-                email: 'owner@nirvana.com',
-                password: 'Nirvana@123',
-              });
-              if (!error) navigate('/owner/dashboard');
-            }}
-            className="btn-gold w-full"
-          >
-            Login as Demo Owner
-          </button>
-        </div>
-      </section>
+
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/5 py-6 text-center">

@@ -79,8 +79,8 @@ export function OrderPage() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cart.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
   const taxRate = restaurant?.tax_percentage ?? 0;
-  const taxAmount = (cartTotal * taxRate) / 100;
-  const grandTotal = cartTotal + taxAmount;
+  const taxAmount = 0; // Tax removed as requested
+  const grandTotal = cartTotal;
 
   const addToCart = useCallback((item: MenuItem, portion: Portion = 'full') => {
     const price = portion === 'half' && item.half_price ? item.half_price : item.full_price;
@@ -598,10 +598,7 @@ export function OrderPage() {
                   <span>Subtotal</span>
                   <span>{formatCurrency(cartTotal, restaurant?.currency)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-ink-300">
-                  <span>Tax ({taxRate}%)</span>
-                  <span>{formatCurrency(taxAmount, restaurant?.currency)}</span>
-                </div>
+
                 <div className="flex justify-between text-base font-serif text-nirvana-300 pt-2 border-t border-white/5">
                   <span>Total</span>
                   <span>{formatCurrency(grandTotal, restaurant?.currency)}</span>
@@ -680,10 +677,7 @@ export function OrderPage() {
                 <span>Items ({cartCount})</span>
                 <span>{formatCurrency(cartTotal, restaurant?.currency)}</span>
               </div>
-              <div className="flex justify-between text-sm text-ink-300">
-                <span>Tax ({taxRate}%)</span>
-                <span>{formatCurrency(taxAmount, restaurant?.currency)}</span>
-              </div>
+
               <div className="flex justify-between text-lg font-serif text-nirvana-300 pt-2 border-t border-white/5">
                 <span>Total</span>
                 <span>{formatCurrency(grandTotal, restaurant?.currency)}</span>

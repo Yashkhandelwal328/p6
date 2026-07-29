@@ -186,10 +186,7 @@ export function OrderStatusPage() {
               <span>Subtotal</span>
               <span>{formatCurrency(order.subtotal, currency)}</span>
             </div>
-            <div className="flex justify-between text-sm text-ink-300">
-              <span>Tax</span>
-              <span>{formatCurrency(order.tax_amount, currency)}</span>
-            </div>
+
             {order.service_charge > 0 && (
               <div className="flex justify-between text-sm text-ink-300">
                 <span>Service Charge</span>

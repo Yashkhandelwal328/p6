@@ -248,8 +248,9 @@ export function OrderPage() {
       }
 
       navigate(`/order/status/${order.id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to place order');
+    } catch (err: any) {
+      console.error('Order Error:', err);
+      setError(err.message || err.details || 'Failed to place order');
     } finally {
       setPlacing(false);
     }

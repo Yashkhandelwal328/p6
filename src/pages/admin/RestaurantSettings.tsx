@@ -1,0 +1,303 @@
+import { useEffect, useState, useRef } from 'react';
+import { Settings, Save, Check, Upload, Hash, Palette } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import type { Restaurant } from '@/types';
+
+export function RestaurantSettings() {
+  const { restaurantId } = useAuth();
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    tagline: '',
+    description: '',
+    address: '',
+    phone: '',
+    email: '',
+    currency: '₹',
+    tax_percentage: 5,
+    service_charge_percentage: 0,
+    opening_time: '09:00',
+    closing_time: '23:59',
+    logo_url: '',
+    theme_color: '#C9A227',
+  });
+
+  useEffect(() => {
+    if (restaurantId) loadData();
+  }, [restaurantId]);
+
+  async function loadData() {
+    if (!restaurantId) return;
+    const { data } = await supabase.from('restaurants').select('*').eq('id', restaurantId).maybeSingle();
+    if (data) {
+      setRestaurant(data);
+      setFormData({
+        name: data.name,
+        tagline: data.tagline,
+        description: data.description ?? '',
+        address: data.address ?? '',
+        phone: data.phone ?? '',
+        email: data.email ?? '',
+        currency: data.currency,
+        tax_percentage: data.tax_percentage,
+        service_charge_percentage: data.service_charge_percentage,
+        opening_time: data.opening_time,
+        closing_time: data.closing_time,
+        logo_url: data.logo_url ?? '',
+        theme_color: data.theme_color ?? '#C9A227',
+      });
+    }
+    setLoading(false);
+  }
+
+  async function handleLogoUpload(file: File) {
+    if (!restaurantId) return;
+    setUploadingLogo(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `logo-${Date.now()}.${ext}`;
+      const filePath = `${restaurantId}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('menu-images')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('menu-images')
+        .getPublicUrl(filePath);
+
+      if (urlData.publicUrl) {
+        setFormData((prev) => ({ ...prev, logo_url: urlData.publicUrl }));
+        await supabase.from('restaurants').update({ logo_url: urlData.publicUrl }).eq('id', restaurantId);
+      }
+    } catch (err) {
+      alert(`Failed to upload logo: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setUploadingLogo(false);
+    }
+  }
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (!restaurantId) return;
+    setSaving(true);
+    await supabase.from('restaurants').update({
+      name: formData.name,
+      tagline: formData.tagline,
+      description: formData.description,
+      address: formData.address,
+      phone: formData.phone,
+      email: formData.email,
+      currency: formData.currency,
+      tax_percentage: Number(formData.tax_percentage),
+      service_charge_percentage: Number(formData.service_charge_percentage),
+      opening_time: formData.opening_time,
+      closing_time: formData.closing_time,
+      logo_url: formData.logo_url || null,
+      theme_color: formData.theme_color,
+    }).eq('id', restaurantId);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-12 h-12 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div>
+        <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <Settings className="w-7 h-7" /> Restaurant Settings
+        </h1>
+        <p className="text-sm text-ink-400">Configure your restaurant details and preferences</p>
+      </div>
+
+      {/* Restaurant ID Card */}
+      <div className="card-luxury p-5">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl glass-gold flex items-center justify-center">
+            <Hash className="w-7 h-7 text-nirvana-400" />
+          </div>
+          <div>
+            <p className="text-xs text-ink-400 mb-1">Restaurant ID</p>
+            <p className="font-serif text-2xl text-gradient-gold">{restaurant?.restaurant_code ?? '—'}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Logo & Theme */}
+      <div className="card-luxury p-6">
+        <h3 className="font-serif text-lg text-nirvana-300 mb-4">Branding</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Logo Upload */}
+          <div>
+            <label className="block text-sm text-ink-300 mb-2">Restaurant Logo</label>
+            {formData.logo_url ? (
+              <div className="relative rounded-xl overflow-hidden h-28 group">
+                <img src={formData.logo_url} alt="Logo" className="w-full h-full object-contain bg-ink-900" />
+                <div className="absolute inset-0 bg-ink-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-gold !py-1.5 !px-3 text-xs flex items-center gap-1">
+                    <Upload className="w-3.5 h-3.5" /> Replace
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingLogo}
+                className="w-full h-28 rounded-xl border border-dashed border-nirvana-400/30 hover:border-nirvana-400/50 hover:bg-nirvana-400/5 transition-all flex flex-col items-center justify-center gap-2"
+              >
+                {uploadingLogo ? (
+                  <div className="w-6 h-6 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Upload className="w-6 h-6 text-nirvana-400" />
+                    <span className="text-xs text-ink-400">Upload logo</span>
+                  </>
+                )}
+              </button>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLogoUpload(file);
+              }}
+            />
+          </div>
+
+          {/* Theme Color */}
+          <div>
+            <label className="block text-sm text-ink-300 mb-2 flex items-center gap-1">
+              <Palette className="w-4 h-4" /> Theme Color
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={formData.theme_color}
+                onChange={(e) => setFormData({ ...formData, theme_color: e.target.value })}
+                className="w-14 h-14 rounded-xl border border-white/10 cursor-pointer bg-transparent"
+              />
+              <input
+                type="text"
+                value={formData.theme_color}
+                onChange={(e) => setFormData({ ...formData, theme_color: e.target.value })}
+                className="input-luxury flex-1"
+              />
+            </div>
+            <div className="mt-3 flex gap-2">
+              {['#C9A227', '#D4AF37', '#B87333', '#8B4513', '#2E8B57', '#4A90D9'].map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, theme_color: color })}
+                  className="w-8 h-8 rounded-full border-2 border-white/10 hover:scale-110 transition-transform"
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleSave} className="card-luxury p-6 space-y-6">
+        <div>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">General Information</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Restaurant Name</label>
+              <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Tagline</label>
+              <input type="text" value={formData.tagline} onChange={(e) => setFormData({ ...formData, tagline: e.target.value })} className="input-luxury w-full" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm text-ink-300 mb-1.5">Description</label>
+            <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} className="input-luxury w-full resize-none" />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Contact Information</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Phone</label>
+              <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Email</label>
+              <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="input-luxury w-full" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm text-ink-300 mb-1.5">Address</label>
+            <textarea value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} rows={2} className="input-luxury w-full resize-none" />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Billing & Tax</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Currency Symbol</label>
+              <input type="text" maxLength={3} value={formData.currency} onChange={(e) => setFormData({ ...formData, currency: e.target.value })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Tax (%)</label>
+              <input type="number" step="0.01" min="0" max="100" value={formData.tax_percentage} onChange={(e) => setFormData({ ...formData, tax_percentage: Number(e.target.value) })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Service Charge (%)</label>
+              <input type="number" step="0.01" min="0" max="100" value={formData.service_charge_percentage} onChange={(e) => setFormData({ ...formData, service_charge_percentage: Number(e.target.value) })} className="input-luxury w-full" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Operating Hours</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Opening Time</label>
+              <input type="time" value={formData.opening_time} onChange={(e) => setFormData({ ...formData, opening_time: e.target.value })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Closing Time</label>
+              <input type="time" value={formData.closing_time} onChange={(e) => setFormData({ ...formData, closing_time: e.target.value })} className="input-luxury w-full" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 pt-2">
+          {saved && (
+            <span className="flex items-center gap-1 text-sm text-green-400 animate-fade-in">
+              <Check className="w-4 h-4" /> Saved successfully
+            </span>
+          )}
+          <button type="submit" disabled={saving} className="btn-gold flex items-center gap-2">
+            <Save className="w-5 h-5" /> {saving ? 'Saving...' : 'Save Settings'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

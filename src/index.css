@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-ink-950 text-ink-100 font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-nirvana-400/30 text-nirvana-100;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  .glass-gold {
+    @apply bg-nirvana-400/5 backdrop-blur-xl border border-nirvana-400/20;
+  }
+  .glass-dark {
+    @apply bg-ink-900/60 backdrop-blur-xl border border-white/5;
+  }
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-nirvana-200 via-nirvana-400 to-nirvana-200 bg-clip-text text-transparent;
+  }
+  .btn-gold {
+    @apply bg-gradient-gold text-ink-950 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-gold-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-outline-gold {
+    @apply border border-nirvana-400/40 text-nirvana-300 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:bg-nirvana-400/10 hover:border-nirvana-400/60 active:scale-[0.98];
+  }
+  .card-luxury {
+    @apply glass-dark rounded-2xl transition-all duration-300 hover:border-nirvana-400/20 hover:shadow-gold;
+  }
+  .input-luxury {
+    @apply bg-ink-900/60 border border-white/10 rounded-xl px-4 py-3 text-ink-100 placeholder-ink-400 focus:outline-none focus:border-nirvana-400/50 focus:ring-1 focus:ring-nirvana-400/30 transition-all duration-200;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border;
+  }
+  .scrollbar-luxury::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-luxury::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .scrollbar-luxury::-webkit-scrollbar-thumb {
+    @apply bg-nirvana-400/20 rounded-full;
+  }
+  .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
+    @apply bg-nirvana-400/40;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .shimmer-bg {
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.02) 100%);
+    background-size: 1000px 100%;
+  }
+}

@@ -1,0 +1,367 @@
+import { useEffect, useState, useMemo } from 'react';
+import {
+  TrendingUp, ShoppingBag, Clock, CheckCircle2, XCircle, DollarSign,
+  Receipt, Users, ArrowUpRight, ArrowDownRight, ChefHat, Utensils,
+} from 'lucide-react';
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, Cell, Legend,
+} from 'recharts';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import { formatCurrency, getTodayRange, getDateRange, timeAgo } from '@/lib/format';
+import type { Order, OrderStatus } from '@/types';
+
+interface DashboardStats {
+  todaySales: number;
+  todayOrders: number;
+  liveOrders: number;
+  completedOrders: number;
+  pendingOrders: number;
+  cancelledOrders: number;
+  totalRevenue: number;
+  avgBillValue: number;
+}
+
+interface HourData {
+  hour: string;
+  orders: number;
+  revenue: number;
+}
+
+interface TableData {
+  table_number: number;
+  orders: number;
+}
+
+interface ItemData {
+  name: string;
+  quantity: number;
+}
+
+const GOLD = '#c9a227';
+const PIE_COLORS = ['#c9a227', '#8b7355', '#d4bf8a', '#5c4510', '#a68a5c', '#7a5d14'];
+
+export function OwnerDashboard() {
+  const { restaurantId } = useAuth();
+  const [stats, setStats] = useState<DashboardStats>({
+    todaySales: 0, todayOrders: 0, liveOrders: 0, completedOrders: 0,
+    pendingOrders: 0, cancelledOrders: 0, totalRevenue: 0, avgBillValue: 0,
+  });
+  const [hourlyData, setHourlyData] = useState<HourData[]>([]);
+  const [weeklyData, setWeeklyData] = useState<{ day: string; revenue: number; orders: number }[]>([]);
+  const [topItems, setTopItems] = useState<ItemData[]>([]);
+  const [topTables, setTopTables] = useState<TableData[]>([]);
+  const [statusBreakdown, setStatusBreakdown] = useState<{ name: string; value: number }[]>([]);
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+
+    const channel = supabase
+      .channel('owner-dashboard')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders', filter: `restaurant_id=eq.${restaurantId}` }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [restaurantId]);
+
+  async function loadDashboardData() {
+    const today = getTodayRange();
+    const week = getDateRange(7);
+
+    const [todayOrdersRes, allOrdersRes, weekOrdersRes, itemsRes, tablesRes] = await Promise.all([
+      supabase.from('orders').select('*').eq('restaurant_id', restaurantId).gte('created_at', today.start).lt('created_at', today.end).order('created_at', { ascending: false }),
+      supabase.from('orders').select('*').eq('restaurant_id', restaurantId),
+      supabase.from('orders').select('*').eq('restaurant_id', restaurantId).gte('created_at', week.start).lt('created_at', week.end),
+      supabase.from('order_items').select('menu_item_name, quantity').eq('restaurant_id', restaurantId).gte('created_at', today.start).lt('created_at', today.end),
+      supabase.from('orders').select('table_number').eq('restaurant_id', restaurantId).gte('created_at', today.start).lt('created_at', today.end),
+    ]);
+
+    const todayOrders = todayOrdersRes.data ?? [];
+    const allOrders = allOrdersRes.data ?? [];
+    const weekOrders = weekOrdersRes.data ?? [];
+
+    const todaySales = todayOrders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total_amount, 0);
+    const todayCompleted = todayOrders.filter(o => o.status === 'completed');
+    const todayCancelled = todayOrders.filter(o => o.status === 'cancelled');
+    const todayLive = todayOrders.filter(o => ['new', 'accepted', 'preparing', 'ready', 'served'].includes(o.status));
+    const todayPending = todayOrders.filter(o => ['new', 'accepted'].includes(o.status));
+    const totalRevenue = allOrders.filter(o => o.status === 'completed').reduce((s, o) => s + o.total_amount, 0);
+    const avgBill = todayCompleted.length > 0 ? todaySales / todayCompleted.length : 0;
+
+    setStats({
+      todaySales,
+      todayOrders: todayOrders.length,
+      liveOrders: todayLive.length,
+      completedOrders: todayCompleted.length,
+      pendingOrders: todayPending.length,
+      cancelledOrders: todayCancelled.length,
+      totalRevenue,
+      avgBillValue: avgBill,
+    });
+
+    // Hourly distribution
+    const hourMap = new Map<number, { orders: number; revenue: number }>();
+    for (let h = 9; h <= 23; h++) hourMap.set(h, { orders: 0, revenue: 0 });
+    todayOrders.forEach((o) => {
+      const h = new Date(o.created_at).getHours();
+      if (h >= 9 && h <= 23) {
+        const entry = hourMap.get(h)!;
+        entry.orders += 1;
+        if (o.status !== 'cancelled') entry.revenue += o.total_amount;
+      }
+    });
+    setHourlyData(Array.from(hourMap.entries()).map(([h, v]) => ({
+      hour: `${h}:00`,
+      orders: v.orders,
+      revenue: Math.round(v.revenue),
+    })));
+
+    // Weekly data
+    const dayMap = new Map<string, { revenue: number; orders: number }>();
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toDateString();
+      dayMap.set(key, { revenue: 0, orders: 0 });
+    }
+    weekOrders.forEach((o) => {
+      const key = new Date(o.created_at).toDateString();
+      const entry = dayMap.get(key);
+      if (entry) {
+        if (o.status !== 'cancelled') entry.revenue += o.total_amount;
+        entry.orders += 1;
+      }
+    });
+    setWeeklyData(Array.from(dayMap.entries()).map(([key, v]) => {
+      const d = new Date(key);
+      return { day: dayNames[d.getDay()], revenue: Math.round(v.revenue), orders: v.orders };
+    }));
+
+    // Top items
+    const itemMap = new Map<string, number>();
+    (itemsRes.data ?? []).forEach((i) => {
+      itemMap.set(i.menu_item_name, (itemMap.get(i.menu_item_name) ?? 0) + i.quantity);
+    });
+    setTopItems(Array.from(itemMap.entries()).map(([name, quantity]) => ({ name, quantity })).sort((a, b) => b.quantity - a.quantity).slice(0, 6));
+
+    // Top tables
+    const tableMap = new Map<number, number>();
+    (tablesRes.data ?? []).forEach((t) => {
+      tableMap.set(t.table_number, (tableMap.get(t.table_number) ?? 0) + 1);
+    });
+    setTopTables(Array.from(tableMap.entries()).map(([table_number, orders]) => ({ table_number, orders })).sort((a, b) => b.orders - a.orders).slice(0, 6));
+
+    // Status breakdown
+    const statusCounts: Record<string, number> = {};
+    todayOrders.forEach((o) => { statusCounts[o.status] = (statusCounts[o.status] ?? 0) + 1; });
+    setStatusBreakdown(Object.entries(statusCounts).map(([name, value]) => ({ name, value })));
+
+    setRecentOrders(todayOrders.slice(0, 5));
+    setLoading(false);
+  }
+
+  const statCards = useMemo(() => [
+    { label: "Today's Sales", value: formatCurrency(stats.todaySales), icon: DollarSign, trend: 'up', color: 'text-nirvana-300' },
+    { label: "Today's Orders", value: stats.todayOrders, icon: ShoppingBag, trend: 'up', color: 'text-blue-400' },
+    { label: 'Live Orders', value: stats.liveOrders, icon: Clock, trend: 'up', color: 'text-amber-400' },
+    { label: 'Completed', value: stats.completedOrders, icon: CheckCircle2, trend: 'up', color: 'text-green-400' },
+    { label: 'Pending', value: stats.pendingOrders, icon: Receipt, trend: 'down', color: 'text-cyan-400' },
+    { label: 'Cancelled', value: stats.cancelledOrders, icon: XCircle, trend: 'down', color: 'text-red-400' },
+    { label: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: TrendingUp, trend: 'up', color: 'text-nirvana-300' },
+    { label: 'Avg Bill', value: formatCurrency(stats.avgBillValue), icon: Utensils, trend: 'up', color: 'text-purple-400' },
+  ], [stats]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-12 h-12 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div>
+        <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1">Owner Dashboard</h1>
+        <p className="text-sm text-ink-400">Real-time overview of your restaurant performance</p>
+      </div>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((card, idx) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} className="card-luxury p-4 animate-fade-in-up" style={{ animationDelay: `${idx * 50}ms` }}>
+              <div className="flex items-start justify-between mb-2">
+                <div className="w-10 h-10 rounded-xl glass-gold flex items-center justify-center">
+                  <Icon className={`w-5 h-5 ${card.color}`} />
+                </div>
+                {card.trend === 'up' ? (
+                  <ArrowUpRight className="w-4 h-4 text-green-400/60" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4 text-red-400/60" />
+                )}
+              </div>
+              <p className="text-xs text-ink-400 mb-1">{card.label}</p>
+              <p className="text-xl font-serif text-ink-100">{card.value}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Revenue Chart */}
+        <div className="card-luxury p-5">
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Weekly Revenue</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <AreaChart data={weeklyData}>
+              <defs>
+                <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={GOLD} stopOpacity={0.4} />
+                  <stop offset="100%" stopColor={GOLD} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis dataKey="day" stroke="#736a59" fontSize={12} />
+              <YAxis stroke="#736a59" fontSize={12} />
+              <Tooltip
+                contentStyle={{ background: '#1a1407', border: '1px solid rgba(201,162,39,0.2)', borderRadius: '12px', color: '#f3ede0' }}
+                formatter={(value: number) => formatCurrency(value)}
+              />
+              <Area type="monotone" dataKey="revenue" stroke={GOLD} strokeWidth={2} fill="url(#revGradient)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Hourly Orders */}
+        <div className="card-luxury p-5">
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Peak Hours (Today)</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={hourlyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis dataKey="hour" stroke="#736a59" fontSize={10} />
+              <YAxis stroke="#736a59" fontSize={12} />
+              <Tooltip
+                contentStyle={{ background: '#1a1407', border: '1px solid rgba(201,162,39,0.2)', borderRadius: '12px', color: '#f3ede0' }}
+              />
+              <Bar dataKey="orders" fill={GOLD} radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Bottom Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Top Items */}
+        <div className="card-luxury p-5">
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4 flex items-center gap-2">
+            <ChefHat className="w-5 h-5" /> Best Selling Items
+          </h3>
+          {topItems.length === 0 ? (
+            <p className="text-sm text-ink-400 py-8 text-center">No data yet</p>
+          ) : (
+            <div className="space-y-2">
+              {topItems.map((item, idx) => (
+                <div key={item.name} className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-nirvana-400/15 text-nirvana-300 text-xs font-bold flex items-center justify-center">
+                    {idx + 1}
+                  </span>
+                  <span className="flex-1 text-sm text-ink-200 truncate">{item.name}</span>
+                  <span className="text-sm text-nirvana-300 font-medium">{item.quantity}x</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Top Tables */}
+        <div className="card-luxury p-5">
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4 flex items-center gap-2">
+            <Utensils className="w-5 h-5" /> Most Active Tables
+          </h3>
+          {topTables.length === 0 ? (
+            <p className="text-sm text-ink-400 py-8 text-center">No data yet</p>
+          ) : (
+            <div className="space-y-2">
+              {topTables.map((t, idx) => (
+                <div key={t.table_number} className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-nirvana-400/15 text-nirvana-300 text-xs font-bold flex items-center justify-center">
+                    {idx + 1}
+                  </span>
+                  <span className="flex-1 text-sm text-ink-200">Table {t.table_number}</span>
+                  <span className="text-sm text-nirvana-300 font-medium">{t.orders} orders</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Status Breakdown */}
+        <div className="card-luxury p-5">
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5" /> Order Status
+          </h3>
+          {statusBreakdown.length === 0 ? (
+            <p className="text-sm text-ink-400 py-8 text-center">No orders today</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie data={statusBreakdown} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} innerRadius={40}>
+                  {statusBreakdown.map((_, idx) => (
+                    <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend wrapperStyle={{ fontSize: '12px', color: '#736a59' }} />
+                <Tooltip contentStyle={{ background: '#1a1407', border: '1px solid rgba(201,162,39,0.2)', borderRadius: '12px', color: '#f3ede0' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* Recent Orders */}
+      <div className="card-luxury p-5">
+        <h3 className="font-serif text-lg text-nirvana-300 mb-4">Recent Orders</h3>
+        {recentOrders.length === 0 ? (
+          <p className="text-sm text-ink-400 py-8 text-center">No orders yet today</p>
+        ) : (
+          <div className="overflow-x-auto scrollbar-luxury">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-ink-400 border-b border-white/5">
+                  <th className="pb-2 font-medium">Order #</th>
+                  <th className="pb-2 font-medium">Table</th>
+                  <th className="pb-2 font-medium">Items</th>
+                  <th className="pb-2 font-medium">Total</th>
+                  <th className="pb-2 font-medium">Status</th>
+                  <th className="pb-2 font-medium">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentOrders.map((o) => (
+                  <tr key={o.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td className="py-3 text-nirvana-300 font-medium">{o.order_number}</td>
+                    <td className="py-3 text-ink-200">Table {o.table_number}</td>
+                    <td className="py-3 text-ink-200">{o.items_count}</td>
+                    <td className="py-3 text-ink-200">{formatCurrency(o.total_amount)}</td>
+                    <td className="py-3">
+                      <span className="badge capitalize bg-white/5 text-ink-200 border-white/10">{o.status}</span>
+                    </td>
+                    <td className="py-3 text-ink-400">{timeAgo(o.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

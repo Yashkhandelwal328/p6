@@ -11,6 +11,7 @@ export function RestaurantSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [gettingLocation, setGettingLocation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -92,6 +93,28 @@ export function RestaurantSettings() {
       setUploadingLogo(false);
     }
   }
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+    setGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData((prev) => ({
+          ...prev,
+          restaurant_latitude: Number(position.coords.latitude.toFixed(8)),
+          restaurant_longitude: Number(position.coords.longitude.toFixed(8)),
+        }));
+        setGettingLocation(false);
+      },
+      () => {
+        alert('Unable to retrieve your location. Please ensure you have granted location permissions.');
+        setGettingLocation(false);
+      }
+    );
+  };
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -306,6 +329,21 @@ export function RestaurantSettings() {
               <label className="block text-sm text-ink-300 mb-1.5">Restaurant Longitude</label>
               <input type="number" step="any" value={formData.restaurant_longitude || ''} onChange={(e) => setFormData({ ...formData, restaurant_longitude: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
+          </div>
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={handleGetLocation}
+              disabled={gettingLocation}
+              className="btn-outline-gold !py-2 !px-4 text-sm flex items-center gap-2"
+            >
+              {gettingLocation ? (
+                <div className="w-4 h-4 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              )}
+              {gettingLocation ? 'Locating...' : 'Use My Current Location'}
+            </button>
           </div>
         </div>
 

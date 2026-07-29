@@ -39,6 +39,11 @@ customers, staff, notifications, and table service requests (waiter/water/bill).
 */
 
 -- ============================================================
+-- 0. EXTENSIONS
+-- ============================================================
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- ============================================================
 -- 1. RESTAURANTS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS restaurants (

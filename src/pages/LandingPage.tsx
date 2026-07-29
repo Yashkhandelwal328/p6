@@ -59,14 +59,19 @@ export function LandingPage() {
             onClick={() => navigate('/order?table=1')}
             className="btn-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8"
           >
-            <Utensils className="w-5 h-5" /> Customer Menu
-            <ArrowRight className="w-5 h-5" />
+            <Utensils className="w-5 h-5" /> Dine-in Demo
+          </button>
+          <button
+            onClick={() => navigate('/order?type=delivery')}
+            className="btn-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8 bg-gradient-to-r from-orange-500 to-amber-500 border-none text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+          >
+            <ShoppingBag className="w-5 h-5" /> Order Delivery
           </button>
           <button
             onClick={() => navigate('/register')}
             className="btn-outline-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8"
           >
-            <Store className="w-5 h-5" /> Register Your Restaurant
+            <Store className="w-5 h-5" /> Register
           </button>
         </div>
       </section>

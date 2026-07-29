@@ -26,6 +26,10 @@ export function RestaurantSettings() {
     closing_time: '23:59',
     logo_url: '',
     theme_color: '#C9A227',
+    min_delivery_amount: 200,
+    max_delivery_radius_km: 5.0,
+    restaurant_latitude: 19.0760,
+    restaurant_longitude: 72.8777,
   });
 
   useEffect(() => {
@@ -51,6 +55,10 @@ export function RestaurantSettings() {
         closing_time: data.closing_time,
         logo_url: data.logo_url ?? '',
         theme_color: data.theme_color ?? '#C9A227',
+        min_delivery_amount: data.min_delivery_amount ?? 200,
+        max_delivery_radius_km: data.max_delivery_radius_km ?? 5.0,
+        restaurant_latitude: data.restaurant_latitude ?? 19.0760,
+        restaurant_longitude: data.restaurant_longitude ?? 72.8777,
       });
     }
     setLoading(false);
@@ -103,6 +111,10 @@ export function RestaurantSettings() {
       closing_time: formData.closing_time,
       logo_url: formData.logo_url || null,
       theme_color: formData.theme_color,
+      min_delivery_amount: Number(formData.min_delivery_amount),
+      max_delivery_radius_km: Number(formData.max_delivery_radius_km),
+      restaurant_latitude: Number(formData.restaurant_latitude) || null,
+      restaurant_longitude: Number(formData.restaurant_longitude) || null,
     }).eq('id', restaurantId);
     setSaving(false);
     setSaved(true);
@@ -269,6 +281,30 @@ export function RestaurantSettings() {
             <div>
               <label className="block text-sm text-ink-300 mb-1.5">Service Charge (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={formData.service_charge_percentage} onChange={(e) => setFormData({ ...formData, service_charge_percentage: Number(e.target.value) })} className="input-luxury w-full" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Delivery Settings</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Min Delivery Amount ({formData.currency})</label>
+              <input type="number" step="1" min="0" value={formData.min_delivery_amount} onChange={(e) => setFormData({ ...formData, min_delivery_amount: Number(e.target.value) })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Max Delivery Radius (km)</label>
+              <input type="number" step="0.1" min="0" value={formData.max_delivery_radius_km} onChange={(e) => setFormData({ ...formData, max_delivery_radius_km: Number(e.target.value) })} className="input-luxury w-full" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Restaurant Latitude</label>
+              <input type="number" step="any" value={formData.restaurant_latitude || ''} onChange={(e) => setFormData({ ...formData, restaurant_latitude: Number(e.target.value) })} className="input-luxury w-full" />
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5">Restaurant Longitude</label>
+              <input type="number" step="any" value={formData.restaurant_longitude || ''} onChange={(e) => setFormData({ ...formData, restaurant_longitude: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
           </div>
         </div>

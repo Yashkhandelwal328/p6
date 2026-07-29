@@ -168,8 +168,12 @@ export function KitchenDashboard() {
             <div key={order.id} className="card-luxury p-4 animate-fade-in-up">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="font-serif text-lg text-nirvana-300">{order.order_number}</p>
-                  <p className="text-xs text-ink-400">Table {order.table_number} · {timeAgo(order.created_at)}</p>
+                  <p className="font-serif text-lg text-nirvana-300">
+                    {order.order_number} {order.order_type === 'delivery' && <span className="ml-2 text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Delivery</span>}
+                  </p>
+                  <p className="text-xs text-ink-400">
+                    {order.order_type === 'delivery' ? 'Delivery' : `Table ${order.table_number}`} · {timeAgo(order.created_at)}
+                  </p>
                 </div>
                 <span className={`badge ${ORDER_STATUS_COLORS[order.status]} capitalize`}>
                   {ORDER_STATUS_LABELS[order.status]}
@@ -180,6 +184,14 @@ export function KitchenDashboard() {
                 <div className="mb-3 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
                   <p className="text-xs text-amber-400">
                     <strong>Note:</strong> {order.special_instructions}
+                  </p>
+                </div>
+              )}
+
+              {order.order_type === 'delivery' && (
+                <div className="mb-3 p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                  <p className="text-xs text-blue-400 break-words">
+                    <strong>Address:</strong> {order.delivery_address}
                   </p>
                 </div>
               )}

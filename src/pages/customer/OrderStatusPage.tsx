@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt } from 'lucide-react';
+import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt, ShoppingBag } from 'lucide-react';
 import { supabase, DEFAULT_RESTAURANT_ID } from '@/lib/supabase';
 import { formatCurrency, formatTime, timeAgo } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus, Restaurant } from '@/types';
@@ -84,7 +84,7 @@ export function OrderStatusPage() {
       <header className="glass-dark border-b border-nirvana-400/10">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <button
-            onClick={() => navigate(`/order?table=${order.table_number}`)}
+            onClick={() => navigate(order.order_type === 'delivery' ? '/order?type=delivery' : `/order?table=${order.table_number}`)}
             className="flex items-center gap-2 text-ink-300 hover:text-nirvana-300 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -101,8 +101,17 @@ export function OrderStatusPage() {
         {/* Status Header */}
         <div className="text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-4">
-            <Utensils className="w-4 h-4 text-nirvana-400" />
-            <span className="text-sm text-nirvana-300">Table {order.table_number}</span>
+            {order.order_type === 'delivery' ? (
+              <>
+                <ShoppingBag className="w-4 h-4 text-nirvana-400" />
+                <span className="text-sm text-nirvana-300">Delivery Order</span>
+              </>
+            ) : (
+              <>
+                <Utensils className="w-4 h-4 text-nirvana-400" />
+                <span className="text-sm text-nirvana-300">Table {order.table_number}</span>
+              </>
+            )}
           </div>
           <h1 className="font-serif text-3xl text-gradient-gold mb-2">
             {isCancelled ? 'Order Cancelled' : STATUS_STEPS[currentStepIndex]?.label ?? 'Order Status'}
@@ -210,6 +219,13 @@ export function OrderStatusPage() {
           <div className="card-luxury p-5 animate-fade-in-up">
             <h3 className="font-serif text-lg text-nirvana-300 mb-2">Special Instructions</h3>
             <p className="text-sm text-ink-300">{order.special_instructions}</p>
+          </div>
+        )}
+
+        {order.order_type === 'delivery' && order.delivery_address && (
+          <div className="card-luxury p-5 animate-fade-in-up">
+            <h3 className="font-serif text-lg text-nirvana-300 mb-2">Delivery Address</h3>
+            <p className="text-sm text-ink-300 whitespace-pre-wrap">{order.delivery_address}</p>
           </div>
         )}
       </main>

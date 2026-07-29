@@ -50,9 +50,10 @@ export function OrdersPage() {
       const q = searchQuery.toLowerCase();
       result = result.filter(o =>
         o.order_number.toLowerCase().includes(q) ||
-        `table ${o.table_number}`.includes(q) ||
+        (o.table_number && `table ${o.table_number}`.includes(q)) ||
         o.customer_name?.toLowerCase().includes(q) ||
-        String(o.table_number).includes(q)
+        (o.table_number && String(o.table_number).includes(q)) ||
+        o.order_type.toLowerCase().includes(q)
       );
     }
     return result;
@@ -73,10 +74,10 @@ export function OrdersPage() {
 
     autoTable(doc, {
       startY: 40,
-      head: [['Order #', 'Table', 'Items', 'Total', 'Status', 'Payment', 'Date']],
+      head: [['Order #', 'Type/Table', 'Items', 'Total', 'Status', 'Payment', 'Date']],
       body: filteredOrders.map(o => [
         o.order_number,
-        `Table ${o.table_number}`,
+        o.order_type === 'delivery' ? 'Delivery' : `Table ${o.table_number}`,
         String(o.items_count),
         formatCurrency(o.total_amount),
         ORDER_STATUS_LABELS[o.status],
@@ -94,8 +95,10 @@ export function OrdersPage() {
     const ws = XLSX.utils.json_to_sheet(
       filteredOrders.map(o => ({
         'Order Number': o.order_number,
-        'Table': o.table_number,
+        'Type': o.order_type,
+        'Table': o.table_number || 'N/A',
         'Customer': o.customer_name ?? '',
+        'Delivery Address': o.delivery_address ?? '',
         'Items': o.items_count,
         'Subtotal': o.subtotal,
         'Tax': o.tax_amount,
@@ -186,7 +189,7 @@ export function OrdersPage() {
             <thead>
               <tr className="text-left text-ink-400 border-b border-white/5">
                 <th className="px-4 py-3 font-medium">Order #</th>
-                <th className="px-4 py-3 font-medium">Table</th>
+                <th className="px-4 py-3 font-medium">Type</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
                 <th className="px-4 py-3 font-medium">Items</th>
                 <th className="px-4 py-3 font-medium">Total</th>
@@ -205,7 +208,13 @@ export function OrdersPage() {
                 filteredOrders.map((order) => (
                   <tr key={order.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                     <td className="px-4 py-3 text-nirvana-300 font-medium">{order.order_number}</td>
-                    <td className="px-4 py-3 text-ink-200">Table {order.table_number}</td>
+                    <td className="px-4 py-3 text-ink-200">
+                      {order.order_type === 'delivery' ? (
+                        <span className="badge bg-blue-500/15 text-blue-400 border-blue-500/30">Delivery</span>
+                      ) : (
+                        `Table ${order.table_number}`
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-ink-200">{order.customer_name ?? '—'}</td>
                     <td className="px-4 py-3 text-ink-200">{order.items_count}</td>
                     <td className="px-4 py-3 text-ink-200">{formatCurrency(order.total_amount)}</td>
@@ -241,7 +250,9 @@ export function OrdersPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="font-serif text-xl text-gradient-gold">{selectedOrder.order.order_number}</h3>
-                <p className="text-sm text-ink-400">Table {selectedOrder.order.table_number} · {formatDateTime(selectedOrder.order.created_at)}</p>
+                <p className="text-sm text-ink-400">
+                  {selectedOrder.order.order_type === 'delivery' ? 'Delivery Order' : `Table ${selectedOrder.order.table_number}`} · {formatDateTime(selectedOrder.order.created_at)}
+                </p>
               </div>
               <button onClick={() => setSelectedOrder(null)} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
                 <X className="w-5 h-5 text-ink-300" />
@@ -279,6 +290,12 @@ export function OrdersPage() {
             {selectedOrder.order.special_instructions && (
               <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
                 <p className="text-xs text-amber-400"><strong>Special Instructions:</strong> {selectedOrder.order.special_instructions}</p>
+              </div>
+            )}
+
+            {selectedOrder.order.order_type === 'delivery' && selectedOrder.order.delivery_address && (
+              <div className="mt-4 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                <p className="text-xs text-blue-400"><strong>Delivery Address:</strong> {selectedOrder.order.delivery_address}</p>
               </div>
             )}
 

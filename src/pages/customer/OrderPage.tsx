@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSearchParams, useNavigate as useNavigateRouter } from 'react-router-dom';
-import { Search, Plus, Minus, ShoppingCart, X, Clock, Star, Flame, Leaf, Utensils, Filter, ShoppingBag, ArrowLeft, MessageSquare, ChefHat, Store } from 'lucide-react';
+import { Search, Plus, Minus, ShoppingCart, X, Clock, Star, Flame, Leaf, Utensils, Filter, ShoppingBag, ArrowLeft, MessageSquare, ChefHat, Store, MapPin, Navigation } from 'lucide-react';
 import { supabase, DEFAULT_RESTAURANT_ID } from '@/lib/supabase';
 import { formatCurrency, formatTime } from '@/lib/format';
 import type { Category, MenuItem, CartItem, Portion, Restaurant, Table } from '@/types';
@@ -8,6 +8,7 @@ import type { Category, MenuItem, CartItem, Portion, Restaurant, Table } from '@
 export function OrderPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigateRouter();
+  const orderType = searchParams.get('type') === 'delivery' ? 'delivery' : 'dine_in';
   const tableNumber = parseInt(searchParams.get('table') || '1', 10);
 
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
@@ -24,26 +25,68 @@ export function OrderPage() {
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [deliveryLat, setDeliveryLat] = useState<number | null>(null);
+  const [deliveryLng, setDeliveryLng] = useState<number | null>(null);
+  const [gettingLocation, setGettingLocation] = useState(false);
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Haversine formula
+  const getDistanceInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; 
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; 
+  };
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      return;
+    }
+    setGettingLocation(true);
+    setError(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setDeliveryLat(position.coords.latitude);
+        setDeliveryLng(position.coords.longitude);
+        setGettingLocation(false);
+        setDeliveryAddress((prev) => prev ? prev : 'Location captured via GPS');
+      },
+      () => {
+        setError('Unable to retrieve your location. Please ensure you have granted location permissions.');
+        setGettingLocation(false);
+      }
+    );
+  };
+
   useEffect(() => {
     async function loadData() {
-      const [restRes, catRes, menuRes, tableRes] = await Promise.all([
+      const [restRes, catRes, menuRes] = await Promise.all([
         supabase.from('restaurants').select('*').eq('id', DEFAULT_RESTAURANT_ID).maybeSingle(),
         supabase.from('categories').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).order('sort_order'),
         supabase.from('menu_items').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).order('sort_order'),
-        supabase.from('tables').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).eq('table_number', tableNumber).maybeSingle(),
       ]);
 
       if (restRes.data) setRestaurant(restRes.data);
       if (catRes.data) setCategories(catRes.data);
       if (menuRes.data) setMenuItems(menuRes.data);
-      if (tableRes.data) setTable(tableRes.data);
+
+      if (orderType === 'dine_in') {
+        const tableRes = await supabase.from('tables').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).eq('table_number', tableNumber).maybeSingle();
+        if (tableRes.data) setTable(tableRes.data);
+      }
+      
       setLoading(false);
     }
     loadData();
-  }, [tableNumber]);
+  }, [tableNumber, orderType]);
 
   const topLevelCategories = useMemo(
     () => categories.filter((c) => !c.parent_id).sort((a, b) => a.sort_order - b.sort_order),
@@ -114,6 +157,33 @@ export function OrderPage() {
 
   async function placeOrder() {
     if (cart.length === 0) return;
+    
+    // Validations for delivery
+    if (orderType === 'delivery') {
+      if (!customerPhone) {
+        setError('Phone number is required for delivery.');
+        return;
+      }
+      if (!deliveryAddress) {
+        setError('Delivery address is required.');
+        return;
+      }
+      if (restaurant?.min_delivery_amount && cartTotal < restaurant.min_delivery_amount) {
+        setError(`Minimum order amount for delivery is ${formatCurrency(restaurant.min_delivery_amount, restaurant.currency)}`);
+        return;
+      }
+      if (restaurant?.max_delivery_radius_km && restaurant.restaurant_latitude && restaurant.restaurant_longitude && deliveryLat && deliveryLng) {
+        const distance = getDistanceInKm(deliveryLat, deliveryLng, restaurant.restaurant_latitude, restaurant.restaurant_longitude);
+        if (distance > restaurant.max_delivery_radius_km) {
+          setError(`Sorry, we only deliver within a ${restaurant.max_delivery_radius_km}km radius. You are ${distance.toFixed(1)}km away.`);
+          return;
+        }
+      } else if (restaurant?.max_delivery_radius_km && (!deliveryLat || !deliveryLng)) {
+        setError('Please use the GPS button to verify your location is within our delivery radius.');
+        return;
+      }
+    }
+
     setPlacing(true);
     setError(null);
 
@@ -124,8 +194,12 @@ export function OrderPage() {
         .from('orders')
         .insert({
           restaurant_id: DEFAULT_RESTAURANT_ID,
-          table_id: table?.id,
-          table_number: tableNumber,
+          table_id: orderType === 'dine_in' ? table?.id : null,
+          table_number: orderType === 'dine_in' ? tableNumber : null,
+          order_type: orderType,
+          delivery_address: orderType === 'delivery' ? deliveryAddress : null,
+          delivery_latitude: orderType === 'delivery' ? deliveryLat : null,
+          delivery_longitude: orderType === 'delivery' ? deliveryLng : null,
           customer_name: customerName || null,
           customer_phone: customerPhone || null,
           order_number: orderNumber,
@@ -163,11 +237,13 @@ export function OrderPage() {
         restaurant_id: DEFAULT_RESTAURANT_ID,
         order_id: order.id,
         type: 'new_order',
-        title: 'New Order Received',
-        message: `Order ${orderNumber} from Table ${tableNumber} — ${cartCount} items`,
+        title: orderType === 'delivery' ? 'New Delivery Order' : 'New Order Received',
+        message: orderType === 'delivery' 
+          ? `Delivery Order ${orderNumber} — ${cartCount} items`
+          : `Order ${orderNumber} from Table ${tableNumber} — ${cartCount} items`,
       });
 
-      if (table) {
+      if (orderType === 'dine_in' && table) {
         await supabase.from('tables').update({ status: 'occupied', current_order_id: order.id }).eq('id', table.id);
       }
 
@@ -201,7 +277,7 @@ export function OrderPage() {
                 {restaurant?.name ?? 'Nirvana'}
               </h1>
               <p className="text-xs sm:text-sm text-nirvana-300/70 font-display">
-                Ordering from Table {tableNumber}
+                {orderType === 'delivery' ? 'Delivery Order' : `Ordering from Table ${tableNumber}`}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -627,15 +703,47 @@ export function OrderPage() {
               </button>
             </div>
 
-            <div className="mb-4 glass rounded-xl p-3 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-nirvana-400/15 flex items-center justify-center">
-                <Utensils className="w-5 h-5 text-nirvana-400" />
+            {orderType === 'dine_in' ? (
+              <div className="mb-4 glass rounded-xl p-3 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-nirvana-400/15 flex items-center justify-center">
+                  <Utensils className="w-5 h-5 text-nirvana-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-ink-400">Table Number</p>
+                  <p className="text-lg font-serif text-nirvana-300">Table {tableNumber}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-ink-400">Table Number</p>
-                <p className="text-lg font-serif text-nirvana-300">Table {tableNumber}</p>
+            ) : (
+              <div className="mb-4 space-y-4">
+                <div className="glass rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm text-ink-300 flex items-center gap-1">
+                      <MapPin className="w-4 h-4" /> Delivery Address
+                    </label>
+                    <button 
+                      onClick={handleGetLocation} 
+                      disabled={gettingLocation}
+                      className="text-xs flex items-center gap-1 text-nirvana-400 hover:text-nirvana-300 transition-colors"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      {gettingLocation ? 'Locating...' : 'Use My Location'}
+                    </button>
+                  </div>
+                  <textarea
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    placeholder="Enter complete delivery address..."
+                    rows={2}
+                    className="input-luxury w-full resize-none"
+                  />
+                  {deliveryLat && deliveryLng && (
+                    <p className="text-xs text-green-400 mt-2 flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-current" /> GPS Location Captured
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="space-y-4 mb-6">
               <div>
@@ -649,7 +757,7 @@ export function OrderPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-ink-300 mb-1.5">Phone (optional)</label>
+                <label className="block text-sm text-ink-300 mb-1.5">Phone {orderType === 'delivery' && <span className="text-red-400">*</span>}</label>
                 <input
                   type="tel"
                   value={customerPhone}

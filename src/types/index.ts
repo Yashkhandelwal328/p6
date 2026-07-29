@@ -1,3 +1,4 @@
+export type OrderType = 'dine_in' | 'delivery' | 'takeaway';
 export type OrderStatus = 'new' | 'accepted' | 'preparing' | 'ready' | 'served' | 'completed' | 'cancelled';
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
 export type PaymentMethod = 'cash' | 'card' | 'upi' | 'online';
@@ -36,6 +37,10 @@ export interface Restaurant {
   restaurant_code: string | null;
   theme_color: string | null;
   settings: Record<string, unknown>;
+  min_delivery_amount: number;
+  max_delivery_radius_km: number;
+  restaurant_latitude: number | null;
+  restaurant_longitude: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -90,8 +95,12 @@ export interface MenuItem {
 export interface Order {
   id: string;
   restaurant_id: string;
-  table_id: string;
-  table_number: number;
+  table_id: string | null;
+  table_number: number | null;
+  order_type: OrderType;
+  delivery_address: string | null;
+  delivery_latitude: number | null;
+  delivery_longitude: number | null;
   customer_id: string | null;
   customer_name: string | null;
   customer_phone: string | null;

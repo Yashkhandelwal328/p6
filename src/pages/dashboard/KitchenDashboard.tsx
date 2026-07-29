@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X } from 'lucide-react';
+import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { formatTime, timeAgo } from '@/lib/format';
@@ -190,9 +190,19 @@ export function KitchenDashboard() {
 
               {order.order_type === 'delivery' && (
                 <div className="mb-3 p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                  <p className="text-xs text-blue-400 break-words">
+                  <p className="text-xs text-blue-400 break-words mb-1.5">
                     <strong>Address:</strong> {order.delivery_address}
                   </p>
+                  {order.delivery_latitude && order.delivery_longitude && (
+                    <a 
+                      href={`https://www.google.com/maps?q=${order.delivery_latitude},${order.delivery_longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-300 hover:text-blue-200 underline flex items-center gap-1 w-fit"
+                    >
+                      <MapPin className="w-3 h-3" /> View on Map
+                    </a>
+                  )}
                 </div>
               )}
 

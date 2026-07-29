@@ -1,3 +1,17 @@
+import type { OrderStatus, OrderType } from '@/types';
+import { ORDER_STATUS_LABELS } from '@/types';
+
+export function formatOrderStatus(status: OrderStatus, type?: OrderType): string {
+  if (type === 'delivery') {
+    switch (status) {
+      case 'preparing': return 'Food Being Made';
+      case 'ready': return 'Out for Delivery';
+      case 'served': return 'Reached';
+    }
+  }
+  return ORDER_STATUS_LABELS[status] || status;
+}
+
 export function formatCurrency(amount: number, currency = '₹'): string {
   const formatted = new Intl.NumberFormat('en-IN', {
     minimumFractionDigits: 0,

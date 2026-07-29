@@ -1,16 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt, ShoppingBag } from 'lucide-react';
+import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt, ShoppingBag, MapPin, Bike } from 'lucide-react';
 import { supabase, DEFAULT_RESTAURANT_ID } from '@/lib/supabase';
 import { formatCurrency, formatTime, timeAgo } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus, Restaurant } from '@/types';
 
-const STATUS_STEPS: { status: OrderStatus; label: string; icon: typeof Clock }[] = [
+const DINE_IN_STATUS_STEPS: { status: OrderStatus; label: string; icon: typeof Clock }[] = [
   { status: 'new', label: 'Order Placed', icon: Receipt },
   { status: 'accepted', label: 'Accepted', icon: CheckCircle2 },
   { status: 'preparing', label: 'Preparing', icon: ChefHat },
   { status: 'ready', label: 'Ready to Serve', icon: BellRing },
   { status: 'served', label: 'Served', icon: Utensils },
+  { status: 'completed', label: 'Completed', icon: CheckCircle2 },
+];
+
+const DELIVERY_STATUS_STEPS: { status: OrderStatus; label: string; icon: typeof Clock }[] = [
+  { status: 'new', label: 'Order Placed', icon: Receipt },
+  { status: 'accepted', label: 'Accepted', icon: CheckCircle2 },
+  { status: 'preparing', label: 'Food Being Made', icon: ChefHat },
+  { status: 'ready', label: 'Out for Delivery', icon: Bike },
+  { status: 'served', label: 'Reached', icon: MapPin },
   { status: 'completed', label: 'Completed', icon: CheckCircle2 },
 ];
 
@@ -76,7 +85,8 @@ export function OrderStatusPage() {
   }
 
   const isCancelled = order.status === 'cancelled';
-  const currentStepIndex = STATUS_STEPS.findIndex((s) => s.status === order.status);
+  const currentSteps = order.order_type === 'delivery' ? DELIVERY_STATUS_STEPS : DINE_IN_STATUS_STEPS;
+  const currentStepIndex = currentSteps.findIndex((s) => s.status === order.status);
   const currency = restaurant?.currency ?? '₹';
 
   return (
@@ -114,7 +124,7 @@ export function OrderStatusPage() {
             )}
           </div>
           <h1 className="font-serif text-3xl text-gradient-gold mb-2">
-            {isCancelled ? 'Order Cancelled' : STATUS_STEPS[currentStepIndex]?.label ?? 'Order Status'}
+            {isCancelled ? 'Order Cancelled' : currentSteps[currentStepIndex]?.label ?? 'Order Status'}
           </h1>
           <p className="text-ink-400 text-sm">
             Placed {timeAgo(order.created_at)} · {formatTime(order.created_at)}
@@ -128,9 +138,9 @@ export function OrderStatusPage() {
               <div className="absolute left-0 right-0 top-6 h-0.5 bg-white/5" />
               <div
                 className="absolute left-0 top-6 h-0.5 bg-gradient-gold transition-all duration-500"
-                style={{ width: `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 100}%` }}
+                style={{ width: `${(currentStepIndex / (currentSteps.length - 1)) * 100}%` }}
               />
-              {STATUS_STEPS.map((step, idx) => {
+              {currentSteps.map((step, idx) => {
                 const isDone = idx <= currentStepIndex;
                 const isCurrent = idx === currentStepIndex;
                 const Icon = step.icon;

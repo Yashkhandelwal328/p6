@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { formatTime, timeAgo } from '@/lib/format';
+import { formatTime, timeAgo, formatOrderStatus } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus } from '@/types';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/types';
 
@@ -176,7 +176,7 @@ export function KitchenDashboard() {
                   </p>
                 </div>
                 <span className={`badge ${ORDER_STATUS_COLORS[order.status]} capitalize`}>
-                  {ORDER_STATUS_LABELS[order.status]}
+                  {formatOrderStatus(order.status, order.order_type)}
                 </span>
               </div>
 
@@ -236,12 +236,12 @@ export function KitchenDashboard() {
                 )}
                 {order.status === 'preparing' && (
                   <button onClick={() => updateOrderStatus(order.id, 'ready')} className="btn-gold flex-1 !py-2 text-sm">
-                    Mark Ready
+                    {order.order_type === 'delivery' ? 'Out for Delivery' : 'Mark Ready'}
                   </button>
                 )}
                 {order.status === 'ready' && (
                   <button onClick={() => updateOrderStatus(order.id, 'served')} className="btn-gold flex-1 !py-2 text-sm">
-                    Mark Served
+                    {order.order_type === 'delivery' ? 'Mark Reached' : 'Mark Served'}
                   </button>
                 )}
                 {order.status === 'served' && (

@@ -5,7 +5,7 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { formatCurrency, formatDateTime, timeAgo, getTodayRange } from '@/lib/format';
+import { formatCurrency, formatDateTime, timeAgo, getTodayRange, formatOrderStatus } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus } from '@/types';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/types';
 
@@ -98,7 +98,7 @@ export function OrdersPage() {
         o.order_type === 'delivery' ? 'Delivery' : `Table ${o.table_number}`,
         String(o.items_count),
         formatCurrency(o.total_amount),
-        ORDER_STATUS_LABELS[o.status],
+        formatOrderStatus(o.status, o.order_type),
         o.payment_status,
         formatDateTime(o.created_at),
       ]),
@@ -121,7 +121,7 @@ export function OrdersPage() {
         'Subtotal': o.subtotal,
         'Tax': o.tax_amount,
         'Total': o.total_amount,
-        'Status': ORDER_STATUS_LABELS[o.status],
+        'Status': formatOrderStatus(o.status, o.order_type),
         'Payment Status': o.payment_status,
         'Payment Method': o.payment_method ?? '',
         'Special Instructions': o.special_instructions ?? '',
@@ -238,7 +238,7 @@ export function OrdersPage() {
                     <td className="px-4 py-3 text-ink-200">{formatCurrency(order.total_amount)}</td>
                     <td className="px-4 py-3">
                       <span className={`badge capitalize ${ORDER_STATUS_COLORS[order.status]}`}>
-                        {ORDER_STATUS_LABELS[order.status]}
+                        {formatOrderStatus(order.status, order.order_type)}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -337,7 +337,7 @@ export function OrdersPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-ink-400">Status</span>
                 <span className={`badge capitalize ${ORDER_STATUS_COLORS[selectedOrder.order.status]}`}>
-                  {ORDER_STATUS_LABELS[selectedOrder.order.status]}
+                  {formatOrderStatus(selectedOrder.order.status, selectedOrder.order.order_type)}
                 </span>
               </div>
             </div>

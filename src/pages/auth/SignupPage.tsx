@@ -99,9 +99,9 @@ export function SignupPage() {
         </Link>
 
         <div className="text-center mb-8 animate-fade-in-down">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl glass-gold mb-4">
-            <Store className="w-8 h-8 text-nirvana-400" />
-          </div>
+            <div className="w-16 h-16 rounded-2xl bg-white overflow-hidden flex items-center justify-center shadow-gold mx-auto mb-4">
+              <img src="/logo.png" alt="Red Chilli Logo" className="w-full h-full object-contain p-1" />
+            </div>
           <h1 className="font-serif text-3xl text-gradient-gold mb-1">Register Your Restaurant</h1>
           <p className="text-sm text-ink-400">Get started in minutes — it's free to try</p>
         </div>

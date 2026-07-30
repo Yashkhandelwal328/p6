@@ -75,8 +75,8 @@ export function DashboardLayout() {
         <div className="flex flex-col h-full">
           <div className="px-6 py-5 border-b border-nirvana-400/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl glass-gold flex items-center justify-center">
-                <ShoppingBag className="w-5 h-5 text-nirvana-400" />
+              <div className="w-10 h-10 rounded-lg bg-white overflow-hidden flex items-center justify-center">
+                <img src="/logo.png" alt="Red Chilli Logo" className="w-full h-full object-contain p-1" />
               </div>
               <div>
                 <h1 className="font-serif text-lg text-gradient-gold leading-tight">Red Chilli</h1>
@@ -141,7 +141,12 @@ export function DashboardLayout() {
           <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center glass rounded-lg">
             {sidebarOpen ? <X className="w-5 h-5 text-ink-300" /> : <Menu className="w-5 h-5 text-ink-300" />}
           </button>
-          <h1 className="font-serif text-lg text-gradient-gold">Red Chilli</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-white overflow-hidden flex items-center justify-center">
+              <img src="/logo.png" alt="Red Chilli Logo" className="w-full h-full object-contain p-0.5" />
+            </div>
+            <h1 className="font-serif text-lg text-gradient-gold">Red Chilli</h1>
+          </div>
           <div className="w-10" />
         </header>
 

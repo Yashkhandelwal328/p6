@@ -61,7 +61,7 @@ def process_menu_item(item, force=False, used_names=set()):
         return None
         
     print(f"Processing: {name}")
-    query = f"{name} food high quality delicious"
+    query = f"{name} food site:unsplash.com"
     
     # Temporary directory for this thread
     temp_dir = os.path.join(os.path.dirname(__file__), f"tmp_{item_id}")

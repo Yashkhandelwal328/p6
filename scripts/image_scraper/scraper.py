@@ -1,22 +1,21 @@
 import os
 import sys
 import json
-import time
-import requests
 import argparse
+import glob
+import shutil
 from io import BytesIO
 from PIL import Image, ImageOps
 from slugify import slugify
 from supabase import create_client, Client
 from dotenv import load_dotenv
-from duckduckgo_search import DDGS
+from icrawler.builtin import BingImageCrawler
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Load environment variables
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
 SUPABASE_URL = os.environ.get("VITE_SUPABASE_URL")
-# Use the anon key or service role key to connect to Supabase
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("VITE_SUPABASE_ANON_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
@@ -33,114 +32,80 @@ with open(config_path, 'r') as f:
 OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), config['output_dir']))
 CONCURRENCY = config.get('concurrency', 5)
 IMAGE_SIZE = tuple(config.get('image_size', [512, 512]))
-MAX_RETRIES = config.get('max_retries', 3)
-RETRY_DELAY = config.get('retry_delay_seconds', 2)
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 MISSING_REPORT = os.path.join(os.path.dirname(__file__), 'missing-images.json')
 
-def search_image(query: str):
-    """Search for an image using DuckDuckGo"""
-    import random
-    time.sleep(random.uniform(2, 5))
-    try:
-        with DDGS() as ddgs:
-            results = list(ddgs.images(
-                query,
-                region='wt-wt',
-                safesearch='moderate',
-                size='Large',
-                max_results=5
-            ))
-            if results:
-                # Return the first high quality image URL
-                return results[0]['image']
-    except Exception as e:
-        print(f"Search failed for '{query}': {e}")
-    return None
-
-def download_image(url: str):
-    """Download image as bytes"""
-    for attempt in range(MAX_RETRIES):
-        try:
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                return response.content
-        except Exception as e:
-            if attempt == MAX_RETRIES - 1:
-                print(f"Download failed for {url}: {e}")
-            time.sleep(RETRY_DELAY)
-    return None
-
-def process_and_save_image(image_bytes: bytes, filepath: str):
+def process_and_save_image(source_filepath: str, dest_filepath: str):
     """Resize, crop/pad, compress, and save image to disk"""
     try:
-        img = Image.open(BytesIO(image_bytes))
+        img = Image.open(source_filepath)
         
-        # Convert to RGB if necessary
         if img.mode in ('RGBA', 'P'):
             img = img.convert('RGB')
             
-        # Fit the image into the desired size maintaining aspect ratio
         img = ImageOps.fit(img, IMAGE_SIZE, Image.Resampling.LANCZOS)
-        
-        # Save compressed
-        img.save(filepath, 'JPEG', quality=85, optimize=True)
+        img.save(dest_filepath, 'JPEG', quality=85, optimize=True)
         return True
     except Exception as e:
-        print(f"Image processing failed for {filepath}: {e}")
+        print(f"Image processing failed for {dest_filepath}: {e}")
         return False
 
 def process_menu_item(item, force=False, used_names=set()):
-    """Process a single menu item"""
     item_id = item['id']
     name = item['name']
     current_image = item.get('image_url')
     
-    # Skip if not forcing and already has an image
     if not force and current_image and current_image.startswith('/images/menu/'):
         print(f"Skipping '{name}' (already has image).")
         return None
         
     print(f"Processing: {name}")
-    
-    # Search query
     query = f"{name} food high quality delicious"
-    image_url = search_image(query)
     
-    if not image_url:
-        print(f"No image found for '{name}'")
-        return {"id": item_id, "name": name, "reason": "No image found"}
+    # Temporary directory for this thread
+    temp_dir = os.path.join(os.path.dirname(__file__), f"tmp_{item_id}")
+    os.makedirs(temp_dir, exist_ok=True)
+    
+    try:
+        # Suppress noisy logging from icrawler
+        import logging
+        logging.getLogger('icrawler').setLevel(logging.CRITICAL)
+
+        crawler = BingImageCrawler(storage={'root_dir': temp_dir})
+        crawler.crawl(keyword=query, max_num=1)
         
-    image_bytes = download_image(image_url)
-    if not image_bytes:
-        print(f"Failed to download image for '{name}'")
-        return {"id": item_id, "name": name, "reason": "Download failed"}
+        downloaded_files = glob.glob(os.path.join(temp_dir, '*'))
+        if not downloaded_files:
+            print(f"No image found for '{name}'")
+            return {"id": item_id, "name": name, "reason": "No image found"}
+            
+        source_img = downloaded_files[0]
         
-    # Determine safe filename
-    base_slug = slugify(name)
-    filename = f"{base_slug}.jpg"
-    
-    # Handle duplicates
-    if filename in used_names:
-        filename = f"{base_slug}-{item_id[:4]}.jpg"
-    used_names.add(filename)
-    
-    filepath = os.path.join(OUTPUT_DIR, filename)
-    
-    success = process_and_save_image(image_bytes, filepath)
-    if success:
-        # Update database
-        db_path = f"/images/menu/{filename}"
-        try:
+        base_slug = slugify(name)
+        filename = f"{base_slug}.jpg"
+        
+        if filename in used_names:
+            filename = f"{base_slug}-{item_id[:4]}.jpg"
+        used_names.add(filename)
+        
+        filepath = os.path.join(OUTPUT_DIR, filename)
+        
+        success = process_and_save_image(source_img, filepath)
+        if success:
+            db_path = f"/images/menu/{filename}"
             supabase.table('menu_items').update({'image_url': db_path}).eq('id', item_id).execute()
             print(f"Successfully updated '{name}' -> {filename}")
-            return None # Success
-        except Exception as e:
-            print(f"Failed to update database for '{name}': {e}")
-            return {"id": item_id, "name": name, "reason": f"DB Update failed: {e}"}
-    else:
-        return {"id": item_id, "name": name, "reason": "Image processing failed"}
+            return None
+        else:
+            return {"id": item_id, "name": name, "reason": "Image processing failed"}
+            
+    except Exception as e:
+        print(f"Failed to process '{name}': {e}")
+        return {"id": item_id, "name": name, "reason": str(e)}
+    finally:
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
 
 def main():
     parser = argparse.ArgumentParser(description="Automated Food Image Scraper")
@@ -152,7 +117,7 @@ def main():
     menu_items = response.data
     
     if not menu_items:
-        print("No menu items found in the database.")
+        print("No menu items found.")
         return
 
     print(f"Found {len(menu_items)} items. Starting scraper (Concurrency: {CONCURRENCY})...")
@@ -167,9 +132,8 @@ def main():
             if result:
                 missing.append(result)
 
-    # Write missing report
     if missing:
-        print(f"\n{len(missing)} items failed or missing images. Writing report to {MISSING_REPORT}")
+        print(f"\n{len(missing)} items failed. Writing report to {MISSING_REPORT}")
         with open(MISSING_REPORT, 'w') as f:
             json.dump(missing, f, indent=2)
     else:

@@ -1,6 +1,6 @@
 {
   "output_dir": "../../public/images/menu",
-  "concurrency": 1,
+  "concurrency": 5,
   "image_size": [512, 512],
   "max_retries": 3,
   "retry_delay_seconds": 2

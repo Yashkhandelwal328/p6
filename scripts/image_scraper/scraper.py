@@ -1,15 +1,16 @@
 import os
 import sys
 import json
-import asyncio
-import aiohttp
+import time
+import requests
 import argparse
 from io import BytesIO
 from PIL import Image, ImageOps
 from slugify import slugify
 from supabase import create_client, Client
 from dotenv import load_dotenv
-from duckduckgo_search import AsyncDDGS
+from duckduckgo_search import DDGS
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Load environment variables
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
@@ -19,7 +20,7 @@ SUPABASE_URL = os.environ.get("VITE_SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("VITE_SUPABASE_ANON_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    print("Error: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be set in .env")
+    print("Error: VITE_SUPABASE_URL and SUPABASE_KEY must be set in .env")
     sys.exit(1)
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -38,17 +39,17 @@ RETRY_DELAY = config.get('retry_delay_seconds', 2)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 MISSING_REPORT = os.path.join(os.path.dirname(__file__), 'missing-images.json')
 
-async def search_image(query: str):
+def search_image(query: str):
     """Search for an image using DuckDuckGo"""
     try:
-        async with AsyncDDGS() as ddgs:
-            results = await ddgs.aimages(
+        with DDGS() as ddgs:
+            results = list(ddgs.images(
                 query,
                 region='wt-wt',
                 safesearch='moderate',
                 size='Large',
                 max_results=5
-            )
+            ))
             if results:
                 # Return the first high quality image URL
                 return results[0]['image']
@@ -56,17 +57,17 @@ async def search_image(query: str):
         print(f"Search failed for '{query}': {e}")
     return None
 
-async def download_image(session, url: str):
+def download_image(url: str):
     """Download image as bytes"""
     for attempt in range(MAX_RETRIES):
         try:
-            async with session.get(url, timeout=10) as response:
-                if response.status == 200:
-                    return await response.read()
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                return response.content
         except Exception as e:
             if attempt == MAX_RETRIES - 1:
                 print(f"Download failed for {url}: {e}")
-            await asyncio.sleep(RETRY_DELAY)
+            time.sleep(RETRY_DELAY)
     return None
 
 def process_and_save_image(image_bytes: bytes, filepath: str):
@@ -88,7 +89,7 @@ def process_and_save_image(image_bytes: bytes, filepath: str):
         print(f"Image processing failed for {filepath}: {e}")
         return False
 
-async def process_menu_item(session, item, force=False, used_names=set()):
+def process_menu_item(item, force=False, used_names=set()):
     """Process a single menu item"""
     item_id = item['id']
     name = item['name']
@@ -103,13 +104,13 @@ async def process_menu_item(session, item, force=False, used_names=set()):
     
     # Search query
     query = f"{name} food high quality delicious"
-    image_url = await search_image(query)
+    image_url = search_image(query)
     
     if not image_url:
         print(f"No image found for '{name}'")
         return {"id": item_id, "name": name, "reason": "No image found"}
         
-    image_bytes = await download_image(session, image_url)
+    image_bytes = download_image(image_url)
     if not image_bytes:
         print(f"Failed to download image for '{name}'")
         return {"id": item_id, "name": name, "reason": "Download failed"}
@@ -139,7 +140,7 @@ async def process_menu_item(session, item, force=False, used_names=set()):
     else:
         return {"id": item_id, "name": name, "reason": "Image processing failed"}
 
-async def main():
+def main():
     parser = argparse.ArgumentParser(description="Automated Food Image Scraper")
     parser.add_argument('--force', action='store_true', help="Overwrite existing images")
     args = parser.parse_args()
@@ -157,18 +158,12 @@ async def main():
     used_names = set()
     missing = []
     
-    # Limit concurrency
-    semaphore = asyncio.Semaphore(CONCURRENCY)
-    
-    async def bound_process(session, item):
-        async with semaphore:
-            result = await process_menu_item(session, item, force=args.force, used_names=used_names)
+    with ThreadPoolExecutor(max_workers=CONCURRENCY) as executor:
+        futures = {executor.submit(process_menu_item, item, args.force, used_names): item for item in menu_items}
+        for future in as_completed(futures):
+            result = future.result()
             if result:
                 missing.append(result)
-
-    async with aiohttp.ClientSession() as session:
-        tasks = [bound_process(session, item) for item in menu_items]
-        await asyncio.gather(*tasks)
 
     # Write missing report
     if missing:
@@ -181,7 +176,4 @@ async def main():
             os.remove(MISSING_REPORT)
 
 if __name__ == "__main__":
-    # Fix for Windows asyncio loop
-    if sys.platform == 'win32':
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main())
+    main()

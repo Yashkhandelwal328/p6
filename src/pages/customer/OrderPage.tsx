@@ -425,7 +425,7 @@ export function OrderPage() {
                   className={`card-luxury overflow-hidden group animate-fade-in-up ${!item.is_available ? 'opacity-50 grayscale' : ''}`}
                   style={{ animationDelay: `${idx * 30}ms` }}
                 >
-                  <div className="relative h-44 overflow-hidden">
+                  <div className="relative aspect-video overflow-hidden">
                     {item.image_url ? (
                       <img
                         src={item.image_url}

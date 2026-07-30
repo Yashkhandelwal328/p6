@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { formatCurrency } from '@/lib/format';
 import type { MenuItem, Category } from '@/types';
+import { suggestImage } from '@/lib/suggestImage';
 
 export function MenuManagement() {
   const { restaurantId } = useAuth();
@@ -243,7 +244,18 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
     sort_order: item?.sort_order ?? 0,
   });
   const [uploading, setUploading] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
+  const [imageError, setImageError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (item && formData.name !== item.name && formData.name.length > 2) {
+      const timer = setTimeout(() => {
+        handleSuggestImage();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [formData.name, item]);
 
   async function handleImageUpload(file: File) {
     if (!restaurantId) return;
@@ -277,13 +289,46 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
     setFormData((prev) => ({ ...prev, image_url: '' }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setImageError('');
+    
+    // Check if the image URL is already in use
+    if (formData.image_url) {
+      const { data, error } = await supabase
+        .from('menu_items')
+        .select('id')
+        .eq('image_url', formData.image_url)
+        .neq('id', item?.id || '00000000-0000-0000-0000-000000000000')
+        .limit(1);
+        
+      if (data && data.length > 0) {
+        setImageError('This image is already used by another menu item. Please choose a different image.');
+        return;
+      }
+    }
+
     onSave({
       ...formData,
       half_price: formData.half_price ? Number(formData.half_price) : null,
       full_price: Number(formData.full_price),
     });
+  }
+
+  async function handleSuggestImage() {
+    if (!formData.name) return;
+    setSuggesting(true);
+    setImageError('');
+    try {
+      const url = await suggestImage(formData.name);
+      if (url) {
+        setFormData((prev) => ({ ...prev, image_url: url }));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSuggesting(false);
+    }
   }
 
   return (
@@ -351,13 +396,34 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
                 if (file) handleImageUpload(file);
               }}
             />
-            <input
-              type="url"
-              value={formData.image_url}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              placeholder="Or paste image URL..."
-              className="input-luxury w-full mt-2 text-xs"
-            />
+            <div className="flex gap-2 mt-2">
+              <input
+                type="url"
+                value={formData.image_url}
+                onChange={(e) => {
+                  setFormData({ ...formData, image_url: e.target.value });
+                  setImageError('');
+                }}
+                placeholder="Or paste image URL..."
+                className="input-luxury flex-1 text-xs"
+              />
+              <button
+                type="button"
+                onClick={handleSuggestImage}
+                disabled={suggesting || !formData.name}
+                className="btn-outline-gold !py-2 !px-3 text-xs whitespace-nowrap flex items-center gap-1"
+              >
+                {suggesting ? (
+                  <div className="w-3.5 h-3.5 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+                ) : (
+                  <Search className="w-3.5 h-3.5" />
+                )}
+                Suggest
+              </button>
+            </div>
+            {imageError && (
+              <p className="text-red-400 text-xs mt-2">{imageError}</p>
+            )}
           </div>
 
           <div>

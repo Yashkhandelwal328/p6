@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.109.0",
     "@types/qrcode": "^1.5.6",
     "date-fns": "^3.6.0",
+    "duckduckgo-images-api": "^1.0.5",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.344.0",

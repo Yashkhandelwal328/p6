@@ -2,7 +2,7 @@
 # Seed Sample Menu Items
 
 ## Overview
-Inserts a rich set of sample menu items across all categories for the Red Chilli restaurant.
+Inserts a rich set of sample menu items across all categories for the The infinoto Cafe & Restaurant restaurant.
 Each item includes name, description, image URL (from Pexels food photography),
 veg/non-veg badge, half/full pricing, preparation time, availability, and bestseller flags.
 

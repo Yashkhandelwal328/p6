@@ -2,7 +2,7 @@
 # Seed Default Restaurant, Categories, and Dining Tables
 
 ## Overview
-Inserts the default "Red Chilli – The Family Restaurant" record, all menu categories
+Inserts the default "The infinoto Cafe & Restaurant" record, all menu categories
 (including sub-categories for Main Course), and 15 dining tables with unique QR tokens.
 
 ## Data Inserted
@@ -19,7 +19,7 @@ Inserts the default "Red Chilli – The Family Restaurant" record, all menu cate
 INSERT INTO restaurants (id, name, tagline, description, address, phone, email, currency, tax_percentage, service_charge_percentage, opening_time, closing_time, settings)
 VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  'Red Chilli – The Family Restaurant',
+  'The infinoto Cafe & Restaurant',
   'Premium Family Dining Experience',
   'A luxury family restaurant serving authentic Indian cuisine, exotic beverages, and gourmet desserts in an elegant atmosphere.',
   '123 Heritage Street, Food District, Mumbai, Maharashtra 400001',

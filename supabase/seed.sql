@@ -1,7 +1,7 @@
 -- ============================================================
--- DATABASE DUMP - Red Chilli Restaurant Management System
+-- DATABASE DUMP - The infinoto Cafe & Restaurant Management System
 -- Generated: 2026-07-29
--- Restaurant: Red Chilli – The Family Restaurant (NRV-0001)
+-- Restaurant: The infinoto Cafe & Restaurant (NRV-0001)
 -- ============================================================
 
 -- ============================================================
@@ -10,7 +10,7 @@
 INSERT INTO restaurants (id, name, tagline, description, logo_url, address, phone, email, currency, tax_percentage, service_charge_percentage, opening_time, closing_time, is_active, settings, created_at, updated_at, restaurant_code, theme_color, gst_number)
 VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  'Red Chilli – The Family Restaurant',
+  'The infinoto Cafe & Restaurant',
   'Premium Family Dining Experience',
   'A luxury family restaurant serving authentic Indian cuisine, exotic beverages, and gourmet desserts in an elegant atmosphere.',
   NULL,
@@ -148,8 +148,8 @@ INSERT INTO tables (id, restaurant_id, table_number, name, capacity, qr_token, s
 -- TABLE: staff (2 rows)
 -- ============================================================
 INSERT INTO staff (id, restaurant_id, user_id, name, email, phone, role, is_active, last_login, created_at, updated_at) VALUES
-('8f26b8d8-deaf-4473-a641-a048fc3e6af3', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'f1a2b3c4-d5e6-7890-abcd-ef1234567890', 'Red Chilli Admin', 'admin@nirvana.com', NULL, 'owner', true, NULL, '2026-07-29T08:18:17.711481+00:00', '2026-07-29T09:57:09.336924+00:00'),
-('8a083503-5267-454e-a06c-35f5bee6a407', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', '6499e9a2-93f7-41ee-94e0-f9744ea207b9', 'Red Chilli Owner', 'owner@nirvana.com', NULL, 'owner', true, NULL, '2026-07-29T09:57:09.336924+00:00', '2026-07-29T09:57:09.336924+00:00');
+('8f26b8d8-deaf-4473-a641-a048fc3e6af3', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'f1a2b3c4-d5e6-7890-abcd-ef1234567890', 'The infinoto Cafe & Restaurant Admin', 'admin@nirvana.com', NULL, 'owner', true, NULL, '2026-07-29T08:18:17.711481+00:00', '2026-07-29T09:57:09.336924+00:00'),
+('8a083503-5267-454e-a06c-35f5bee6a407', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', '6499e9a2-93f7-41ee-94e0-f9744ea207b9', 'The infinoto Cafe & Restaurant Owner', 'owner@nirvana.com', NULL, 'owner', true, NULL, '2026-07-29T09:57:09.336924+00:00', '2026-07-29T09:57:09.336924+00:00');
 
 -- ============================================================
 -- TABLE: customers (0 rows)

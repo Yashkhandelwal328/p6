@@ -279,7 +279,7 @@ export function OrderPage() {
       <header className="sticky top-0 z-40 glass-dark border-b border-nirvana-400/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-end gap-4">
-            {!restaurant?.is_open && (
+            {!restaurant?.is_active && (
               <div className="absolute left-1/2 -translate-x-1/2 top-4 hidden md:block">
                 <span className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-1.5 rounded-full">
                   Currently Closed
@@ -852,7 +852,7 @@ export function OrderPage() {
               <button onClick={() => setCheckoutOpen(false)} className="btn-outline-gold flex-1">
                 Back
               </button>
-              {!restaurant?.is_open ? (
+              {!restaurant?.is_active ? (
                 <div className="flex-[2] text-center p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-medium">
                   Sorry, we are currently closed
                 </div>

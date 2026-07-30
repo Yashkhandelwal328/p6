@@ -33,7 +33,7 @@ export function RestaurantSettings() {
     max_delivery_radius_km: 5.0,
     restaurant_latitude: 19.0760,
     restaurant_longitude: 72.8777,
-    is_open: true,
+    is_active: true,
     payment_qr_url: '',
   });
 
@@ -64,7 +64,7 @@ export function RestaurantSettings() {
         max_delivery_radius_km: data.max_delivery_radius_km ?? 5.0,
         restaurant_latitude: data.restaurant_latitude ?? 19.0760,
         restaurant_longitude: data.restaurant_longitude ?? 72.8777,
-        is_open: data.is_open ?? true,
+        is_active: data.is_active ?? true,
         payment_qr_url: data.payment_qr_url ?? '',
       });
     }
@@ -173,7 +173,7 @@ export function RestaurantSettings() {
       max_delivery_radius_km: Number(formData.max_delivery_radius_km),
       restaurant_latitude: Number(formData.restaurant_latitude) || null,
       restaurant_longitude: Number(formData.restaurant_longitude) || null,
-      is_open: formData.is_open,
+      is_active: formData.is_active,
       payment_qr_url: formData.payment_qr_url || null,
     }).eq('id', restaurantId);
     setSaving(false);

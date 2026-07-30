@@ -55,8 +55,8 @@ export function DashboardLayout() {
   useEffect(() => {
     if (!restaurantId) return;
     const fetchStatus = async () => {
-      const { data } = await supabase.from('restaurants').select('is_open').eq('id', restaurantId).maybeSingle();
-      if (data) setIsRestaurantOpen(data.is_open);
+      const { data } = await supabase.from('restaurants').select('is_active').eq('id', restaurantId).maybeSingle();
+      if (data) setIsRestaurantOpen(data.is_active);
     };
     fetchStatus();
   }, [restaurantId]);
@@ -65,7 +65,7 @@ export function DashboardLayout() {
     if (!restaurantId) return;
     const newState = !isRestaurantOpen;
     setIsRestaurantOpen(newState);
-    await supabase.from('restaurants').update({ is_open: newState }).eq('id', restaurantId);
+    await supabase.from('restaurants').update({ is_active: newState }).eq('id', restaurantId);
   }
 
   const userRole = staff?.role ?? 'owner';

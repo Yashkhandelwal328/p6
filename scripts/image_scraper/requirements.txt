@@ -1,0 +1,6 @@
+supabase
+duckduckgo-search
+Pillow
+aiohttp
+python-slugify
+python-dotenv

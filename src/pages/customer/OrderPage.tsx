@@ -862,7 +862,7 @@ export function OrderPage() {
                   disabled={placing || cart.length === 0 || (paymentMethod === 'online' && !restaurant?.payment_qr_url)}
                   className="btn-gold flex-[2]"
                 >
-                  {placing ? 'Placing Order...' : paymentMethod === 'online' ? "I've Paid & Place Order" : 'Place Order'}
+                  {placing ? 'Placing Order...' : paymentMethod === 'online' ? 'Proceed' : 'Place Order'}
                 </button>
               )}
             </div>

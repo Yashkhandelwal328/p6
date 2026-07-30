@@ -76,10 +76,10 @@ export function DashboardLayout() {
           <div className="px-6 py-5 border-b border-nirvana-400/10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-white overflow-hidden flex items-center justify-center">
-                <img src="/logo.jpeg" alt="The infinoto Cafe & Restaurant Logo" className="w-full h-full object-contain p-1" />
+                <img src="/logo.jpeg" alt="The Infinito Cafe & Restaurants Logo" className="w-full h-full object-contain p-1" />
               </div>
               <div>
-                <h1 className="font-serif text-lg text-gradient-gold leading-tight">The infinoto Cafe & Restaurant</h1>
+                <h1 className="font-serif text-lg text-gradient-gold leading-tight">The Infinito Cafe & Restaurants</h1>
                 <p className="text-xs text-ink-400">Family Restaurant</p>
               </div>
             </div>
@@ -143,9 +143,9 @@ export function DashboardLayout() {
           </button>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-md bg-white overflow-hidden flex items-center justify-center">
-              <img src="/logo.jpeg" alt="The infinoto Cafe & Restaurant Logo" className="w-full h-full object-contain p-0.5" />
+              <img src="/logo.jpeg" alt="The Infinito Cafe & Restaurants Logo" className="w-full h-full object-contain p-0.5" />
             </div>
-            <h1 className="font-serif text-lg text-gradient-gold">The infinoto Cafe & Restaurant</h1>
+            <h1 className="font-serif text-lg text-gradient-gold">The Infinito Cafe & Restaurants</h1>
           </div>
           <div className="w-10" />
         </header>

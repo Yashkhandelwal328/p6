@@ -100,7 +100,7 @@ export function SignupPage() {
 
         <div className="text-center mb-8 animate-fade-in-down">
             <div className="w-16 h-16 rounded-2xl bg-white overflow-hidden flex items-center justify-center shadow-gold mx-auto mb-4">
-              <img src="/logo.jpeg" alt="The infinoto Cafe & Restaurant Logo" className="w-full h-full object-contain p-1" />
+              <img src="/logo.jpeg" alt="The Infinito Cafe & Restaurants Logo" className="w-full h-full object-contain p-1" />
             </div>
           <h1 className="font-serif text-3xl text-gradient-gold mb-1">Register Your Restaurant</h1>
           <p className="text-sm text-ink-400">Get started in minutes — it's free to try</p>
@@ -117,7 +117,7 @@ export function SignupPage() {
             <label className="block text-sm text-ink-300 mb-1.5">Restaurant Name *</label>
             <div className="relative">
               <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" required value={formData.restaurantName} onChange={(e) => update('restaurantName', e.target.value)} placeholder="e.g. The infinoto Cafe & Restaurant" className="input-luxury w-full pl-12" />
+              <input type="text" required value={formData.restaurantName} onChange={(e) => update('restaurantName', e.target.value)} placeholder="e.g. The Infinito Cafe & Restaurants" className="input-luxury w-full pl-12" />
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export function SignupPage() {
             <label className="block text-sm text-ink-300 mb-1.5">Owner Name *</label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" required value={formData.ownerName} onChange={(e) => update('ownerName', e.target.value)} placeholder="e.g. The infinoto Cafe & Restaurant Owner" className="input-luxury w-full pl-12" />
+              <input type="text" required value={formData.ownerName} onChange={(e) => update('ownerName', e.target.value)} placeholder="e.g. The Infinito Cafe & Restaurants Owner" className="input-luxury w-full pl-12" />
             </div>
           </div>
 

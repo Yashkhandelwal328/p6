@@ -1,8 +1,8 @@
 /*
-# The infinoto Cafe & Restaurant SaaS — Core Schema
+# The Infinito Cafe & Restaurants SaaS — Core Schema
 
 ## Overview
-Creates the complete production database schema for "The infinoto Cafe & Restaurant",
+Creates the complete production database schema for "The Infinito Cafe & Restaurants",
 a multi-tenant restaurant SaaS. The schema supports restaurants, tables (with QR codes),
 menu categories, menu items, orders with realtime status flow, order items, payments,
 customers, staff, notifications, and table service requests (waiter/water/bill).
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ============================================================
 CREATE TABLE IF NOT EXISTS restaurants (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  name text NOT NULL DEFAULT 'The infinoto Cafe & Restaurant',
+  name text NOT NULL DEFAULT 'The Infinito Cafe & Restaurants',
   tagline text DEFAULT 'Premium Family Dining',
   description text,
   logo_url text,

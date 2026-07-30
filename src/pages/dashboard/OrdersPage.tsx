@@ -85,7 +85,7 @@ export function OrdersPage() {
   function exportPDF() {
     const doc = new jsPDF();
     doc.setFontSize(16);
-    doc.text('The infinoto Cafe & Restaurant – Orders Report', 14, 20);
+    doc.text('The Infinito Cafe & Restaurants – Orders Report', 14, 20);
     doc.setFontSize(10);
     doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
     doc.text(`Total Orders: ${filteredOrders.length}`, 14, 34);

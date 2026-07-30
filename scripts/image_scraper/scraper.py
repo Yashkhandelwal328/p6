@@ -41,6 +41,8 @@ MISSING_REPORT = os.path.join(os.path.dirname(__file__), 'missing-images.json')
 
 def search_image(query: str):
     """Search for an image using DuckDuckGo"""
+    import random
+    time.sleep(random.uniform(2, 5))
     try:
         with DDGS() as ddgs:
             results = list(ddgs.images(

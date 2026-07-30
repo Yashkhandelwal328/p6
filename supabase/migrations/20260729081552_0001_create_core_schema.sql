@@ -1,8 +1,8 @@
 /*
-# Nirvana Restaurant SaaS — Core Schema
+# Red Chilli Restaurant SaaS — Core Schema
 
 ## Overview
-Creates the complete production database schema for "Nirvana – The Family Restaurant",
+Creates the complete production database schema for "Red Chilli – The Family Restaurant",
 a multi-tenant restaurant SaaS. The schema supports restaurants, tables (with QR codes),
 menu categories, menu items, orders with realtime status flow, order items, payments,
 customers, staff, notifications, and table service requests (waiter/water/bill).
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ============================================================
 CREATE TABLE IF NOT EXISTS restaurants (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  name text NOT NULL DEFAULT 'Nirvana – The Family Restaurant',
+  name text NOT NULL DEFAULT 'Red Chilli – The Family Restaurant',
   tagline text DEFAULT 'Premium Family Dining',
   description text,
   logo_url text,

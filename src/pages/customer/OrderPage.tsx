@@ -281,7 +281,7 @@ export function OrderPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="font-serif text-xl sm:text-2xl text-gradient-gold leading-tight">
-                {restaurant?.name ?? 'Nirvana'}
+                {restaurant?.name ?? 'Red Chilli'}
               </h1>
               <p className="text-xs sm:text-sm text-nirvana-300/70 font-display">
                 Place Your Order
@@ -326,7 +326,7 @@ export function OrderPage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-4 animate-fade-in-down">
             <Utensils className="w-4 h-4 text-nirvana-400" />
-            <span className="text-sm text-nirvana-300 font-medium">Welcome to Nirvana</span>
+            <span className="text-sm text-nirvana-300 font-medium">Welcome to Red Chilli</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-5xl text-gradient-gold mb-3 animate-fade-in-up">
             The Family Restaurant

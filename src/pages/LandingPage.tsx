@@ -27,7 +27,7 @@ export function LandingPage() {
             <Utensils className="w-6 h-6 text-nirvana-400" />
           </div>
           <div>
-            <h1 className="font-serif text-xl text-gradient-gold leading-tight">Nirvana</h1>
+            <h1 className="font-serif text-xl text-gradient-gold leading-tight">Red Chilli</h1>
             <p className="text-xs text-ink-400">Restaurant SaaS Platform</p>
           </div>
         </div>
@@ -90,7 +90,7 @@ export function LandingPage() {
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/5 py-6 text-center">
-        <p className="text-xs text-ink-500">Nirvana Restaurant SaaS — Multi-tenant, secure, production-ready.</p>
+        <p className="text-xs text-ink-500">Red Chilli Restaurant SaaS — Multi-tenant, secure, production-ready.</p>
       </footer>
     </div>
   );

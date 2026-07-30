@@ -58,7 +58,7 @@ export function ReportsPage() {
   function exportPDF() {
     const doc = new jsPDF();
     doc.setFontSize(18);
-    doc.text('Nirvana – Restaurant Report', 14, 20);
+    doc.text('Red Chilli – Restaurant Report', 14, 20);
     doc.setFontSize(10);
     doc.text(`Period: Last ${dateRange} days (${formatDate(range.start)} to ${formatDate(new Date().toISOString())})`, 14, 28);
     doc.text(`Total Revenue: ${formatCurrency(summary.totalRevenue)}`, 14, 36);

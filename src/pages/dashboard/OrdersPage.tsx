@@ -85,7 +85,7 @@ export function OrdersPage() {
   function exportPDF() {
     const doc = new jsPDF();
     doc.setFontSize(16);
-    doc.text('Nirvana – Orders Report', 14, 20);
+    doc.text('Red Chilli – Orders Report', 14, 20);
     doc.setFontSize(10);
     doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
     doc.text(`Total Orders: ${filteredOrders.length}`, 14, 34);

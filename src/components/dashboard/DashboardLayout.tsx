@@ -79,7 +79,7 @@ export function DashboardLayout() {
                 <ShoppingBag className="w-5 h-5 text-nirvana-400" />
               </div>
               <div>
-                <h1 className="font-serif text-lg text-gradient-gold leading-tight">Nirvana</h1>
+                <h1 className="font-serif text-lg text-gradient-gold leading-tight">Red Chilli</h1>
                 <p className="text-xs text-ink-400">Family Restaurant</p>
               </div>
             </div>
@@ -141,7 +141,7 @@ export function DashboardLayout() {
           <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center glass rounded-lg">
             {sidebarOpen ? <X className="w-5 h-5 text-ink-300" /> : <Menu className="w-5 h-5 text-ink-300" />}
           </button>
-          <h1 className="font-serif text-lg text-gradient-gold">Nirvana</h1>
+          <h1 className="font-serif text-lg text-gradient-gold">Red Chilli</h1>
           <div className="w-10" />
         </header>
 

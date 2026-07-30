@@ -117,7 +117,7 @@ export function SignupPage() {
             <label className="block text-sm text-ink-300 mb-1.5">Restaurant Name *</label>
             <div className="relative">
               <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" required value={formData.restaurantName} onChange={(e) => update('restaurantName', e.target.value)} placeholder="e.g. Nirvana – The Family Restaurant" className="input-luxury w-full pl-12" />
+              <input type="text" required value={formData.restaurantName} onChange={(e) => update('restaurantName', e.target.value)} placeholder="e.g. Red Chilli – The Family Restaurant" className="input-luxury w-full pl-12" />
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export function SignupPage() {
             <label className="block text-sm text-ink-300 mb-1.5">Owner Name *</label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" required value={formData.ownerName} onChange={(e) => update('ownerName', e.target.value)} placeholder="e.g. Nirvana Owner" className="input-luxury w-full pl-12" />
+              <input type="text" required value={formData.ownerName} onChange={(e) => update('ownerName', e.target.value)} placeholder="e.g. Red Chilli Owner" className="input-luxury w-full pl-12" />
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -17,7 +17,9 @@ import {
   Menu,
   X,
   ShoppingBag,
+  Power,
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import type { StaffRole } from '@/types';
 
@@ -44,10 +46,27 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export function DashboardLayout() {
-  const { staff, signOut } = useAuth();
+  const { staff, signOut, restaurantId } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isRestaurantOpen, setIsRestaurantOpen] = useState(true);
+
+  useEffect(() => {
+    if (!restaurantId) return;
+    const fetchStatus = async () => {
+      const { data } = await supabase.from('restaurants').select('is_open').eq('id', restaurantId).maybeSingle();
+      if (data) setIsRestaurantOpen(data.is_open);
+    };
+    fetchStatus();
+  }, [restaurantId]);
+
+  async function toggleRestaurantStatus() {
+    if (!restaurantId) return;
+    const newState = !isRestaurantOpen;
+    setIsRestaurantOpen(newState);
+    await supabase.from('restaurants').update({ is_open: newState }).eq('id', restaurantId);
+  }
 
   const userRole = staff?.role ?? 'owner';
   const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(userRole));
@@ -105,6 +124,27 @@ export function DashboardLayout() {
               );
             })}
           </nav>
+
+          {['super_admin', 'owner', 'manager'].includes(userRole) && (
+            <div className="px-3 pb-4">
+              <button
+                onClick={toggleRestaurantStatus}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  isRestaurantOpen
+                    ? 'bg-green-500/10 text-green-400 hover:bg-green-500/20'
+                    : 'bg-red-500/10 text-red-400 hover:bg-red-500/20'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Power className="w-5 h-5" />
+                  <span>{isRestaurantOpen ? 'Store is Open' : 'Store is Closed'}</span>
+                </div>
+                <div className={`w-8 h-4 rounded-full transition-colors relative ${isRestaurantOpen ? 'bg-green-500' : 'bg-red-500'}`}>
+                  <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${isRestaurantOpen ? 'translate-x-4' : 'translate-x-0'}`} />
+                </div>
+              </button>
+            </div>
+          )}
 
           <div className="px-3 py-4 border-t border-nirvana-400/10">
             <div className="flex items-center gap-3 px-3 py-2 mb-2">

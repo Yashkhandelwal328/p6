@@ -198,23 +198,7 @@ export function RestaurantSettings() {
           </h1>
           <p className="text-sm text-ink-400">Configure your restaurant details and preferences</p>
         </div>
-        <button
-          onClick={async () => {
-            const newState = !formData.is_open;
-            setFormData({ ...formData, is_open: newState });
-            if (restaurantId) {
-              await supabase.from('restaurants').update({ is_open: newState }).eq('id', restaurantId);
-            }
-          }}
-          className={`px-4 py-2 rounded-xl border flex items-center gap-2 transition-all ${
-            formData.is_open 
-              ? 'bg-green-500/10 border-green-500/30 text-green-400 hover:bg-green-500/20' 
-              : 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20'
-          }`}
-        >
-          <Power className="w-4 h-4" />
-          <span className="font-medium text-sm">{formData.is_open ? 'Restaurant is Open' : 'Restaurant is Closed'}</span>
-        </button>
+        <div className="w-10"></div>
       </div>
 
       {/* Restaurant ID Card */}
@@ -403,19 +387,7 @@ export function RestaurantSettings() {
           </div>
         </div>
 
-        <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Operating Hours</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Opening Time</label>
-              <input type="time" value={formData.opening_time} onChange={(e) => setFormData({ ...formData, opening_time: e.target.value })} className="input-luxury w-full" />
-            </div>
-            <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Closing Time</label>
-              <input type="time" value={formData.closing_time} onChange={(e) => setFormData({ ...formData, closing_time: e.target.value })} className="input-luxury w-full" />
-            </div>
-          </div>
-        </div>
+
 
         <div>
           <h3 className="font-serif text-lg text-nirvana-300 mb-4">Payment Settings</h3>

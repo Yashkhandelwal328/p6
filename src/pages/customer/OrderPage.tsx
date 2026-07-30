@@ -325,7 +325,7 @@ export function OrderPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink-950" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-4 animate-fade-in-down">
-            <img src="/logo.png" alt="Red Chilli Logo" className="w-6 h-6 object-contain rounded-full bg-white p-0.5" />
+            <img src="/logo.jpeg" alt="Red Chilli Logo" className="w-6 h-6 object-contain rounded-full bg-white p-0.5" />
             <span className="text-sm text-nirvana-300 font-medium">Welcome to Red Chilli</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-5xl text-gradient-gold mb-3 animate-fade-in-up">

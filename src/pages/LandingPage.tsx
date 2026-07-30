@@ -24,7 +24,7 @@ export function LandingPage() {
       <header className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white overflow-hidden shadow-gold">
-            <img src="/logo.png" alt="Red Chilli Logo" className="w-full h-full object-contain p-1" />
+            <img src="/logo.jpeg" alt="Red Chilli Logo" className="w-full h-full object-contain p-1" />
           </div>
           <div>
             <h1 className="font-serif text-xl text-gradient-gold leading-tight">Red Chilli</h1>

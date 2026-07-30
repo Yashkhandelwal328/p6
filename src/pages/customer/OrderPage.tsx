@@ -278,15 +278,7 @@ export function OrderPage() {
       {/* Header */}
       <header className="sticky top-0 z-40 glass-dark border-b border-nirvana-400/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="font-serif text-xl sm:text-2xl text-gradient-gold leading-tight">
-                {restaurant?.name ?? 'The Infinito Cafe & Restaurants'}
-              </h1>
-              <p className="text-xs sm:text-sm text-nirvana-300/70 font-display">
-                Place Your Order
-              </p>
-            </div>
+          <div className="flex items-center justify-end gap-4">
             {!restaurant?.is_open && (
               <div className="absolute left-1/2 -translate-x-1/2 top-4 hidden md:block">
                 <span className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-1.5 rounded-full">

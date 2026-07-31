@@ -62,15 +62,20 @@ export function KitchenDashboard() {
     setLoading(false);
   }
 
-  const updateOrderStatus = useCallback(async (orderId: string, status: OrderStatus) => {
+  const updateOrderStatus = useCallback(async (order: OrderWithItems, status: OrderStatus) => {
     const updates: Record<string, string | null> = { status };
-    if (status === 'accepted') updates.accepted_at = new Date().toISOString();
+    if (status === 'accepted') {
+      updates.accepted_at = new Date().toISOString();
+      if (order.payment_method === 'online') {
+        updates.payment_status = 'paid';
+      }
+    }
     if (status === 'preparing') updates.preparing_at = new Date().toISOString();
     if (status === 'ready') updates.ready_at = new Date().toISOString();
     if (status === 'served') updates.served_at = new Date().toISOString();
     if (status === 'completed') updates.completed_at = new Date().toISOString();
 
-    await supabase.from('orders').update(updates).eq('id', orderId);
+    await supabase.from('orders').update(updates).eq('id', order.id);
 
     const notifType = status === 'accepted' ? 'order_accepted'
       : status === 'preparing' ? 'order_preparing'
@@ -80,7 +85,7 @@ export function KitchenDashboard() {
 
     await supabase.from('notifications').insert({
       restaurant_id: restaurantId,
-      order_id: orderId,
+      order_id: order.id,
       type: notifType,
       title: `Order ${ORDER_STATUS_LABELS[status]}`,
       message: `Order status updated to ${ORDER_STATUS_LABELS[status]}`,
@@ -225,32 +230,32 @@ export function KitchenDashboard() {
               {/* Action Buttons */}
               <div className="flex gap-2">
                 {order.status === 'new' && (
-                  <button onClick={() => updateOrderStatus(order.id, 'accepted')} className="btn-gold flex-1 !py-2 text-sm">
-                    Accept
+                  <button onClick={() => updateOrderStatus(order, 'accepted')} className="btn-gold flex-1 !py-2 text-sm">
+                    {order.payment_method === 'online' ? 'Payment Received' : 'Accept'}
                   </button>
                 )}
                 {order.status === 'accepted' && (
-                  <button onClick={() => updateOrderStatus(order.id, 'preparing')} className="btn-gold flex-1 !py-2 text-sm">
+                  <button onClick={() => updateOrderStatus(order, 'preparing')} className="btn-gold flex-1 !py-2 text-sm">
                     Start Preparing
                   </button>
                 )}
                 {order.status === 'preparing' && (
-                  <button onClick={() => updateOrderStatus(order.id, 'ready')} className="btn-gold flex-1 !py-2 text-sm">
+                  <button onClick={() => updateOrderStatus(order, 'ready')} className="btn-gold flex-1 !py-2 text-sm">
                     {order.order_type === 'delivery' ? 'Out for Delivery' : 'Mark Ready'}
                   </button>
                 )}
                 {order.status === 'ready' && (
-                  <button onClick={() => updateOrderStatus(order.id, 'served')} className="btn-gold flex-1 !py-2 text-sm">
+                  <button onClick={() => updateOrderStatus(order, 'served')} className="btn-gold flex-1 !py-2 text-sm">
                     {order.order_type === 'delivery' ? 'Mark Reached' : 'Mark Served'}
                   </button>
                 )}
                 {order.status === 'served' && (
-                  <button onClick={() => updateOrderStatus(order.id, 'completed')} className="btn-gold flex-1 !py-2 text-sm">
+                  <button onClick={() => updateOrderStatus(order, 'completed')} className="btn-gold flex-1 !py-2 text-sm">
                     Complete
                   </button>
                 )}
                 {['new', 'accepted'].includes(order.status) && (
-                  <button onClick={() => updateOrderStatus(order.id, 'cancelled')} className="btn-outline-gold !py-2 !px-3 text-sm border-red-500/30 text-red-400 hover:bg-red-500/10">
+                  <button onClick={() => updateOrderStatus(order, 'cancelled')} className="btn-outline-gold !py-2 !px-3 text-sm border-red-500/30 text-red-400 hover:bg-red-500/10">
                     <X className="w-4 h-4" />
                   </button>
                 )}

@@ -9,7 +9,11 @@ export function OrderPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigateRouter();
   const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>('dine_in');
-  const [tableNumber, setTableNumber] = useState<number>(1);
+  
+  // Initialize table number from URL if present
+  const initialTable = parseInt(searchParams.get('table') || '1', 10);
+  const [tableNumber, setTableNumber] = useState<number>(isNaN(initialTable) ? 1 : initialTable);
+  
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [table, setTable] = useState<Table | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);

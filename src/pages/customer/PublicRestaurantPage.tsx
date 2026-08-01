@@ -36,15 +36,15 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
   if (!restaurant) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
-        <Store className="w-16 h-16 text-theme-muted mb-4" />
-        <h1 className="text-2xl font-serif text-theme-primary mb-2">Restaurant Not Found</h1>
-        <p className="text-theme-secondary">We couldn't find the restaurant you're looking for.</p>
+        <Store className="w-16 h-16 text-theme-text-muted mb-4" />
+        <h1 className="text-2xl font-serif text-primary mb-2">Restaurant Not Found</h1>
+        <p className="text-theme-text-secondary">We couldn't find the restaurant you're looking for.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-theme-primary selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-primary selection:bg-primary selection:text-primary-foreground">
       {/* Hero Banner */}
       <div className="relative h-64 md:h-96 w-full bg-surface overflow-hidden">
         {restaurant.logo_url ? (
@@ -61,10 +61,10 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
             </div>
           )}
           <div className="pb-2">
-            <h1 className="text-3xl md:text-5xl font-serif text-theme-primary font-bold drop-shadow-md">
+            <h1 className="text-3xl md:text-5xl font-serif text-primary font-bold drop-shadow-md">
               {restaurant.name}
             </h1>
-            <p className="text-theme-secondary mt-1 text-lg flex items-center gap-2">
+            <p className="text-theme-text-secondary mt-1 text-lg flex items-center gap-2">
               <Star className="w-4 h-4 text-primary fill-primary" />
               4.9 (120+ reviews)
             </p>
@@ -81,7 +81,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
               <Utensils className="w-5 h-5 text-primary" />
               About Us
             </h2>
-            <p className="text-theme-secondary text-lg leading-relaxed">
+            <p className="text-theme-text-secondary text-lg leading-relaxed">
               Welcome to {restaurant.name}. We pride ourselves on offering the finest culinary experience with fresh ingredients and exceptional service. 
             </p>
           </section>
@@ -94,7 +94,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[1,2,3].map(i => (
                 <div key={i} className="aspect-square bg-surface rounded-xl border border-theme-border flex items-center justify-center overflow-hidden">
-                  <ImageIcon className="w-8 h-8 text-theme-muted opacity-20" />
+                  <ImageIcon className="w-8 h-8 text-theme-text-muted opacity-20" />
                 </div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
                 <MapPin className="w-5 h-5 text-primary mt-1" />
                 <div>
                   <h3 className="font-medium">Location</h3>
-                  <p className="text-theme-secondary text-sm">123 Main Street, City, Country</p>
+                  <p className="text-theme-text-secondary text-sm">123 Main Street, City, Country</p>
                 </div>
               </div>
               
@@ -125,7 +125,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
                 <Clock className="w-5 h-5 text-primary mt-1" />
                 <div>
                   <h3 className="font-medium">Opening Hours</h3>
-                  <p className="text-theme-secondary text-sm">Mon - Sun: 10:00 AM - 10:00 PM</p>
+                  <p className="text-theme-text-secondary text-sm">Mon - Sun: 10:00 AM - 10:00 PM</p>
                 </div>
               </div>
 
@@ -133,7 +133,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
                 <Phone className="w-5 h-5 text-primary mt-1" />
                 <div>
                   <h3 className="font-medium">Contact</h3>
-                  <p className="text-theme-secondary text-sm">+1 234 567 8900</p>
+                  <p className="text-theme-text-secondary text-sm">+1 234 567 8900</p>
                 </div>
               </div>
             </div>

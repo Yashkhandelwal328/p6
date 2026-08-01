@@ -206,13 +206,13 @@ export function OwnerDashboard() {
   }
 
   const statCards = useMemo(() => [
-    { label: "Today's Sales", value: formatCurrency(stats.todaySales), icon: DollarSign, trend: 'up', color: 'text-theme-primary' },
+    { label: "Today's Sales", value: formatCurrency(stats.todaySales), icon: DollarSign, trend: 'up', color: 'text-primary' },
     { label: "Today's Orders", value: stats.todayOrders, icon: ShoppingBag, trend: 'up', color: 'text-blue-500' },
     { label: 'Live Orders', value: stats.liveOrders, icon: Clock, trend: 'up', color: 'text-amber-500' },
     { label: 'Completed', value: stats.completedOrders, icon: CheckCircle2, trend: 'up', color: 'text-green-500' },
     { label: 'Pending', value: stats.pendingOrders, icon: Receipt, trend: 'down', color: 'text-cyan-500' },
     { label: 'Cancelled', value: stats.cancelledOrders, icon: XCircle, trend: 'down', color: 'text-red-500' },
-    { label: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: TrendingUp, trend: 'up', color: 'text-theme-primary' },
+    { label: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: TrendingUp, trend: 'up', color: 'text-primary' },
     { label: 'Avg Bill', value: formatCurrency(stats.avgBillValue), icon: Utensils, trend: 'up', color: 'text-purple-500' },
   ], [stats]);
 
@@ -227,7 +227,7 @@ export function OwnerDashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-serif text-2xl sm:text-3xl text-theme-primary mb-1">Owner Dashboard</h1>
+        <h1 className="font-serif text-2xl sm:text-3xl text-primary mb-1">Owner Dashboard</h1>
         <p className="text-sm text-theme-secondary">Real-time overview of your restaurant performance</p>
       </div>
 
@@ -248,7 +248,7 @@ export function OwnerDashboard() {
             </div>
             <div className="flex-1 text-center md:text-left space-y-4">
               <div>
-                <h3 className="font-serif text-lg text-theme-primary mb-1 flex items-center justify-center md:justify-start gap-2">
+                <h3 className="font-serif text-lg text-primary mb-1 flex items-center justify-center md:justify-start gap-2">
                   <QrCode className="w-5 h-5" /> Customer Access
                 </h3>
                 <p className="text-sm text-theme-secondary">Customers can scan the QR code to access your digital menu, or use the links below.</p>
@@ -262,9 +262,9 @@ export function OwnerDashboard() {
                     type="text" 
                     readOnly 
                     value={customerUrl} 
-                    className="bg-transparent border-none focus:ring-0 text-sm text-theme-primary flex-1 w-full overflow-hidden text-ellipsis px-1"
+                    className="bg-transparent border-none focus:ring-0 text-sm text-primary flex-1 w-full overflow-hidden text-ellipsis px-1"
                   />
-                  <button onClick={() => copyLink(customerUrl)} className="p-1.5 text-theme-secondary hover:text-theme-primary transition-colors" title="Copy Website Link">
+                  <button onClick={() => copyLink(customerUrl)} className="p-1.5 text-theme-secondary hover:text-primary transition-colors" title="Copy Website Link">
                     <Copy className="w-4 h-4" />
                   </button>
                   <a href={customerUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 text-primary hover:text-primary/80 transition-colors" title="Open Website">
@@ -279,9 +279,9 @@ export function OwnerDashboard() {
                     type="text" 
                     readOnly 
                     value={menuUrl} 
-                    className="bg-transparent border-none focus:ring-0 text-sm text-theme-primary flex-1 w-full overflow-hidden text-ellipsis px-1"
+                    className="bg-transparent border-none focus:ring-0 text-sm text-primary flex-1 w-full overflow-hidden text-ellipsis px-1"
                   />
-                  <button onClick={() => copyLink(menuUrl)} className="p-1.5 text-theme-secondary hover:text-theme-primary transition-colors" title="Copy Menu Link">
+                  <button onClick={() => copyLink(menuUrl)} className="p-1.5 text-theme-secondary hover:text-primary transition-colors" title="Copy Menu Link">
                     <Copy className="w-4 h-4" />
                   </button>
                   <a href={menuUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 text-primary hover:text-primary/80 transition-colors" title="Open Menu">
@@ -312,7 +312,7 @@ export function OwnerDashboard() {
               <p className="text-sm text-theme-secondary">Complete these steps to publish your website.</p>
             </div>
             <div className="text-right">
-              <span className="text-2xl font-serif text-theme-primary">82%</span>
+              <span className="text-2xl font-serif text-primary">82%</span>
               <p className="text-xs text-theme-secondary">Complete</p>
             </div>
           </div>
@@ -368,7 +368,7 @@ export function OwnerDashboard() {
                 )}
               </div>
               <p className="text-xs text-theme-secondary mb-1">{card.label}</p>
-              <p className="text-xl font-serif text-theme-primary">{card.value}</p>
+              <p className="text-xl font-serif text-primary">{card.value}</p>
             </div>
           );
         })}
@@ -378,7 +378,7 @@ export function OwnerDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Revenue Chart */}
         <div className="card-luxury p-5">
-          <h3 className="font-serif text-lg text-theme-primary mb-4">Weekly Revenue</h3>
+          <h3 className="font-serif text-lg text-primary mb-4">Weekly Revenue</h3>
           <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={weeklyData}>
               <defs>
@@ -401,7 +401,7 @@ export function OwnerDashboard() {
 
         {/* Hourly Orders */}
         <div className="card-luxury p-5">
-          <h3 className="font-serif text-lg text-theme-primary mb-4">Peak Hours (Today)</h3>
+          <h3 className="font-serif text-lg text-primary mb-4">Peak Hours (Today)</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={hourlyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
@@ -420,7 +420,7 @@ export function OwnerDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Top Items */}
         <div className="card-luxury p-5">
-          <h3 className="font-serif text-lg text-theme-primary mb-4 flex items-center gap-2">
+          <h3 className="font-serif text-lg text-primary mb-4 flex items-center gap-2">
             <ChefHat className="w-5 h-5" /> Best Selling Items
           </h3>
           {topItems.length === 0 ? (
@@ -432,7 +432,7 @@ export function OwnerDashboard() {
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
                     {idx + 1}
                   </span>
-                  <span className="flex-1 text-sm text-theme-primary truncate">{item.name}</span>
+                  <span className="flex-1 text-sm text-primary truncate">{item.name}</span>
                   <span className="text-sm text-theme-secondary font-medium">{item.quantity}x</span>
                 </div>
               ))}
@@ -442,7 +442,7 @@ export function OwnerDashboard() {
 
         {/* Top Tables */}
         <div className="card-luxury p-5">
-          <h3 className="font-serif text-lg text-theme-primary mb-4 flex items-center gap-2">
+          <h3 className="font-serif text-lg text-primary mb-4 flex items-center gap-2">
             <Utensils className="w-5 h-5" /> Most Active Tables
           </h3>
           {topTables.length === 0 ? (
@@ -454,7 +454,7 @@ export function OwnerDashboard() {
                   <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
                     {idx + 1}
                   </span>
-                  <span className="flex-1 text-sm text-theme-primary">Table {t.table_number}</span>
+                  <span className="flex-1 text-sm text-primary">Table {t.table_number}</span>
                   <span className="text-sm text-theme-secondary font-medium">{t.orders} orders</span>
                 </div>
               ))}
@@ -464,7 +464,7 @@ export function OwnerDashboard() {
 
         {/* Status Breakdown */}
         <div className="card-luxury p-5">
-          <h3 className="font-serif text-lg text-theme-primary mb-4 flex items-center gap-2">
+          <h3 className="font-serif text-lg text-primary mb-4 flex items-center gap-2">
             <Users className="w-5 h-5" /> Order Status
           </h3>
           {statusBreakdown.length === 0 ? (
@@ -487,7 +487,7 @@ export function OwnerDashboard() {
 
       {/* Recent Orders */}
       <div className="card-luxury p-5">
-        <h3 className="font-serif text-lg text-theme-primary mb-4">Recent Orders</h3>
+        <h3 className="font-serif text-lg text-primary mb-4">Recent Orders</h3>
         {recentOrders.length === 0 ? (
           <p className="text-sm text-theme-secondary py-8 text-center">No orders yet today</p>
         ) : (
@@ -507,11 +507,11 @@ export function OwnerDashboard() {
                 {recentOrders.map((o) => (
                   <tr key={o.id} className="border-b border-theme-border hover:bg-black/5 transition-colors">
                     <td className="py-3 text-primary font-medium">{o.order_number}</td>
-                    <td className="py-3 text-theme-primary">Table {o.table_number}</td>
-                    <td className="py-3 text-theme-primary">{o.items_count}</td>
-                    <td className="py-3 text-theme-primary">{formatCurrency(o.total_amount)}</td>
+                    <td className="py-3 text-primary">Table {o.table_number}</td>
+                    <td className="py-3 text-primary">{o.items_count}</td>
+                    <td className="py-3 text-primary">{formatCurrency(o.total_amount)}</td>
                     <td className="py-3">
-                      <span className="badge capitalize bg-surface text-theme-primary border-theme-border shadow-sm">{o.status}</span>
+                      <span className="badge capitalize bg-surface text-primary border-theme-border shadow-sm">{o.status}</span>
                     </td>
                     <td className="py-3 text-theme-secondary">{timeAgo(o.created_at)}</td>
                   </tr>

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import type { Restaurant } from '@/types';
 import { generateThemeVariables } from '@/lib/theme-presets';
@@ -29,13 +30,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [slug, setSlug] = useState<string | null>(null);
+  const location = useLocation();
 
   const loadTenant = async () => {
     setLoading(true);
     setError(null);
     try {
       const host = window.location.host;
-      const path = window.location.pathname;
+      const path = location.pathname;
 
       let tenantSlug = null;
       let isCustom = false;
@@ -91,7 +93,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     loadTenant();
-  }, [window.location.pathname]);
+  }, [location.pathname]);
 
   function applyTheme(data: Partial<Restaurant>) {
     const root = document.documentElement;

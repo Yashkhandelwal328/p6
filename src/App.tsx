@@ -178,11 +178,11 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ThemeProvider>
           <AppContent />
-        </BrowserRouter>
-      </ThemeProvider>
+        </ThemeProvider>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

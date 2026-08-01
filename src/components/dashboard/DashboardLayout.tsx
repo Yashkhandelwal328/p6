@@ -102,7 +102,7 @@ export function DashboardLayout() {
                  <img src={restaurant.logo_url} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-black/5" />
               )}
               <div>
-                <h1 className="font-serif text-lg text-theme-primary leading-tight">{restaurant?.name || 'Restaurant Dashboard'}</h1>
+                <h1 className="font-serif text-lg text-primary leading-tight">{restaurant?.name || 'Restaurant Dashboard'}</h1>
                 <p className="text-xs text-theme-secondary">{restaurant?.tagline || 'SaaS Platform'}</p>
               </div>
             </div>
@@ -121,7 +121,7 @@ export function DashboardLayout() {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive(item.path)
                       ? 'bg-primary text-primary-foreground shadow-md'
-                      : 'text-theme-secondary hover:bg-secondary/10 hover:text-theme-primary'
+                      : 'text-theme-secondary hover:bg-secondary/10 hover:text-primary'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -160,7 +160,7 @@ export function DashboardLayout() {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-theme-primary truncate">{staff?.name ?? 'Admin'}</p>
+                <p className="text-sm font-medium text-primary truncate">{staff?.name ?? 'Admin'}</p>
                 <p className="text-xs text-theme-secondary capitalize">{userRole.replace('_', ' ')}</p>
               </div>
             </div>
@@ -182,14 +182,14 @@ export function DashboardLayout() {
       {/* Main Content */}
       <div className="flex-1 lg:ml-64">
         <header className="lg:hidden bg-surface border-b border-theme-border px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-          <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center bg-background rounded-lg text-theme-secondary hover:text-theme-primary">
+          <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center bg-background rounded-lg text-theme-secondary hover:text-primary">
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-2">
             {restaurant?.logo_url && (
                <img src={restaurant.logo_url} alt="Logo" className="w-6 h-6 rounded-md object-contain bg-black/5" />
             )}
-            <h1 className="font-serif text-lg text-theme-primary">{restaurant?.name || 'Restaurant Dashboard'}</h1>
+            <h1 className="font-serif text-lg text-primary">{restaurant?.name || 'Restaurant Dashboard'}</h1>
           </div>
           <div className="w-10" />
         </header>

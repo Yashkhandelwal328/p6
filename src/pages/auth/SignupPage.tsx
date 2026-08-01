@@ -23,7 +23,7 @@ interface MenuItem {
   price: number;
   is_veg: boolean;
   preparation_time: number;
-  image_url: string;
+  image_url: string | null;
   image_file?: File;
 }
 
@@ -605,7 +605,7 @@ export function SignupPage() {
                       price: parseFloat(form.price.value),
                       is_veg: form.is_veg.checked,
                       preparation_time: parseInt(form.prep.value) || 15,
-                      image_url: '',
+                      image_url: null,
                       image_file: form.image.files[0]
                     }]);
                     form.reset();

@@ -23,7 +23,6 @@ import { ReportsPage } from '@/pages/admin/ReportsPage';
 import { OrdersPage } from '@/pages/dashboard/OrdersPage';
 import { SuperAdminDashboard } from '@/pages/admin/SuperAdminDashboard';
 import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
-import { WebsitePreview } from '@/pages/admin/WebsitePreview';
 import { MediaManagement } from '@/pages/admin/MediaManagement';
 import { SeoHead } from '@/components/SeoHead';
 
@@ -146,7 +145,6 @@ function MainPlatformRouter() {
         <Route path="staff" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><StaffManagement /></ProtectedRoute>} />
         <Route path="media" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><MediaManagement /></ProtectedRoute>} />
         <Route path="settings" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><RestaurantSettings /></ProtectedRoute>} />
-        <Route path="preview" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><WebsitePreview /></ProtectedRoute>} />
         <Route path="billing" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><SubscriptionManagement /></ProtectedRoute>} />
         <Route path="reports" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><ReportsPage /></ProtectedRoute>} />
       </Route>

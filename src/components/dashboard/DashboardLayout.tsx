@@ -19,7 +19,6 @@ import {
   ShoppingBag,
   Power,
   Image as ImageIcon,
-  MonitorPlay,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -46,7 +45,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Customers', path: 'customers', icon: Users, roles: ['super_admin', 'owner', 'manager', 'cashier'] },
   { label: 'Staff', path: 'staff', icon: UserCog, roles: ['super_admin', 'owner'] },
   { label: 'Settings', path: 'settings', icon: Settings, roles: ['super_admin', 'owner'] },
-  { label: 'Website Preview', path: 'preview', icon: MonitorPlay, roles: ['super_admin', 'owner'] },
   { label: 'Reports', path: 'reports', icon: FileBarChart, roles: ['super_admin', 'owner', 'manager', 'cashier'] },
 ];
 

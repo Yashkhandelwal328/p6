@@ -81,8 +81,11 @@ export function SignupPage() {
       if (signInError) throw signInError;
 
       navigate('/owner/dashboard');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create account. Please try again.');
+    } catch (err: any) {
+      console.error('Signup error:', err);
+      // Supabase errors might not be instances of Error, they are often plain objects with a message property
+      const errorMessage = err?.message || (err instanceof Error ? err.message : 'Failed to create account. Please try again.');
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

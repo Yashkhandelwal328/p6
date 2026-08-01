@@ -22,6 +22,10 @@ import { RestaurantSettings } from '@/pages/admin/RestaurantSettings';
 import { ReportsPage } from '@/pages/admin/ReportsPage';
 import { OrdersPage } from '@/pages/dashboard/OrdersPage';
 import { SuperAdminDashboard } from '@/pages/admin/SuperAdminDashboard';
+import { SuperAdminRestaurants } from '@/pages/admin/SuperAdminRestaurants';
+import { SuperAdminRestaurantDetails } from '@/pages/admin/SuperAdminRestaurantDetails';
+import { SuperAdminLeads } from '@/pages/admin/SuperAdminLeads';
+import { SuperAdminLayout } from '@/components/admin/SuperAdminLayout';
 import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
 import { MediaManagement } from '@/pages/admin/MediaManagement';
 import { SeoHead } from '@/components/SeoHead';
@@ -126,9 +130,15 @@ function MainPlatformRouter() {
       {/* Super Admin - Accessible only to super_admin role */}
       <Route path="/sup" element={
         <ProtectedRoute allowedRoles={['super_admin']}>
-          <SuperAdminDashboard />
+          <SuperAdminLayout />
         </ProtectedRoute>
-      } />
+      }>
+        <Route index element={<Navigate to="/sup/dashboard" replace />} />
+        <Route path="dashboard" element={<SuperAdminDashboard />} />
+        <Route path="restaurants" element={<SuperAdminRestaurants />} />
+        <Route path="restaurants/:id" element={<SuperAdminRestaurantDetails />} />
+        <Route path="leads" element={<SuperAdminLeads />} />
+      </Route>
 
       {/* Protected owner routes */}
       <Route path="/owner" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

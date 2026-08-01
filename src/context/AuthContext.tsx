@@ -9,6 +9,7 @@ interface AuthContextValue {
   restaurantId: string | null;
   role: StaffRole | null;
   loading: boolean;
+  impersonatedRestaurantId: string | null;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   setImpersonatedRestaurantId: (id: string | null) => void;
@@ -87,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       restaurantId: activeRestaurantId, 
       role, 
       loading, 
+      impersonatedRestaurantId,
       signIn, 
       signOut,
       setImpersonatedRestaurantId

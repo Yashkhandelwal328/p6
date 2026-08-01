@@ -270,3 +270,17 @@ export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
   completed: 'bg-emerald-600/15 text-emerald-400 border-emerald-600/30',
   cancelled: 'bg-red-500/15 text-red-400 border-red-500/30',
 };
+
+export interface PremiumLead {
+  id: string;
+  restaurant_id: string | null;
+  owner_name: string;
+  business_name: string;
+  phone_number: string;
+  email: string | null;
+  preferred_call_time: string | null;
+  notes: string | null;
+  status: 'new' | 'contacted' | 'meeting_scheduled' | 'converted' | 'rejected';
+  created_at: string;
+  updated_at: string;
+}

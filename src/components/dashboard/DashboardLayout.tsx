@@ -49,7 +49,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export function DashboardLayout() {
-  const { staff, signOut, restaurantId } = useAuth();
+  const { staff, signOut, restaurantId, impersonatedRestaurantId, setImpersonatedRestaurantId } = useAuth();
   const { restaurant } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -180,8 +180,26 @@ export function DashboardLayout() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64">
-        <header className="lg:hidden bg-surface border-b border-theme-border px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex-1 lg:ml-64 relative flex flex-col h-screen overflow-hidden">
+        {impersonatedRestaurantId && (
+          <div className="bg-red-500 text-white px-4 py-2 flex items-center justify-between text-sm shadow-md z-50 flex-shrink-0">
+            <div className="flex items-center gap-2 font-medium">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+              You are currently impersonating {restaurant?.name || 'this restaurant'}.
+            </div>
+            <button 
+              onClick={() => {
+                setImpersonatedRestaurantId(null);
+                navigate('/sup');
+              }}
+              className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-md transition-colors font-bold"
+            >
+              Return to Super Admin
+            </button>
+          </div>
+        )}
+
+        <header className="lg:hidden bg-surface border-b border-theme-border px-4 py-3 flex items-center justify-between z-30 flex-shrink-0">
           <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center bg-background rounded-lg text-theme-secondary hover:text-primary">
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -194,7 +212,7 @@ export function DashboardLayout() {
           <div className="w-10" />
         </header>
 
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="p-4 sm:p-6 lg:p-8 flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>

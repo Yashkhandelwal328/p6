@@ -1,16 +1,16 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Settings, Save, Check, Upload, Hash, Palette, Power, Copy } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
-import { THEME_PRESETS } from '@/lib/theme-presets';
+import { THEME_PRESETS, generateThemeVariables } from '@/lib/theme-presets';
 import { PublicRestaurantPage } from '@/pages/customer/PublicRestaurantPage';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 
 export function RestaurantSettings() {
   const { restaurantId } = useAuth();
-  const { previewTheme, refreshTheme } = useTheme();
+  const { refreshTheme } = useTheme();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -55,30 +55,20 @@ export function RestaurantSettings() {
     if (restaurantId) loadData();
   }, [restaurantId]);
 
-  useEffect(() => {
-    if (!loading) {
-      previewTheme({
-        primary_color: formData.primary_color,
-        secondary_color: formData.secondary_color,
-        accent_color: formData.accent_color,
-        background_color: formData.background_color,
-        border_radius: formData.border_radius,
-        font_family: formData.font_family,
-        name: formData.name,
-        logo_url: formData.logo_url,
-      });
-    }
-  }, [
-    formData.primary_color,
-    formData.secondary_color,
-    formData.accent_color,
-    formData.background_color,
-    formData.border_radius,
-    formData.font_family,
-    formData.name,
-    formData.logo_url,
-    loading
-  ]);
+  const previewStyle = useMemo(() => {
+    const vars = generateThemeVariables(
+      formData.primary_color || '#2F4156',
+      formData.secondary_color || '#567C8D',
+      formData.accent_color || '#C8D9E6',
+      formData.background_color || '#F5EFEB',
+      'light'
+    );
+    return {
+      ...vars,
+      '--tenant-radius': formData.border_radius,
+      '--tenant-font': formData.font_family,
+    } as any;
+  }, [formData]);
 
   async function loadData() {
     if (!restaurantId) return;
@@ -643,22 +633,19 @@ export function RestaurantSettings() {
           
           <div className="flex-1 bg-ink-950/20 flex items-center justify-center p-4 overflow-hidden relative">
             <div 
-              className={`bg-background border border-theme-border shadow-2xl rounded-2xl overflow-hidden transition-all duration-500 transform origin-top`}
-              style={{ 
-                width: previewMode === 'mobile' ? '375px' : previewMode === 'tablet' ? '768px' : '100%',
-                height: previewMode === 'mobile' ? '812px' : previewMode === 'tablet' ? '1024px' : '100%',
-                maxHeight: '100%',
-                transform: previewMode === 'desktop' ? 'scale(0.8)' : previewMode === 'tablet' ? 'scale(0.6)' : 'scale(0.7)'
-              }}
+              className="flex-1 overflow-y-auto overflow-x-hidden bg-background relative w-full h-full shadow-2xl rounded-2xl border border-theme-border" 
+              style={previewStyle}
             >
-              <div className="w-full h-full overflow-y-auto pointer-events-none scrollbar-luxury">
+              <div className={`${
+                previewMode === 'mobile' ? 'max-w-[375px] mx-auto border-x border-theme-border min-h-full bg-background' :
+                previewMode === 'tablet' ? 'max-w-[768px] mx-auto border-x border-theme-border min-h-full bg-background' :
+                'w-full min-h-full bg-background'
+              }`}>
                 <PublicRestaurantPage previewData={formData} />
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
       </div>
     </div>
   );

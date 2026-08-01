@@ -1,6 +1,8 @@
--- Premium Leads Table
+-- ============================================
+-- STEP 1: Premium Leads Table
+-- ============================================
 CREATE TABLE IF NOT EXISTS public.premium_leads (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     restaurant_id UUID REFERENCES public.restaurants(id) ON DELETE CASCADE,
     owner_name TEXT NOT NULL,
     business_name TEXT NOT NULL,
@@ -13,7 +15,6 @@ CREATE TABLE IF NOT EXISTS public.premium_leads (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- RLS for premium_leads
 ALTER TABLE public.premium_leads ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Super admin can view premium_leads" 
@@ -21,7 +22,7 @@ CREATE POLICY "Super admin can view premium_leads"
     USING (
         EXISTS (
             SELECT 1 FROM public.staff 
-            WHERE staff.id = auth.uid() 
+            WHERE staff.user_id = auth.uid() 
             AND staff.role = 'super_admin'
         )
     );
@@ -35,7 +36,7 @@ CREATE POLICY "Super admin can update premium_leads"
     USING (
         EXISTS (
             SELECT 1 FROM public.staff 
-            WHERE staff.id = auth.uid() 
+            WHERE staff.user_id = auth.uid() 
             AND staff.role = 'super_admin'
         )
     );
@@ -45,34 +46,21 @@ CREATE POLICY "Super admin can delete premium_leads"
     USING (
         EXISTS (
             SELECT 1 FROM public.staff 
-            WHERE staff.id = auth.uid() 
+            WHERE staff.user_id = auth.uid() 
             AND staff.role = 'super_admin'
         )
     );
 
--- Create a trigger to auto-assign super_admin role to yashkhandeelwa@gmail.com
-CREATE OR REPLACE FUNCTION public.handle_super_admin_assignment()
-RETURNS trigger AS $$
-BEGIN
-  IF NEW.email = 'yashkhandeelwa@gmail.com' THEN
-    -- Update existing staff record if it was just created, or insert a new one
-    INSERT INTO public.staff (id, restaurant_id, role, name, email, phone, pin, is_active)
-    VALUES (
-      NEW.id,
-      NULL,
-      'super_admin',
-      'Super Admin',
-      NEW.email,
-      '0000000000',
-      '0000',
-      true
-    ) ON CONFLICT (id) DO UPDATE SET role = 'super_admin', restaurant_id = NULL;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- ============================================
+-- STEP 2: Fix the staff role CHECK constraint
+-- Allow super_admin, manager, cashier roles
+-- ============================================
+ALTER TABLE public.staff DROP CONSTRAINT IF EXISTS staff_role_check;
+ALTER TABLE public.staff ADD CONSTRAINT staff_role_check 
+    CHECK (role IN ('super_admin', 'owner', 'admin', 'manager', 'cashier', 'chef', 'waiter'));
 
-DROP TRIGGER IF EXISTS on_auth_user_created_super_admin ON auth.users;
-CREATE TRIGGER on_auth_user_created_super_admin
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_super_admin_assignment();
+-- ============================================
+-- STEP 3: Allow restaurant_id to be NULL
+-- (Super admins don't belong to a specific restaurant)
+-- ============================================
+ALTER TABLE public.staff ALTER COLUMN restaurant_id DROP NOT NULL;

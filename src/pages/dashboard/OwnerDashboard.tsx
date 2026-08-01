@@ -63,12 +63,14 @@ export function OwnerDashboard() {
   const customerUrl = useMemo(() => {
     if (!restaurant?.subdomain) return '';
     const origin = window.location.origin;
-    return `${origin}/r/${restaurant.subdomain}`;
+    return `${origin}/${restaurant.subdomain}`;
   }, [restaurant]);
 
-  const copyLink = () => {
-    if (customerUrl) {
-      navigator.clipboard.writeText(customerUrl);
+  const menuUrl = customerUrl ? `${customerUrl}/menu` : '';
+
+  const copyLink = (url: string) => {
+    if (url) {
+      navigator.clipboard.writeText(url);
       alert('Link copied to clipboard!');
     }
   };
@@ -236,7 +238,7 @@ export function OwnerDashboard() {
             <div className="flex-shrink-0 bg-white p-3 rounded-xl shadow-lg border border-white/20">
               <QRCodeSVG
                 id="customer-qr-code"
-                value={customerUrl}
+                value={menuUrl} // QR explicitly points to menu as requested
                 size={120}
                 bgColor={"#ffffff"}
                 fgColor={"#000000"}
@@ -249,30 +251,101 @@ export function OwnerDashboard() {
                 <h3 className="font-serif text-lg text-nirvana-300 mb-1 flex items-center justify-center md:justify-start gap-2">
                   <QrCode className="w-5 h-5" /> Customer Access
                 </h3>
-                <p className="text-sm text-ink-400">Customers can scan the QR code or use the link below to access your digital menu and order online.</p>
+                <p className="text-sm text-ink-400">Customers can scan the QR code to access your digital menu, or use the links below.</p>
               </div>
               
-              <div className="flex items-center gap-2 p-3 bg-ink-900/50 border border-white/10 rounded-lg overflow-hidden">
-                <Globe className="w-4 h-4 text-ink-400 flex-shrink-0 ml-2" />
-                <input 
-                  type="text" 
-                  readOnly 
-                  value={customerUrl} 
-                  className="bg-transparent border-none focus:ring-0 text-sm text-ink-200 flex-1 w-full overflow-hidden text-ellipsis"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Website Link */}
+                <div className="flex items-center gap-2 p-2.5 bg-ink-900/50 border border-white/10 rounded-lg overflow-hidden">
+                  <Globe className="w-4 h-4 text-ink-400 flex-shrink-0 ml-2" />
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value={customerUrl} 
+                    className="bg-transparent border-none focus:ring-0 text-sm text-ink-200 flex-1 w-full overflow-hidden text-ellipsis px-1"
+                  />
+                  <button onClick={() => copyLink(customerUrl)} className="p-1.5 text-ink-400 hover:text-white transition-colors" title="Copy Website Link">
+                    <Copy className="w-4 h-4" />
+                  </button>
+                  <a href={customerUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 text-gold-400 hover:text-gold-300 transition-colors" title="Open Website">
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+
+                {/* Menu Link */}
+                <div className="flex items-center gap-2 p-2.5 bg-ink-900/50 border border-white/10 rounded-lg overflow-hidden">
+                  <Utensils className="w-4 h-4 text-ink-400 flex-shrink-0 ml-2" />
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value={menuUrl} 
+                    className="bg-transparent border-none focus:ring-0 text-sm text-ink-200 flex-1 w-full overflow-hidden text-ellipsis px-1"
+                  />
+                  <button onClick={() => copyLink(menuUrl)} className="p-1.5 text-ink-400 hover:text-white transition-colors" title="Copy Menu Link">
+                    <Copy className="w-4 h-4" />
+                  </button>
+                  <a href={menuUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 text-gold-400 hover:text-gold-300 transition-colors" title="Open Menu">
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                <button onClick={copyLink} className="btn-outline !py-2 text-sm flex items-center gap-2">
-                  <Copy className="w-4 h-4" /> Copy Link
-                </button>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
                 <button onClick={downloadQR} className="btn-outline !py-2 text-sm flex items-center gap-2">
                   <Download className="w-4 h-4" /> Download QR
                 </button>
-                <a href={customerUrl} target="_blank" rel="noopener noreferrer" className="btn-gold !py-2 text-sm flex items-center gap-2">
-                  Open Website <ExternalLink className="w-4 h-4" />
-                </a>
+                <button onClick={() => window.print()} className="btn-outline !py-2 text-sm flex items-center gap-2">
+                  <Copy className="w-4 h-4" /> Print QR
+                </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Setup Checklist (Only if draft or incomplete) */}
+      {restaurant && restaurant.website_status === 'draft' && (
+        <div className="card-luxury p-6 mb-6 border border-gold-500/30">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-serif text-lg text-gold-400 mb-1">Restaurant Setup Checklist</h3>
+              <p className="text-sm text-ink-400">Complete these steps to publish your website.</p>
+            </div>
+            <div className="text-right">
+              <span className="text-2xl font-serif text-white">82%</span>
+              <p className="text-xs text-ink-400">Complete</p>
+            </div>
+          </div>
+          <div className="w-full bg-ink-900 rounded-full h-2 mb-6 overflow-hidden">
+            <div className="bg-gradient-gold h-2 rounded-full" style={{ width: '82%' }}></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Upload Logo</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Choose Theme</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Add Restaurant Details</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Add 3 Categories</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Add 3 Menu Items</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Configure Business Hours</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 text-green-400" /> <span className="text-ink-200 line-through opacity-70">Generate QR Code</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm font-medium">
+              <div className="w-5 h-5 rounded-full border-2 border-gold-500/50 flex-shrink-0" /> <span className="text-gold-300">Preview Website</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm font-medium">
+              <div className="w-5 h-5 rounded-full border-2 border-gold-500/50 flex-shrink-0" /> <span className="text-gold-300">Publish Website</span>
             </div>
           </div>
         </div>

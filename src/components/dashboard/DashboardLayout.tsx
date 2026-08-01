@@ -18,6 +18,8 @@ import {
   X,
   ShoppingBag,
   Power,
+  Image as ImageIcon,
+  MonitorPlay,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -40,9 +42,11 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Categories', path: 'categories', icon: FolderTree, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Tables', path: 'tables', icon: Table2, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'QR Codes', path: 'qr-codes', icon: QrCode, roles: ['super_admin', 'owner', 'manager'] },
+  { label: 'Media Library', path: 'media', icon: ImageIcon, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Customers', path: 'customers', icon: Users, roles: ['super_admin', 'owner', 'manager', 'cashier'] },
   { label: 'Staff', path: 'staff', icon: UserCog, roles: ['super_admin', 'owner'] },
   { label: 'Settings', path: 'settings', icon: Settings, roles: ['super_admin', 'owner'] },
+  { label: 'Website Preview', path: 'preview', icon: MonitorPlay, roles: ['super_admin', 'owner'] },
   { label: 'Reports', path: 'reports', icon: FileBarChart, roles: ['super_admin', 'owner', 'manager', 'cashier'] },
 ];
 

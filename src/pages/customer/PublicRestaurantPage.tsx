@@ -7,41 +7,20 @@ import type { Restaurant } from '@/types';
 
 export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Restaurant> }) {
   const { slug } = useParams<{ slug: string }>();
-  const { previewTheme } = useTheme();
-  const [restaurant, setRestaurant] = useState<Partial<Restaurant> | null>(previewData || null);
-  const [loading, setLoading] = useState(!previewData);
+  const { restaurant: contextRestaurant } = useTheme();
+  const [restaurant, setRestaurant] = useState<Partial<Restaurant> | null>(previewData || contextRestaurant || null);
+  const [loading, setLoading] = useState(!previewData && !contextRestaurant);
 
   useEffect(() => {
     // If preview data is updated (e.g. from Settings), update state
     if (previewData) {
       setRestaurant(previewData);
       setLoading(false);
+    } else if (contextRestaurant) {
+      setRestaurant(contextRestaurant);
+      setLoading(false);
     }
-  }, [previewData]);
-
-  useEffect(() => {
-    async function loadData() {
-      if (!slug || previewData) return;
-      try {
-        // Fetch restaurant by subdomain (slug)
-        const { data, error } = await supabase
-          .from('restaurants')
-          .select('*')
-          .eq('subdomain', slug)
-          .single();
-          
-        if (data) {
-          setRestaurant(data);
-          previewTheme(data); // Apply dynamic theme
-        }
-      } catch (err) {
-        console.error('Failed to load restaurant', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [slug]);
+  }, [previewData, contextRestaurant]);
 
   if (loading) {
     return (

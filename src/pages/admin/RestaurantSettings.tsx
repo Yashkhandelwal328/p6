@@ -46,6 +46,7 @@ export function RestaurantSettings() {
     accent_color: '#C8D9E6',
     background_color: '#F5EFEB',
     subdomain: '',
+    website_status: 'draft' as any,
     font_family: 'Inter',
     border_radius: '0.5rem',
   });
@@ -109,6 +110,7 @@ export function RestaurantSettings() {
         accent_color: data.accent_color ?? '#C8D9E6',
         background_color: data.background_color ?? '#F5EFEB',
         subdomain: data.subdomain ?? '',
+        website_status: data.website_status ?? 'draft',
         font_family: data.font_family ?? 'Inter',
         border_radius: data.border_radius ?? '0.5rem',
       });
@@ -225,6 +227,7 @@ export function RestaurantSettings() {
       accent_color: formData.accent_color,
       background_color: formData.background_color,
       subdomain: formData.subdomain,
+      website_status: formData.website_status,
       font_family: formData.font_family,
       border_radius: formData.border_radius,
     }).eq('id', restaurantId);
@@ -410,7 +413,41 @@ export function RestaurantSettings() {
       </div>
       <form onSubmit={handleSave} className="card-luxury p-6 space-y-6">
         <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">General Information</h3>
+          <h3 className="font-serif text-lg text-nirvana-300 mb-4">General Information & Status</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 border-b border-white/5 pb-4">
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5 font-medium text-gold-400">Website Status</label>
+              <select 
+                value={formData.website_status || 'draft'} 
+                onChange={(e) => setFormData({ ...formData, website_status: e.target.value as any })} 
+                className="input-luxury w-full border-gold-500/50"
+              >
+                <option value="draft">Draft (Private, Coming Soon)</option>
+                <option value="published">Published (Public)</option>
+                <option value="maintenance">Maintenance Mode</option>
+                <option value="suspended" disabled>Suspended (Contact Support)</option>
+              </select>
+              <p className="text-xs text-ink-500 mt-1">Controls if customers can view your website.</p>
+            </div>
+            <div>
+              <label className="block text-sm text-ink-300 mb-1.5 font-medium text-gold-400">Public URL Slug</label>
+              <div className="flex items-center">
+                <span className="bg-ink-900 border border-white/10 border-r-0 rounded-l-lg px-3 py-2.5 text-sm text-ink-400">
+                  {window.location.host}/
+                </span>
+                <input 
+                  type="text" 
+                  value={formData.subdomain || ''} 
+                  onChange={(e) => setFormData({ ...formData, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} 
+                  className="input-luxury w-full rounded-l-none" 
+                  placeholder="pizza-palace"
+                />
+              </div>
+              <p className="text-xs text-ink-500 mt-1">Changing this will break old links!</p>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-ink-300 mb-1.5">Restaurant Name</label>

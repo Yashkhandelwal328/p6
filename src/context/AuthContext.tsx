@@ -11,6 +11,7 @@ interface AuthContextValue {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  setImpersonatedRestaurantId: (id: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -19,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [staff, setStaff] = useState<Staff | null>(null);
   const [loading, setLoading] = useState(true);
+  const [impersonatedRestaurantId, setImpersonatedRestaurantId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -74,9 +76,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const restaurantId = staff?.restaurant_id ?? null;
   const role = staff?.role ?? null;
+  const activeRestaurantId = role === 'super_admin' && impersonatedRestaurantId 
+    ? impersonatedRestaurantId 
+    : restaurantId;
 
   return (
-    <AuthContext.Provider value={{ session, staff, restaurantId, role, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ 
+      session, 
+      staff, 
+      restaurantId: activeRestaurantId, 
+      role, 
+      loading, 
+      signIn, 
+      signOut,
+      setImpersonatedRestaurantId
+    }}>
       {children}
     </AuthContext.Provider>
   );

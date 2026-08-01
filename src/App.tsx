@@ -21,6 +21,11 @@ import { StaffManagement } from '@/pages/admin/StaffManagement';
 import { RestaurantSettings } from '@/pages/admin/RestaurantSettings';
 import { ReportsPage } from '@/pages/admin/ReportsPage';
 import { OrdersPage } from '@/pages/dashboard/OrdersPage';
+import { SuperAdminDashboard } from '@/pages/admin/SuperAdminDashboard';
+import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
+import { WebsitePreview } from '@/pages/admin/WebsitePreview';
+import { MediaManagement } from '@/pages/admin/MediaManagement';
+import { SeoHead } from '@/components/SeoHead';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: StaffRole[] }) {
   const { session, staff, loading } = useAuth();
@@ -38,11 +43,8 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
   return <>{children}</>;
 }
 
-import { SuperAdminDashboard } from '@/pages/admin/SuperAdminDashboard';
-import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
-
-function AppRoutes() {
-  const { restaurant, loading } = useTheme();
+function TenantRouter() {
+  const { restaurant, error, loading } = useTheme();
 
   if (loading) {
     return (
@@ -52,43 +54,85 @@ function AppRoutes() {
     );
   }
 
-  // If a restaurant is loaded, we are on a customer subdomain (e.g. pizzapalace.com)
-  if (restaurant) {
+  // 13. ERROR PAGES - Custom 404
+  if (error === 'not_found' || !restaurant) {
     return (
-      <Routes>
-        <Route path="/" element={<OrderPage />} />
-        <Route path="/order" element={<OrderPage />} />
-        <Route path="/order/status/:orderId" element={<OrderStatusPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
+        <div>
+          <h1 className="font-serif text-4xl text-gradient-gold mb-2">Restaurant Not Found</h1>
+          <p className="text-ink-400 mb-6">The restaurant you are looking for does not exist or has been removed.</p>
+          <a href="/" className="btn-gold !py-2">Go to Platform Home</a>
+        </div>
+      </div>
     );
   }
 
-  // Otherwise, we are on the main SaaS platform domain
+  // 9. PUBLISH / UNPUBLISH STATUS
+  if (restaurant.website_status === 'draft') {
+    return (
+      <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
+        <div>
+          <h1 className="font-serif text-4xl text-gradient-gold mb-2">Coming Soon</h1>
+          <p className="text-ink-400">This restaurant is not yet open. Please check back later!</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (restaurant.website_status === 'maintenance') {
+    return (
+      <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
+        <div>
+          <h1 className="font-serif text-4xl text-gradient-gold mb-2">Maintenance Mode</h1>
+          <p className="text-ink-400">We'll be back soon.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (restaurant.website_status === 'suspended') {
+    return (
+      <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
+        <div>
+          <h1 className="font-serif text-4xl text-red-500 mb-2">Restaurant Unavailable</h1>
+          <p className="text-ink-400">This restaurant is currently unavailable.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Tenant Routes: these are rendered relative to /:slug or root (if custom domain)
+  // Actually, since React Router matches from the URL, if we are inside a wildcard route `/:slug/*`,
+  // we can use relative routes. But `react-router-dom` v6 `<Routes>` here would be relative to `/:slug`.
+  return (
+    <>
+      <SeoHead />
+      <Routes>
+        <Route path="/" element={<PublicRestaurantPage />} />
+        <Route path="/menu" element={<OrderPage />} />
+        <Route path="/order/status/:orderId" element={<OrderStatusPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+}
+
+function MainPlatformRouter() {
   return (
     <Routes>
-      {/* Public SaaS routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<SignupPage />} />
-
-      {/* Public Restaurant pages (by slug) */}
-      <Route path="/r/:slug" element={<PublicRestaurantPage />} />
-      <Route path="/r/:slug/order" element={<OrderPage />} />
-      <Route path="/r/:slug/order/status/:orderId" element={<OrderStatusPage />} />
-
-      {/* Super Admin routes */}
-      <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super_admin']}><SuperAdminDashboard /></ProtectedRoute>} />
+      
+      {/* Super Admin - Accessible only to super_admin role */}
+      <Route path="/sup" element={
+        <ProtectedRoute allowedRoles={['super_admin']}>
+          <SuperAdminDashboard />
+        </ProtectedRoute>
+      } />
 
       {/* Protected owner routes */}
-      <Route
-        path="/owner"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
+      <Route path="/owner" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<Navigate to="/owner/dashboard" replace />} />
         <Route path="dashboard" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><OwnerDashboard /></ProtectedRoute>} />
         <Route path="kitchen" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'chef']}><KitchenDashboard /></ProtectedRoute>} />
@@ -100,14 +144,37 @@ function AppRoutes() {
         <Route path="qr-codes" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><QRCodeGenerator /></ProtectedRoute>} />
         <Route path="customers" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><CustomerManagement /></ProtectedRoute>} />
         <Route path="staff" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><StaffManagement /></ProtectedRoute>} />
+        <Route path="media" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><MediaManagement /></ProtectedRoute>} />
         <Route path="settings" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><RestaurantSettings /></ProtectedRoute>} />
+        <Route path="preview" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><WebsitePreview /></ProtectedRoute>} />
         <Route path="billing" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><SubscriptionManagement /></ProtectedRoute>} />
         <Route path="reports" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><ReportsPage /></ProtectedRoute>} />
       </Route>
 
+      {/* Dynamic Tenant Routing: Matches /pizza-palace, /burger-house, etc. */}
+      {/* It will match anything that wasn't matched above, effectively acting as a fallback for tenant slugs. */}
+      <Route path="/:slug/*" element={<TenantRouter />} />
+      
+      {/* Fallback for completely unrecognized routes at the root that aren't slugs */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
+}
+
+function AppContent() {
+  const { isCustomDomain } = useTheme();
+
+  // If custom domain, we mount the TenantRouter at the absolute root and bypass SaaS platform routes
+  if (isCustomDomain) {
+    return (
+      <Routes>
+        <Route path="/*" element={<TenantRouter />} />
+      </Routes>
+    );
+  }
+
+  // Standard SaaS Platform Router
+  return <MainPlatformRouter />;
 }
 
 export default function App() {
@@ -115,7 +182,7 @@ export default function App() {
     <AuthProvider>
       <ThemeProvider>
         <BrowserRouter>
-          <AppRoutes />
+          <AppContent />
         </BrowserRouter>
       </ThemeProvider>
     </AuthProvider>

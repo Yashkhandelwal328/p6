@@ -327,7 +327,9 @@ export function OrderPage({
         await supabase.from('tables').update({ status: 'occupied', current_order_id: order.id }).eq('id', table.id);
       }
 
-      navigate(`/order/status/${order.id}`);
+      // Navigate using slug-relative path so it stays inside the tenant router
+      const basePath = slug ? `/${slug}` : '';
+      navigate(`${basePath}/order/status/${order.id}`);
     } catch (err: any) {
       console.error('Order Error:', err);
       setError(err.message || err.details || 'Failed to place order');

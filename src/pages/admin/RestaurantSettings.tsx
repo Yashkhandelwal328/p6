@@ -20,6 +20,7 @@ export function RestaurantSettings() {
   const [gettingLocation, setGettingLocation] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
   const qrInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -34,6 +35,7 @@ export function RestaurantSettings() {
     opening_time: '09:00',
     closing_time: '23:59',
     logo_url: '',
+    banner_url: '',
     theme_color: '#C9A227',
     min_delivery_amount: 200,
     max_delivery_radius_km: 5.0,
@@ -88,6 +90,7 @@ export function RestaurantSettings() {
         opening_time: data.opening_time,
         closing_time: data.closing_time,
         logo_url: data.logo_url ?? '',
+        banner_url: data.banner_url ?? '',
         theme_color: data.theme_color ?? '#C9A227',
         min_delivery_amount: data.min_delivery_amount ?? 200,
         max_delivery_radius_km: data.max_delivery_radius_km ?? 5.0,
@@ -134,6 +137,32 @@ export function RestaurantSettings() {
       alert(`Failed to upload logo: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setUploadingLogo(false);
+    }
+  }
+
+  async function handleBannerUpload(file: File) {
+    if (!restaurantId) return;
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `banner-${Date.now()}.${ext}`;
+      const filePath = `${restaurantId}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('menu-images')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('menu-images')
+        .getPublicUrl(filePath);
+
+      if (urlData.publicUrl) {
+        setFormData((prev) => ({ ...prev, banner_url: urlData.publicUrl }));
+        await supabase.from('restaurants').update({ banner_url: urlData.publicUrl }).eq('id', restaurantId);
+      }
+    } catch (err) {
+      alert(`Failed to upload banner: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   }
 
@@ -216,6 +245,7 @@ export function RestaurantSettings() {
       opening_time: formData.opening_time,
       closing_time: formData.closing_time,
       logo_url: formData.logo_url || null,
+      banner_url: formData.banner_url || null,
       theme_color: formData.theme_color,
       min_delivery_amount: Number(formData.min_delivery_amount),
       max_delivery_radius_km: Number(formData.max_delivery_radius_km),
@@ -354,6 +384,40 @@ export function RestaurantSettings() {
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) handleLogoUpload(file);
+              }}
+            />
+          </div>
+
+          {/* Banner Upload */}
+          <div>
+            <label className="block text-sm text-theme-primary mb-2">Order Page Hero Banner</label>
+            {formData.banner_url ? (
+              <div className="relative rounded-xl overflow-hidden h-28 group">
+                <img src={formData.banner_url} alt="Banner" className="w-full h-full object-cover bg-secondary/20" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button type="button" onClick={() => bannerInputRef.current?.click()} className="btn-primary !py-1.5 !px-3 text-xs flex items-center gap-1">
+                    <Upload className="w-3.5 h-3.5" /> Replace
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => bannerInputRef.current?.click()}
+                className="w-full h-28 rounded-xl border border-dashed border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2"
+              >
+                <Upload className="w-6 h-6 text-primary" />
+                <span className="text-xs text-theme-secondary">Upload banner</span>
+              </button>
+            )}
+            <input
+              ref={bannerInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleBannerUpload(file);
               }}
             />
           </div>

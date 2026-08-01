@@ -57,7 +57,7 @@ export function LandingPage() {
           </button>
           <button
             onClick={() => navigate('/register')}
-            className="bg-primary text-surface px-5 py-2.5 rounded-lg font-semibold hover:bg-secondary transition-colors"
+            className="btn-primary py-2.5 px-5 text-sm"
           >
             Get Started
           </button>
@@ -82,7 +82,7 @@ export function LandingPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
             onClick={() => navigate('/register')}
-            className="bg-primary text-surface px-8 py-4 rounded-xl font-bold text-lg hover:bg-secondary transition-colors flex items-center gap-2"
+            className="btn-primary text-lg px-8 py-4 flex items-center gap-2"
           >
             Start Your Free Trial <ArrowRight className="w-5 h-5" />
           </button>
@@ -137,7 +137,7 @@ export function LandingPage() {
               </ul>
               <button 
                 onClick={() => navigate('/register')}
-                className={`w-full py-3 rounded-xl font-bold transition-colors ${plan.highlight ? 'bg-surface text-primary hover:bg-accent' : 'bg-accent/30 text-primary hover:bg-accent'}`}
+                className={`w-full py-3 rounded-xl font-bold transition-colors ${plan.highlight ? 'bg-surface text-primary hover:bg-accent' : 'btn-primary'}`}
               >
                 {plan.buttonText}
               </button>

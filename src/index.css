@@ -48,19 +48,21 @@
 
 @layer components {
   .glass {
-    background: color-mix(in srgb, var(--tenant-surface, #ffffff) 5%, transparent);
+    background: color-mix(in srgb, var(--tenant-surface, #ffffff) 95%, transparent);
     backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-surface, #ffffff) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tenant-border, #000000) 5%, transparent);
   }
   .glass-gold, .glass-primary {
-    background: color-mix(in srgb, var(--tenant-primary) 5%, transparent);
+    background: color-mix(in srgb, var(--tenant-surface) 100%, transparent);
     backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-primary) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tenant-primary) 10%, transparent);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
   }
   .glass-dark, .glass-secondary {
-    background: color-mix(in srgb, var(--tenant-secondary) 60%, transparent);
+    background: color-mix(in srgb, var(--tenant-surface) 100%, transparent);
     backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 10%, transparent);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
   }
   .text-gradient-gold, .text-gradient-primary {
     background: linear-gradient(to right, var(--tenant-accent), var(--tenant-primary), var(--tenant-accent));
@@ -87,24 +89,24 @@
     border-color: color-mix(in srgb, var(--tenant-primary) 60%, transparent);
   }
   .card-luxury {
-    background: color-mix(in srgb, var(--tenant-secondary) 60%, transparent);
-    backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 10%, transparent);
+    background: var(--tenant-surface);
+    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 15%, transparent);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     @apply rounded-2xl transition-all duration-300;
   }
   .card-luxury:hover {
-    border-color: color-mix(in srgb, var(--tenant-primary) 20%, transparent);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--tenant-primary) 15%, transparent);
+    border-color: color-mix(in srgb, var(--tenant-primary) 30%, transparent);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
   .input-luxury {
-    background: color-mix(in srgb, var(--tenant-secondary) 60%, transparent);
-    border: 1px solid color-mix(in srgb, var(--tenant-surface, #ffffff) 10%, transparent);
-    color: var(--tenant-surface, #ffffff);
+    background: var(--tenant-surface);
+    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 20%, transparent);
+    color: var(--tenant-text-primary);
     @apply rounded-xl px-4 py-3 focus:outline-none transition-all duration-200;
   }
   .input-luxury:focus {
-    border-color: color-mix(in srgb, var(--tenant-primary) 50%, transparent);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tenant-primary) 30%, transparent);
+    border-color: var(--tenant-primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--tenant-primary) 20%, transparent);
   }
   .badge {
     @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border;

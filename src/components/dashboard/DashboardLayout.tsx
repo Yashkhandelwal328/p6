@@ -88,22 +88,22 @@ export function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex">
+    <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 glass-dark border-r border-nirvana-400/10 transform transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-theme-border transform transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="px-6 py-5 border-b border-nirvana-400/10">
+          <div className="px-6 py-5 border-b border-theme-border">
             <div className="flex items-center gap-3">
               {restaurant?.logo_url && (
-                 <img src={restaurant.logo_url} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white/5" />
+                 <img src={restaurant.logo_url} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-black/5" />
               )}
               <div>
-                <h1 className="font-serif text-lg text-gradient-gold leading-tight">{restaurant?.name || 'Restaurant Dashboard'}</h1>
-                <p className="text-xs text-ink-400">{restaurant?.tagline || 'SaaS Platform'}</p>
+                <h1 className="font-serif text-lg text-theme-primary leading-tight">{restaurant?.name || 'Restaurant Dashboard'}</h1>
+                <p className="text-xs text-theme-secondary">{restaurant?.tagline || 'SaaS Platform'}</p>
               </div>
             </div>
           </div>
@@ -120,8 +120,8 @@ export function DashboardLayout() {
                   }}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive(item.path)
-                      ? 'bg-gradient-gold text-ink-950 shadow-gold'
-                      : 'text-ink-300 hover:bg-white/5 hover:text-nirvana-300'
+                      ? 'bg-primary text-primary-foreground shadow-md'
+                      : 'text-theme-secondary hover:bg-secondary/10 hover:text-theme-primary'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -152,21 +152,21 @@ export function DashboardLayout() {
             </div>
           )}
 
-          <div className="px-3 py-4 border-t border-nirvana-400/10">
+          <div className="px-3 py-4 border-t border-theme-border">
             <div className="flex items-center gap-3 px-3 py-2 mb-2">
-              <div className="w-9 h-9 rounded-full bg-nirvana-400/15 flex items-center justify-center">
-                <span className="text-nirvana-300 font-semibold text-sm">
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-primary font-semibold text-sm">
                   {staff?.name?.charAt(0).toUpperCase() ?? 'A'}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-ink-100 truncate">{staff?.name ?? 'Admin'}</p>
-                <p className="text-xs text-ink-400 capitalize">{userRole.replace('_', ' ')}</p>
+                <p className="text-sm font-medium text-theme-primary truncate">{staff?.name ?? 'Admin'}</p>
+                <p className="text-xs text-theme-secondary capitalize">{userRole.replace('_', ' ')}</p>
               </div>
             </div>
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors"
             >
               <LogOut className="w-5 h-5" />
               Sign Out
@@ -176,20 +176,20 @@ export function DashboardLayout() {
       </aside>
 
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-ink-950/60 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-64">
-        <header className="lg:hidden glass-dark border-b border-nirvana-400/10 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-          <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center glass rounded-lg">
-            {sidebarOpen ? <X className="w-5 h-5 text-ink-300" /> : <Menu className="w-5 h-5 text-ink-300" />}
+        <header className="lg:hidden bg-surface border-b border-theme-border px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+          <button onClick={() => setSidebarOpen(true)} className="w-10 h-10 flex items-center justify-center bg-background rounded-lg text-theme-secondary hover:text-theme-primary">
+            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-2">
             {restaurant?.logo_url && (
-               <img src={restaurant.logo_url} alt="Logo" className="w-6 h-6 rounded-md object-contain bg-white/5" />
+               <img src={restaurant.logo_url} alt="Logo" className="w-6 h-6 rounded-md object-contain bg-black/5" />
             )}
-            <h1 className="font-serif text-lg text-gradient-gold">{restaurant?.name || 'Restaurant Dashboard'}</h1>
+            <h1 className="font-serif text-lg text-theme-primary">{restaurant?.name || 'Restaurant Dashboard'}</h1>
           </div>
           <div className="w-10" />
         </header>

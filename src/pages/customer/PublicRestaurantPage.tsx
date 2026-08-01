@@ -7,9 +7,12 @@ import type { Restaurant } from '@/types';
 
 export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Restaurant> }) {
   const { slug } = useParams<{ slug: string }>();
-  const { restaurant: contextRestaurant } = useTheme();
+  const { restaurant: contextRestaurant, slug: contextSlug, isCustomDomain } = useTheme();
   const [restaurant, setRestaurant] = useState<Partial<Restaurant> | null>(previewData || contextRestaurant || null);
   const [loading, setLoading] = useState(!previewData && !contextRestaurant);
+  
+  const activeSlug = contextSlug || slug;
+  const menuUrl = isCustomDomain ? '/menu' : (activeSlug ? `/${activeSlug}/menu` : 'menu');
 
   useEffect(() => {
     // If preview data is updated (e.g. from Settings), update state
@@ -102,7 +105,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
         <div className="space-y-6">
           <div className="card-luxury p-6 space-y-6">
             <Link 
-              to="menu"
+              to={menuUrl}
               className="w-full btn-primary flex items-center justify-center gap-2 text-lg shadow-lg"
             >
               <Utensils className="w-5 h-5" />

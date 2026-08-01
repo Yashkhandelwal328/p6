@@ -232,7 +232,7 @@ export function RestaurantSettings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+        <div className="w-12 h-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
@@ -241,10 +241,10 @@ export function RestaurantSettings() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-theme-primary mb-1 flex items-center gap-2">
             <Settings className="w-7 h-7" /> Restaurant Settings
           </h1>
-          <p className="text-sm text-ink-400">Configure your restaurant details and preferences</p>
+          <p className="text-sm text-theme-secondary">Configure your restaurant details and preferences</p>
         </div>
         <div className="w-10"></div>
       </div>
@@ -252,12 +252,12 @@ export function RestaurantSettings() {
       {/* Restaurant ID Card */}
       <div className="card-luxury p-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl glass-gold flex items-center justify-center">
-            <Hash className="w-7 h-7 text-nirvana-400" />
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <Hash className="w-7 h-7 text-primary" />
           </div>
           <div>
-            <p className="text-xs text-ink-400 mb-1">Restaurant ID</p>
-            <p className="font-serif text-2xl text-gradient-gold">{restaurant?.restaurant_code ?? '—'}</p>
+            <p className="text-xs text-theme-secondary mb-1">Restaurant ID</p>
+            <p className="font-serif text-2xl text-theme-primary">{restaurant?.restaurant_code ?? '—'}</p>
           </div>
         </div>
       </div>
@@ -302,12 +302,12 @@ export function RestaurantSettings() {
               
               {/* Logo Upload */}
               <div>
-            <label className="block text-sm text-ink-300 mb-2">Restaurant Logo</label>
+            <label className="block text-sm text-theme-primary mb-2">Restaurant Logo</label>
             {formData.logo_url ? (
               <div className="relative rounded-xl overflow-hidden h-28 group">
-                <img src={formData.logo_url} alt="Logo" className="w-full h-full object-contain bg-ink-900" />
-                <div className="absolute inset-0 bg-ink-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-gold !py-1.5 !px-3 text-xs flex items-center gap-1">
+                <img src={formData.logo_url} alt="Logo" className="w-full h-full object-contain bg-secondary/20" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-primary !py-1.5 !px-3 text-xs flex items-center gap-1">
                     <Upload className="w-3.5 h-3.5" /> Replace
                   </button>
                 </div>
@@ -317,14 +317,14 @@ export function RestaurantSettings() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingLogo}
-                className="w-full h-28 rounded-xl border border-dashed border-nirvana-400/30 hover:border-nirvana-400/50 hover:bg-nirvana-400/5 transition-all flex flex-col items-center justify-center gap-2"
+                className="w-full h-28 rounded-xl border border-dashed border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2"
               >
                 {uploadingLogo ? (
-                  <div className="w-6 h-6 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                 ) : (
                   <>
-                    <Upload className="w-6 h-6 text-nirvana-400" />
-                    <span className="text-xs text-ink-400">Upload logo</span>
+                    <Upload className="w-6 h-6 text-primary" />
+                    <span className="text-xs text-theme-secondary">Upload logo</span>
                   </>
                 )}
               </button>
@@ -343,33 +343,33 @@ export function RestaurantSettings() {
 
           {/* Theme Colors */}
           <div className="sm:col-span-2 space-y-4">
-            <label className="block text-sm text-ink-300 mb-2 flex items-center gap-1">
+            <label className="block text-sm text-theme-primary mb-2 flex items-center gap-1">
               <Palette className="w-4 h-4" /> Branding Colors
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs text-ink-400 mb-1">Primary Color</label>
+                <label className="block text-xs text-theme-secondary mb-1">Primary Color</label>
                 <div className="flex items-center gap-2">
                   <input type="color" value={formData.primary_color} onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
                   <input type="text" value={formData.primary_color} onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-ink-400 mb-1">Secondary Color</label>
+                <label className="block text-xs text-theme-secondary mb-1">Secondary Color</label>
                 <div className="flex items-center gap-2">
                   <input type="color" value={formData.secondary_color} onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
                   <input type="text" value={formData.secondary_color} onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-ink-400 mb-1">Accent Color</label>
+                <label className="block text-xs text-theme-secondary mb-1">Accent Color</label>
                 <div className="flex items-center gap-2">
                   <input type="color" value={formData.accent_color} onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
                   <input type="text" value={formData.accent_color} onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-ink-400 mb-1">Background</label>
+                <label className="block text-xs text-theme-secondary mb-1">Background</label>
                 <div className="flex items-center gap-2">
                   <input type="color" value={formData.background_color} onChange={(e) => setFormData({ ...formData, background_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
                   <input type="text" value={formData.background_color} onChange={(e) => setFormData({ ...formData, background_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
@@ -379,7 +379,7 @@ export function RestaurantSettings() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                <div>
-                  <label className="block text-sm text-ink-300 mb-1.5">Font Family</label>
+                  <label className="block text-sm text-theme-primary mb-1.5">Font Family</label>
                   <select value={formData.font_family} onChange={(e) => setFormData({ ...formData, font_family: e.target.value })} className="input-luxury w-full">
                     <option value="Inter">Inter (Modern Sans)</option>
                     <option value="Roboto">Roboto</option>
@@ -388,7 +388,7 @@ export function RestaurantSettings() {
                   </select>
                </div>
                <div>
-                  <label className="block text-sm text-ink-300 mb-1.5">Border Radius</label>
+                  <label className="block text-sm text-theme-primary mb-1.5">Border Radius</label>
                   <select value={formData.border_radius} onChange={(e) => setFormData({ ...formData, border_radius: e.target.value })} className="input-luxury w-full">
                     <option value="0rem">Square</option>
                     <option value="0.25rem">Slightly Rounded</option>
@@ -403,34 +403,34 @@ export function RestaurantSettings() {
       </div>
       <form onSubmit={handleSave} className="card-luxury p-6 space-y-6">
         <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">General Information & Status</h3>
+          <h3 className="font-serif text-lg text-theme-primary mb-4">General Information & Status</h3>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 border-b border-white/5 pb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 border-b border-theme-border pb-4">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5 font-medium text-gold-400">Website Status</label>
+              <label className="block text-sm text-theme-primary mb-1.5 font-medium">Website Status</label>
               <select 
                 value={formData.website_status || 'draft'} 
                 onChange={(e) => setFormData({ ...formData, website_status: e.target.value as any })} 
-                className="input-luxury w-full border-gold-500/50"
+                className="input-luxury w-full border-theme-border"
               >
                 <option value="draft">Draft (Private, Coming Soon)</option>
                 <option value="published">Published (Public)</option>
                 <option value="maintenance">Maintenance Mode</option>
                 <option value="suspended" disabled>Suspended (Contact Support)</option>
               </select>
-              <p className="text-xs text-ink-500 mt-1">Controls if customers can view your website.</p>
+              <p className="text-xs text-theme-secondary mt-1">Controls if customers can view your website.</p>
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5 font-medium text-gold-400">Public URL Slug</label>
+              <label className="block text-sm text-theme-primary mb-1.5 font-medium">Public URL Slug</label>
               <div className="flex items-center">
-                <span className="bg-ink-900 border border-white/10 border-r-0 rounded-l-lg px-3 py-2.5 text-sm text-ink-400">
+                <span className="bg-secondary/20 border border-theme-border border-r-0 rounded-l-lg px-3 py-2.5 text-sm text-theme-secondary">
                   {window.location.host}/
                 </span>
                 <input 
                   type="text" 
                   value={formData.subdomain || ''} 
                   onChange={(e) => setFormData({ ...formData, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} 
-                  className="input-luxury w-full rounded-none" 
+                  className="input-luxury w-full rounded-none border-l-0" 
                   placeholder="pizza-palace"
                 />
                 <button
@@ -444,87 +444,87 @@ export function RestaurantSettings() {
                       alert('Please enter a subdomain first.');
                     }
                   }}
-                  className="bg-gold-500 hover:bg-gold-400 text-ink-950 px-3 py-2.5 border border-gold-500 rounded-r-lg transition-colors flex items-center justify-center"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-2.5 border border-primary rounded-r-lg transition-colors flex items-center justify-center"
                   title="Copy Link"
                 >
                   <Copy className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-xs text-ink-500 mt-1">Changing this will break old links!</p>
+              <p className="text-xs text-theme-secondary mt-1">Changing this will break old links!</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Restaurant Name</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Restaurant Name</label>
               <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Tagline</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Tagline</label>
               <input type="text" value={formData.tagline} onChange={(e) => setFormData({ ...formData, tagline: e.target.value })} className="input-luxury w-full" />
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm text-ink-300 mb-1.5">Description</label>
+            <label className="block text-sm text-theme-primary mb-1.5">Description</label>
             <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} className="input-luxury w-full resize-none" />
           </div>
         </div>
 
         <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Contact Information</h3>
+          <h3 className="font-serif text-lg text-theme-primary mb-4">Contact Information</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Phone</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Phone</label>
               <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Email</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Email</label>
               <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="input-luxury w-full" />
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm text-ink-300 mb-1.5">Address</label>
+            <label className="block text-sm text-theme-primary mb-1.5">Address</label>
             <textarea value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} rows={2} className="input-luxury w-full resize-none" />
           </div>
         </div>
 
         <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Billing & Tax</h3>
+          <h3 className="font-serif text-lg text-theme-primary mb-4">Billing & Tax</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Currency Symbol</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Currency Symbol</label>
               <input type="text" maxLength={3} value={formData.currency} onChange={(e) => setFormData({ ...formData, currency: e.target.value })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Tax (%)</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Tax (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={formData.tax_percentage} onChange={(e) => setFormData({ ...formData, tax_percentage: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Service Charge (%)</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Service Charge (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={formData.service_charge_percentage} onChange={(e) => setFormData({ ...formData, service_charge_percentage: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
           </div>
         </div>
 
         <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Delivery Settings</h3>
+          <h3 className="font-serif text-lg text-theme-primary mb-4">Delivery Settings</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Min Delivery Amount ({formData.currency})</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Min Delivery Amount ({formData.currency})</label>
               <input type="number" step="1" min="0" value={formData.min_delivery_amount} onChange={(e) => setFormData({ ...formData, min_delivery_amount: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Max Delivery Radius (km)</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Max Delivery Radius (km)</label>
               <input type="number" step="0.1" min="0" value={formData.max_delivery_radius_km} onChange={(e) => setFormData({ ...formData, max_delivery_radius_km: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Restaurant Latitude</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Restaurant Latitude</label>
               <input type="number" step="any" value={formData.restaurant_latitude || ''} onChange={(e) => setFormData({ ...formData, restaurant_latitude: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Restaurant Longitude</label>
+              <label className="block text-sm text-theme-primary mb-1.5">Restaurant Longitude</label>
               <input type="number" step="any" value={formData.restaurant_longitude || ''} onChange={(e) => setFormData({ ...formData, restaurant_longitude: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
           </div>
@@ -533,10 +533,10 @@ export function RestaurantSettings() {
               type="button"
               onClick={handleGetLocation}
               disabled={gettingLocation}
-              className="btn-outline-gold !py-2 !px-4 text-sm flex items-center gap-2"
+              className="btn-outline !py-2 !px-4 text-sm flex items-center gap-2"
             >
               {gettingLocation ? (
-                <div className="w-4 h-4 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
               ) : (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
               )}
@@ -548,15 +548,15 @@ export function RestaurantSettings() {
 
 
         <div>
-          <h3 className="font-serif text-lg text-nirvana-300 mb-4">Payment Settings</h3>
-          <div className="card-luxury p-6 border border-white/5 bg-ink-950/30">
-            <label className="block text-sm text-ink-300 mb-2">Payment QR Code (for online payments)</label>
-            <p className="text-xs text-ink-400 mb-4">Upload your UPI or Bank QR code so customers can pay online.</p>
+          <h3 className="font-serif text-lg text-theme-primary mb-4">Payment Settings</h3>
+          <div className="card-luxury p-6 border border-theme-border bg-background">
+            <label className="block text-sm text-theme-primary mb-2">Payment QR Code (for online payments)</label>
+            <p className="text-xs text-theme-secondary mb-4">Upload your UPI or Bank QR code so customers can pay online.</p>
             {formData.payment_qr_url ? (
-              <div className="relative rounded-xl overflow-hidden h-40 w-40 group border border-white/10">
-                <img src={formData.payment_qr_url} alt="Payment QR" className="w-full h-full object-contain bg-ink-900" />
-                <div className="absolute inset-0 bg-ink-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button type="button" onClick={() => qrInputRef.current?.click()} className="btn-gold !py-1.5 !px-3 text-xs flex items-center gap-1">
+              <div className="relative rounded-xl overflow-hidden h-40 w-40 group border border-theme-border">
+                <img src={formData.payment_qr_url} alt="Payment QR" className="w-full h-full object-contain bg-secondary/20" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button type="button" onClick={() => qrInputRef.current?.click()} className="btn-primary !py-1.5 !px-3 text-xs flex items-center gap-1">
                     <Upload className="w-3.5 h-3.5" /> Replace
                   </button>
                 </div>
@@ -566,14 +566,14 @@ export function RestaurantSettings() {
                 type="button"
                 onClick={() => qrInputRef.current?.click()}
                 disabled={uploadingQr}
-                className="w-40 h-40 rounded-xl border border-dashed border-nirvana-400/30 hover:border-nirvana-400/50 hover:bg-nirvana-400/5 transition-all flex flex-col items-center justify-center gap-2"
+                className="w-40 h-40 rounded-xl border border-dashed border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2"
               >
                 {uploadingQr ? (
-                  <div className="w-6 h-6 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                 ) : (
                   <>
-                    <Upload className="w-6 h-6 text-nirvana-400" />
-                    <span className="text-xs text-ink-400">Upload QR</span>
+                    <Upload className="w-6 h-6 text-primary" />
+                    <span className="text-xs text-theme-secondary">Upload QR</span>
                   </>
                 )}
               </button>
@@ -631,7 +631,7 @@ export function RestaurantSettings() {
             </div>
           </div>
           
-          <div className="flex-1 bg-ink-950/20 flex items-center justify-center p-4 overflow-hidden relative">
+          <div className="flex-1 bg-secondary/10 flex items-center justify-center p-4 overflow-hidden relative">
             <div 
               className="flex-1 overflow-y-auto overflow-x-hidden bg-background relative w-full h-full shadow-2xl rounded-2xl border border-theme-border" 
               style={previewStyle}

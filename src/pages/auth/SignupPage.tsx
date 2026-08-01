@@ -80,9 +80,7 @@ export function SignupPage() {
     accentColor: THEME_PRESETS[0].accent_color,
     backgroundColor: THEME_PRESETS[0].background_color,
     fontFamily: THEME_PRESETS[0].font_family,
-    buttonStyle: THEME_PRESETS[0].button_style,
     borderRadius: THEME_PRESETS[0].border_radius,
-    darkMode: THEME_PRESETS[0].dark_mode,
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -101,9 +99,7 @@ export function SignupPage() {
       accentColor: preset.accent_color,
       backgroundColor: preset.background_color,
       fontFamily: preset.font_family,
-      buttonStyle: preset.button_style,
       borderRadius: preset.border_radius,
-      darkMode: preset.dark_mode,
     }));
   };
 
@@ -232,9 +228,7 @@ export function SignupPage() {
         accent_color: formData.accentColor,
         background_color: formData.backgroundColor,
         font_family: formData.fontFamily,
-        button_style: formData.buttonStyle,
         border_radius: formData.borderRadius,
-        dark_mode: formData.darkMode,
         categories: categories.map(c => ({ name: c.name, sort_order: c.sort_order })),
         menu_items: itemsWithUrls.map(i => ({
           name: i.name,
@@ -268,21 +262,21 @@ export function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Top Navigation */}
-      <header className="glass-dark border-b border-nirvana-400/10 p-4 sticky top-0 z-50">
+      <header className="bg-surface shadow-sm border-b border-theme-border p-4 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-nirvana-300 font-serif text-xl">
+          <Link to="/" className="flex items-center gap-2 text-theme-primary font-bold font-serif text-xl">
             <Layout className="w-6 h-6" /> Platform Setup
           </Link>
-          <div className="text-ink-400 text-sm flex items-center gap-2">
+          <div className="text-theme-secondary text-sm flex items-center gap-2">
             Step {step} of 6
           </div>
         </div>
         {/* Progress Bar */}
-        <div className="max-w-4xl mx-auto mt-4 h-2 bg-ink-900 rounded-full overflow-hidden">
+        <div className="max-w-4xl mx-auto mt-4 h-2 bg-secondary/20 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-gradient-gold transition-all duration-500 ease-out"
+            className="h-full bg-primary transition-all duration-500 ease-out"
             style={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
@@ -303,41 +297,41 @@ export function SignupPage() {
           {step === 1 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Create your account</h2>
-                <p className="text-ink-400">Let's start by securing your owner credentials.</p>
+                <h2 className="text-2xl font-serif text-theme-primary font-bold mb-2">Create your account</h2>
+                <p className="text-theme-secondary">Let's start by securing your owner credentials.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-ink-300 mb-2">Full Name</label>
+                  <label className="block text-sm text-theme-primary mb-2">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
                     <input type="text" value={formData.ownerName} onChange={e => update('ownerName', e.target.value)} className="input-luxury w-full pl-12" placeholder="John Doe" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-ink-300 mb-2">Email Address</label>
+                  <label className="block text-sm text-theme-primary mb-2">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
                     <input type="email" value={formData.email} onChange={e => update('email', e.target.value)} className="input-luxury w-full pl-12" placeholder="owner@restaurant.com" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-ink-300 mb-2">Password</label>
+                  <label className="block text-sm text-theme-primary mb-2">Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
                     <input type="password" value={formData.password} onChange={e => update('password', e.target.value)} className="input-luxury w-full pl-12" placeholder="••••••••" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-ink-300 mb-2">Phone Number</label>
+                  <label className="block text-sm text-theme-primary mb-2">Phone Number</label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
                     <input type="tel" value={formData.phone} onChange={e => update('phone', e.target.value)} className="input-luxury w-full pl-12" placeholder="+1 (555) 000-0000" />
                   </div>
                 </div>
               </div>
               <div className="flex justify-end pt-4">
-                <button onClick={handleStep1} disabled={loading} className="btn-gold flex items-center gap-2">
+                <button onClick={handleStep1} disabled={loading} className="btn-primary flex items-center gap-2">
                   {loading ? 'Processing...' : 'Continue'} <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
@@ -348,50 +342,50 @@ export function SignupPage() {
           {step === 2 && (
             <div className="space-y-6 animate-fade-in-right">
               <div>
-                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Restaurant Identity</h2>
-                <p className="text-ink-400">Tell us about your restaurant to personalize your website.</p>
+                <h2 className="text-2xl font-serif text-theme-primary font-bold mb-2">Restaurant Identity</h2>
+                <p className="text-theme-secondary">Tell us about your restaurant to personalize your website.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm text-ink-300 mb-2">Restaurant Name <span className="text-red-400">*</span></label>
+                  <label className="block text-sm text-theme-primary mb-2">Restaurant Name <span className="text-red-500">*</span></label>
                   <div className="relative">
-                    <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
                     <input type="text" value={formData.restaurantName} onChange={e => update('restaurantName', e.target.value)} className="input-luxury w-full pl-12" placeholder="e.g. Luigi's Trattoria" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-ink-300 mb-2">Tagline</label>
+                  <label className="block text-sm text-theme-primary mb-2">Tagline</label>
                   <input type="text" value={formData.tagline} onChange={e => update('tagline', e.target.value)} className="input-luxury w-full" placeholder="e.g. Authentic Italian Dining" />
                 </div>
                 <div>
-                  <label className="block text-sm text-ink-300 mb-2">Cuisine Type <span className="text-red-400">*</span></label>
+                  <label className="block text-sm text-theme-primary mb-2">Cuisine Type <span className="text-red-500">*</span></label>
                   <input type="text" value={formData.cuisineType} onChange={e => update('cuisineType', e.target.value)} className="input-luxury w-full" placeholder="e.g. Italian, Mexican, Fusion" />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm text-ink-300 mb-2">Description <span className="text-red-400">*</span></label>
+                  <label className="block text-sm text-theme-primary mb-2">Description <span className="text-red-500">*</span></label>
                   <textarea value={formData.description} onChange={e => update('description', e.target.value)} className="input-luxury w-full" rows={3} placeholder="Tell your customers about your restaurant's story..." />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm text-ink-300 mb-2">Complete Address <span className="text-red-400">*</span></label>
+                  <label className="block text-sm text-theme-primary mb-2">Complete Address <span className="text-red-500">*</span></label>
                   <div className="relative">
-                    <MapPin className="absolute left-4 top-3 w-5 h-5 text-ink-500" />
+                    <MapPin className="absolute left-4 top-3 w-5 h-5 text-theme-secondary" />
                     <textarea value={formData.address} onChange={e => update('address', e.target.value)} className="input-luxury w-full pl-12" rows={2} placeholder="123 Food Street, Culinary District..." />
                   </div>
                 </div>
                 
                 {/* Images */}
-                <div className="card glass p-4 border border-white/5">
-                  <label className="block text-sm text-ink-300 mb-2 font-medium">Restaurant Logo</label>
-                  <input type="file" accept="image/*" onChange={e => e.target.files && update('logoFile', e.target.files[0])} className="text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-ink-950 hover:file:bg-gold-400 w-full" />
+                <div className="card-luxury p-4 border border-theme-border">
+                  <label className="block text-sm text-theme-primary mb-2 font-medium">Restaurant Logo</label>
+                  <input type="file" accept="image/*" onChange={e => e.target.files && update('logoFile', e.target.files[0])} className="text-sm text-theme-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 w-full" />
                 </div>
-                <div className="card glass p-4 border border-white/5">
-                  <label className="block text-sm text-ink-300 mb-2 font-medium">Hero Banner Image</label>
-                  <input type="file" accept="image/*" onChange={e => e.target.files && update('bannerFile', e.target.files[0])} className="text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-ink-950 hover:file:bg-gold-400 w-full" />
+                <div className="card-luxury p-4 border border-theme-border">
+                  <label className="block text-sm text-theme-primary mb-2 font-medium">Hero Banner Image</label>
+                  <input type="file" accept="image/*" onChange={e => e.target.files && update('bannerFile', e.target.files[0])} className="text-sm text-theme-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 w-full" />
                 </div>
               </div>
               <div className="flex justify-between pt-4">
-                <button onClick={() => setStep(1)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
-                <button onClick={handleStep2} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+                <button onClick={() => setStep(1)} className="btn-outline-primary flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep2} className="btn-primary flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
               </div>
             </div>
           )}
@@ -400,56 +394,56 @@ export function SignupPage() {
           {step === 3 && (
             <div className="space-y-6 animate-fade-in-right">
               <div>
-                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Business Settings</h2>
-                <p className="text-ink-400">Configure how your operations will work.</p>
+                <h2 className="text-2xl font-serif text-theme-primary font-bold mb-2">Business Settings</h2>
+                <p className="text-theme-secondary">Configure how your operations will work.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-ink-200 border-b border-white/10 pb-2">Operating Hours</h3>
+                  <h3 className="text-lg font-medium text-theme-primary border-b border-theme-border pb-2">Operating Hours</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-ink-300 mb-2">Opening Time</label>
+                      <label className="block text-sm text-theme-primary mb-2">Opening Time</label>
                       <input type="time" value={formData.openingTime} onChange={e => update('openingTime', e.target.value)} className="input-luxury w-full" />
                     </div>
                     <div>
-                      <label className="block text-sm text-ink-300 mb-2">Closing Time</label>
+                      <label className="block text-sm text-theme-primary mb-2">Closing Time</label>
                       <input type="time" value={formData.closingTime} onChange={e => update('closingTime', e.target.value)} className="input-luxury w-full" />
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-ink-200 border-b border-white/10 pb-2">Services Offered</h3>
+                  <h3 className="text-lg font-medium text-theme-primary border-b border-theme-border pb-2">Services Offered</h3>
                   <div className="space-y-3">
-                    <label className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors">
-                      <input type="checkbox" checked={formData.dineInAvailable} onChange={e => update('dineInAvailable', e.target.checked)} className="form-checkbox rounded text-gold-500 bg-ink-900 border-white/20 focus:ring-gold-500/50 h-5 w-5" />
-                      <span className="text-ink-200 text-sm">Dine-In Available (QR Menu)</span>
+                    <label className="flex items-center gap-3 p-3 rounded-lg border border-theme-border bg-secondary/5 cursor-pointer hover:bg-secondary/10 transition-colors">
+                      <input type="checkbox" checked={formData.dineInAvailable} onChange={e => update('dineInAvailable', e.target.checked)} className="form-checkbox rounded text-primary bg-background border-theme-border focus:ring-primary/50 h-5 w-5" />
+                      <span className="text-theme-primary text-sm">Dine-In Available (QR Menu)</span>
                     </label>
-                    <label className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors">
-                      <input type="checkbox" checked={formData.takeawayAvailable} onChange={e => update('takeawayAvailable', e.target.checked)} className="form-checkbox rounded text-gold-500 bg-ink-900 border-white/20 focus:ring-gold-500/50 h-5 w-5" />
-                      <span className="text-ink-200 text-sm">Takeaway Available</span>
+                    <label className="flex items-center gap-3 p-3 rounded-lg border border-theme-border bg-secondary/5 cursor-pointer hover:bg-secondary/10 transition-colors">
+                      <input type="checkbox" checked={formData.takeawayAvailable} onChange={e => update('takeawayAvailable', e.target.checked)} className="form-checkbox rounded text-primary bg-background border-theme-border focus:ring-primary/50 h-5 w-5" />
+                      <span className="text-theme-primary text-sm">Takeaway Available</span>
                     </label>
-                    <label className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors">
-                      <input type="checkbox" checked={formData.deliveryAvailable} onChange={e => update('deliveryAvailable', e.target.checked)} className="form-checkbox rounded text-gold-500 bg-ink-900 border-white/20 focus:ring-gold-500/50 h-5 w-5" />
-                      <span className="text-ink-200 text-sm">Delivery Available</span>
+                    <label className="flex items-center gap-3 p-3 rounded-lg border border-theme-border bg-secondary/5 cursor-pointer hover:bg-secondary/10 transition-colors">
+                      <input type="checkbox" checked={formData.deliveryAvailable} onChange={e => update('deliveryAvailable', e.target.checked)} className="form-checkbox rounded text-primary bg-background border-theme-border focus:ring-primary/50 h-5 w-5" />
+                      <span className="text-theme-primary text-sm">Delivery Available</span>
                     </label>
                   </div>
                 </div>
 
                 <div className="space-y-4 md:col-span-2">
-                  <h3 className="text-lg font-medium text-ink-200 border-b border-white/10 pb-2">Additional Details</h3>
+                  <h3 className="text-lg font-medium text-theme-primary border-b border-theme-border pb-2">Additional Details</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm text-ink-300 mb-2">Delivery Radius (km)</label>
+                      <label className="block text-sm text-theme-primary mb-2">Delivery Radius (km)</label>
                       <input type="number" step="0.5" value={formData.deliveryRadius} onChange={e => update('deliveryRadius', parseFloat(e.target.value))} className="input-luxury w-full" />
                     </div>
                     <div>
-                      <label className="block text-sm text-ink-300 mb-2">Avg. Prep Time (mins)</label>
+                      <label className="block text-sm text-theme-primary mb-2">Avg. Prep Time (mins)</label>
                       <input type="number" value={formData.preparationTime} onChange={e => update('preparationTime', parseInt(e.target.value))} className="input-luxury w-full" />
                     </div>
                     <div>
-                      <label className="block text-sm text-ink-300 mb-2">Tax Percentage (%)</label>
+                      <label className="block text-sm text-theme-primary mb-2">Tax Percentage (%)</label>
                       <input type="number" step="0.1" value={formData.taxPercentage} onChange={e => update('taxPercentage', parseFloat(e.target.value))} className="input-luxury w-full" />
                     </div>
                   </div>
@@ -457,8 +451,8 @@ export function SignupPage() {
 
               </div>
               <div className="flex justify-between pt-4">
-                <button onClick={() => setStep(2)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
-                <button onClick={handleStep3} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+                <button onClick={() => setStep(2)} className="btn-outline-primary flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep3} className="btn-primary flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
               </div>
             </div>
           )}
@@ -467,12 +461,12 @@ export function SignupPage() {
           {step === 4 && (
             <div className="space-y-6 animate-fade-in-right">
               <div>
-                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Website Theme</h2>
-                <p className="text-ink-400">Choose a professional preset or customize everything to match your brand.</p>
+                <h2 className="text-2xl font-serif text-theme-primary font-bold mb-2">Website Theme</h2>
+                <p className="text-theme-secondary">Choose a professional preset or customize everything to match your brand.</p>
               </div>
               
               <div>
-                <h3 className="text-sm font-medium text-ink-200 mb-3 uppercase tracking-wider">Designer Presets</h3>
+                <h3 className="text-sm font-medium text-theme-primary mb-3 uppercase tracking-wider">Designer Presets</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {THEME_PRESETS.map((preset) => (
                     <button
@@ -480,8 +474,8 @@ export function SignupPage() {
                       onClick={() => applyPreset(preset)}
                       className={`relative p-4 rounded-xl border flex flex-col gap-3 items-start transition-all ${
                         formData.primaryColor === preset.primary_color && formData.backgroundColor === preset.background_color
-                          ? 'border-gold-500 bg-gold-500/10'
-                          : 'border-white/10 hover:border-white/30 bg-ink-900/50'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-theme-border hover:border-theme-primary bg-secondary/5'
                       }`}
                     >
                       <div className="flex gap-1 w-full h-8 rounded-md overflow-hidden">
@@ -489,9 +483,9 @@ export function SignupPage() {
                         <div className="flex-1" style={{ backgroundColor: preset.background_color }} />
                         <div className="flex-1" style={{ backgroundColor: preset.accent_color }} />
                       </div>
-                      <span className="text-sm font-medium text-ink-200">{preset.name}</span>
+                      <span className="text-sm font-medium text-theme-primary">{preset.name}</span>
                       {formData.primaryColor === preset.primary_color && formData.backgroundColor === preset.background_color && (
-                        <div className="absolute top-2 right-2 text-gold-500">
+                        <div className="absolute top-2 right-2 text-primary">
                           <Check className="w-4 h-4" />
                         </div>
                       )}
@@ -500,15 +494,15 @@ export function SignupPage() {
                 </div>
               </div>
 
-              <div className="p-6 rounded-2xl border border-white/10" style={{ backgroundColor: formData.backgroundColor }}>
+              <div className="p-6 rounded-2xl border border-theme-border" style={{ backgroundColor: formData.backgroundColor }}>
                 <h3 className="text-lg font-medium mb-4" style={{ color: formData.primaryColor, fontFamily: formData.fontFamily }}>Theme Preview</h3>
                 <div className="flex gap-4 items-center">
                   <button 
                     style={{ 
                       backgroundColor: formData.primaryColor, 
-                      color: formData.darkMode ? '#fff' : '#fff',
+                      color: '#fff',
                       fontFamily: formData.fontFamily,
-                      borderRadius: formData.buttonStyle === 'pill' ? '9999px' : formData.buttonStyle === 'rounded' ? formData.borderRadius : '0px'
+                      borderRadius: formData.borderRadius
                     }} 
                     className="px-6 py-2.5 font-medium shadow-lg"
                   >
@@ -523,8 +517,8 @@ export function SignupPage() {
               </div>
 
               <div className="flex justify-between pt-4">
-                <button onClick={() => setStep(3)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
-                <button onClick={handleStep4} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+                <button onClick={() => setStep(3)} className="btn-outline-primary flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep4} className="btn-primary flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
               </div>
             </div>
           )}
@@ -533,21 +527,21 @@ export function SignupPage() {
           {step === 5 && (
             <div className="space-y-6 animate-fade-in-right">
               <div>
-                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Menu Setup</h2>
-                <p className="text-ink-400">Add at least 3 categories and 3 menu items to get started.</p>
+                <h2 className="text-2xl font-serif text-theme-primary font-bold mb-2">Menu Setup</h2>
+                <p className="text-theme-secondary">Add at least 3 categories and 3 menu items to get started.</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Categories */}
                 <div className="lg:col-span-1 space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-ink-200">Categories ({categories.length}/3)</h3>
+                    <h3 className="font-medium text-theme-primary">Categories ({categories.length}/3)</h3>
                   </div>
                   <div className="space-y-2">
                     {categories.map((cat) => (
-                      <div key={cat.id} className="flex items-center justify-between p-3 rounded-xl bg-ink-900 border border-white/5">
-                        <span className="text-sm text-ink-200">{cat.name}</span>
-                        <button onClick={() => setCategories(categories.filter(c => c.id !== cat.id))} className="text-red-400 hover:text-red-300">
+                      <div key={cat.id} className="flex items-center justify-between p-3 rounded-xl bg-secondary/10 border border-theme-border">
+                        <span className="text-sm text-theme-primary">{cat.name}</span>
+                        <button onClick={() => setCategories(categories.filter(c => c.id !== cat.id))} className="text-red-500 hover:text-red-600">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -562,32 +556,32 @@ export function SignupPage() {
                     }
                   }} className="flex gap-2">
                     <input name="categoryName" type="text" placeholder="e.g. Starters" className="input-luxury flex-1 text-sm" />
-                    <button type="submit" className="btn-gold !px-3 !py-2"><Plus className="w-4 h-4" /></button>
+                    <button type="submit" className="btn-primary !px-3 !py-2"><Plus className="w-4 h-4" /></button>
                   </form>
                 </div>
 
                 {/* Menu Items */}
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-ink-200">Menu Items ({menuItems.length}/3)</h3>
+                    <h3 className="font-medium text-theme-primary">Menu Items ({menuItems.length}/3)</h3>
                   </div>
                   <div className="space-y-3 max-h-80 overflow-y-auto scrollbar-luxury pr-2">
                     {menuItems.map((item) => (
-                      <div key={item.id} className="flex gap-4 p-4 rounded-xl bg-ink-900 border border-white/5">
-                        <div className="w-16 h-16 rounded-lg bg-ink-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      <div key={item.id} className="flex gap-4 p-4 rounded-xl bg-secondary/10 border border-theme-border">
+                        <div className="w-16 h-16 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
                           {item.image_file ? (
                             <img src={URL.createObjectURL(item.image_file)} alt="preview" className="w-full h-full object-cover" />
                           ) : (
-                            <Coffee className="w-6 h-6 text-ink-600" />
+                            <Coffee className="w-6 h-6 text-theme-secondary" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-ink-100 truncate">{item.name}</h4>
-                            <button onClick={() => setMenuItems(menuItems.filter(i => i.id !== item.id))} className="text-red-400 hover:text-red-300"><Trash2 className="w-4 h-4" /></button>
+                            <h4 className="font-medium text-theme-primary truncate">{item.name}</h4>
+                            <button onClick={() => setMenuItems(menuItems.filter(i => i.id !== item.id))} className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
                           </div>
-                          <p className="text-xs text-ink-400">{item.category_name} • {item.is_veg ? 'Veg' : 'Non-Veg'}</p>
-                          <p className="text-sm font-semibold text-nirvana-300 mt-1">{formData.currency}{item.price}</p>
+                          <p className="text-xs text-theme-secondary">{item.category_name} • {item.is_veg ? 'Veg' : 'Non-Veg'}</p>
+                          <p className="text-sm font-semibold text-primary mt-1">{formData.currency}{item.price}</p>
                         </div>
                       </div>
                     ))}
@@ -609,7 +603,7 @@ export function SignupPage() {
                       image_file: form.image.files[0]
                     }]);
                     form.reset();
-                  }} className="card glass p-4 border border-white/5 space-y-3">
+                  }} className="card-luxury p-4 border border-theme-border space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <select name="cat" required className="input-luxury w-full text-sm">
                         <option value="">Select Category</option>
@@ -623,20 +617,20 @@ export function SignupPage() {
                       </div>
                       <div className="col-span-2 flex items-center justify-between">
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <input name="is_veg" type="checkbox" className="form-checkbox text-green-500 rounded bg-ink-900 border-white/20" />
-                          <span className="text-sm text-ink-300">Is Vegetarian</span>
+                          <input name="is_veg" type="checkbox" className="form-checkbox text-green-500 rounded bg-background border-theme-border" />
+                          <span className="text-sm text-theme-primary">Is Vegetarian</span>
                         </label>
-                        <input name="image" type="file" accept="image/*" className="text-xs text-ink-400 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:bg-white/5 file:text-ink-200" />
+                        <input name="image" type="file" accept="image/*" className="text-xs text-theme-secondary file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:bg-primary file:text-primary-foreground" />
                       </div>
                     </div>
-                    <button type="submit" className="w-full btn-outline-gold !py-2 text-sm flex items-center justify-center gap-2"><Plus className="w-4 h-4" /> Add Item</button>
+                    <button type="submit" className="w-full btn-outline-primary !py-2 text-sm flex items-center justify-center gap-2"><Plus className="w-4 h-4" /> Add Item</button>
                   </form>
                 </div>
               </div>
 
-              <div className="flex justify-between pt-4 border-t border-white/5">
-                <button onClick={() => setStep(4)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
-                <button onClick={handleStep5} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+              <div className="flex justify-between pt-4 border-t border-theme-border">
+                <button onClick={() => setStep(4)} className="btn-outline-primary flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep5} className="btn-primary flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
               </div>
             </div>
           )}
@@ -645,36 +639,36 @@ export function SignupPage() {
           {step === 6 && (
             <div className="space-y-6 animate-fade-in-right">
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center mx-auto mb-4">
                   <Check className="w-8 h-8" />
                 </div>
-                <h2 className="text-3xl font-serif text-gradient-gold mb-2">Ready to Launch</h2>
-                <p className="text-ink-300 max-w-md mx-auto">Your SaaS platform instance is completely configured and ready to go live.</p>
+                <h2 className="text-3xl font-serif text-theme-primary font-bold mb-2">Ready to Launch</h2>
+                <p className="text-theme-secondary max-w-md mx-auto">Your SaaS platform instance is completely configured and ready to go live.</p>
               </div>
 
-              <div className="card glass p-6 border border-white/10" style={{ backgroundColor: formData.backgroundColor }}>
+              <div className="card-luxury p-6 border border-theme-border" style={{ backgroundColor: formData.backgroundColor }}>
                 <div className="text-center mb-6">
                   <h3 className="text-2xl mb-1" style={{ color: formData.primaryColor, fontFamily: formData.fontFamily }}>{formData.restaurantName}</h3>
                   <p className="text-sm opacity-80" style={{ color: formData.secondaryColor }}>{formData.tagline}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                  <div className="p-4 rounded-xl border border-white/10 text-center bg-white/5">
+                  <div className="p-4 rounded-xl border border-theme-border text-center bg-secondary/5">
                     <p className="text-xs uppercase tracking-wider mb-1 opacity-70" style={{ color: formData.primaryColor }}>Categories</p>
                     <p className="text-xl font-bold" style={{ color: formData.primaryColor }}>{categories.length}</p>
                   </div>
-                  <div className="p-4 rounded-xl border border-white/10 text-center bg-white/5">
+                  <div className="p-4 rounded-xl border border-theme-border text-center bg-secondary/5">
                     <p className="text-xs uppercase tracking-wider mb-1 opacity-70" style={{ color: formData.primaryColor }}>Menu Items</p>
                     <p className="text-xl font-bold" style={{ color: formData.primaryColor }}>{menuItems.length}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-between pt-4 border-t border-white/5">
-                <button onClick={() => setStep(5)} disabled={loading} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Edit Menu</button>
-                <button onClick={handleFinalSubmit} disabled={loading} className="btn-gold shadow-gold-lg flex items-center gap-2">
+              <div className="flex justify-between pt-4 border-t border-theme-border">
+                <button onClick={() => setStep(5)} disabled={loading} className="btn-outline-primary flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Edit Menu</button>
+                <button onClick={handleFinalSubmit} disabled={loading} className="btn-primary shadow-lg flex items-center gap-2">
                   {loading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-ink-950/30 border-t-ink-950 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                       Launching...
                     </>
                   ) : (

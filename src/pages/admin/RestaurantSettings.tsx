@@ -647,6 +647,7 @@ export function RestaurantSettings() {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }

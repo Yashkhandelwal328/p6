@@ -4,11 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--tenant-primary)',
+        primary: {
+          DEFAULT: 'var(--tenant-primary)',
+          hover: 'var(--tenant-primary-hover)',
+          active: 'var(--tenant-primary-active)',
+          foreground: 'var(--tenant-primary-foreground)',
+        },
         secondary: 'var(--tenant-secondary)',
         accent: 'var(--tenant-accent)',
         background: 'var(--tenant-background)',
-        surface: 'var(--color-surface)',
+        surface: 'var(--tenant-surface)',
+        card: 'var(--tenant-card)',
+        'theme-border': 'var(--tenant-border)',
+        'theme-text': {
+          DEFAULT: 'var(--tenant-text-primary)',
+          secondary: 'var(--tenant-text-secondary)',
+          muted: 'var(--tenant-text-muted)',
+        },
         
         nirvana: {
           50: '#faf8f3',

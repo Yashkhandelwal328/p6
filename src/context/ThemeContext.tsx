@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { generateThemeVariables } from '@/lib/theme-presets';
 import type { Restaurant } from '@/types';
 
 interface ThemeContextType {
@@ -62,10 +63,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   function applyTheme(data: Partial<Restaurant>) {
     const root = document.documentElement;
-    if (data.primary_color) root.style.setProperty('--tenant-primary', data.primary_color);
-    if (data.secondary_color) root.style.setProperty('--tenant-secondary', data.secondary_color);
-    if (data.accent_color) root.style.setProperty('--tenant-accent', data.accent_color);
-    if (data.background_color) root.style.setProperty('--tenant-background', data.background_color);
+    
+    // Generate semantic palette based on base colors
+    const themeVars = generateThemeVariables(
+      data.primary_color || '#2F4156',
+      data.secondary_color || '#567C8D',
+      data.accent_color || '#C8D9E6',
+      data.background_color || '#F5EFEB',
+      'light' // Default to light mode for now until added to schema
+    );
+
+    // Apply all generated tokens
+    Object.entries(themeVars).forEach(([key, value]) => {
+      root.style.setProperty(key, value);
+    });
+
     if (data.border_radius) root.style.setProperty('--tenant-radius', data.border_radius);
     if (data.font_family) root.style.setProperty('--tenant-font', data.font_family);
 

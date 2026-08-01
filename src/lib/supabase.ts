@@ -20,4 +20,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Fallback for the customer-facing ordering site (no login).
 // The customer site loads the restaurant dynamically by querying the first active restaurant.
-export const DEFAULT_RESTAURANT_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+// The single default restaurant ID has been removed as the platform is now multi-tenant.

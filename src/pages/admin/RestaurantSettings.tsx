@@ -4,6 +4,9 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
+import { THEME_PRESETS } from '@/lib/theme-presets';
+import { PublicRestaurantPage } from '@/pages/customer/PublicRestaurantPage';
+import { Monitor, Smartphone, Tablet } from 'lucide-react';
 
 export function RestaurantSettings() {
   const { restaurantId } = useAuth();
@@ -15,6 +18,7 @@ export function RestaurantSettings() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingQr, setUploadingQr] = useState(false);
   const [gettingLocation, setGettingLocation] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const qrInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -265,12 +269,46 @@ export function RestaurantSettings() {
         </div>
       </div>
 
-      {/* Logo & Theme */}
-      <div className="card-luxury p-6">
-        <h3 className="font-serif text-lg text-nirvana-300 mb-4">Branding</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Logo Upload */}
-          <div>
+      {/* Settings & Preview Layout */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        
+        {/* Left Column: Form Settings */}
+        <div className="space-y-6">
+          {/* Logo & Theme */}
+          <div className="card-luxury p-6">
+            <h3 className="font-serif text-lg text-theme-primary mb-4">Branding</h3>
+            <div className="space-y-6">
+              {/* Professional Presets */}
+              <div>
+                <label className="block text-sm text-theme-secondary mb-2">Professional Presets</label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {THEME_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          primary_color: preset.primary_color,
+                          secondary_color: preset.secondary_color,
+                          accent_color: preset.accent_color,
+                          background_color: preset.background_color,
+                          font_family: preset.font_family,
+                          border_radius: preset.border_radius,
+                        }));
+                      }}
+                      className="px-3 py-2 text-xs rounded-xl border border-theme-border hover:border-primary transition-all text-left flex items-center justify-between"
+                      style={{ backgroundColor: preset.background_color, color: preset.primary_color }}
+                    >
+                      <span className="font-medium truncate">{preset.name}</span>
+                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: preset.accent_color }} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Logo Upload */}
+              <div>
             <label className="block text-sm text-ink-300 mb-2">Restaurant Logo</label>
             {formData.logo_url ? (
               <div className="relative rounded-xl overflow-hidden h-28 group">
@@ -370,7 +408,6 @@ export function RestaurantSettings() {
           </div>
         </div>
       </div>
-
       <form onSubmit={handleSave} className="card-luxury p-6 space-y-6">
         <div>
           <h3 className="font-serif text-lg text-nirvana-300 mb-4">General Information</h3>
@@ -517,11 +554,59 @@ export function RestaurantSettings() {
               <Check className="w-4 h-4" /> Saved successfully
             </span>
           )}
-          <button type="submit" disabled={saving} className="btn-gold flex items-center gap-2">
+          <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2">
             <Save className="w-5 h-5" /> {saving ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
       </form>
+      </div>
+
+      {/* Right Column: Live Preview */}
+      <div className="hidden xl:block h-[calc(100vh-100px)] sticky top-6">
+        <div className="card-luxury h-full flex flex-col overflow-hidden">
+          <div className="p-4 border-b border-theme-border flex justify-between items-center bg-surface z-10 relative">
+            <h3 className="font-serif text-lg text-theme-primary">Live Website Preview</h3>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setPreviewMode('mobile')} 
+                className={`p-2 rounded-lg transition-colors ${previewMode === 'mobile' ? 'bg-primary text-primary-foreground' : 'hover:bg-surface text-theme-secondary'}`}
+              >
+                <Smartphone className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setPreviewMode('tablet')} 
+                className={`p-2 rounded-lg transition-colors ${previewMode === 'tablet' ? 'bg-primary text-primary-foreground' : 'hover:bg-surface text-theme-secondary'}`}
+              >
+                <Tablet className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setPreviewMode('desktop')} 
+                className={`p-2 rounded-lg transition-colors ${previewMode === 'desktop' ? 'bg-primary text-primary-foreground' : 'hover:bg-surface text-theme-secondary'}`}
+              >
+                <Monitor className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex-1 bg-ink-950/20 flex items-center justify-center p-4 overflow-hidden relative">
+            <div 
+              className={`bg-background border border-theme-border shadow-2xl rounded-2xl overflow-hidden transition-all duration-500 transform origin-top`}
+              style={{ 
+                width: previewMode === 'mobile' ? '375px' : previewMode === 'tablet' ? '768px' : '100%',
+                height: previewMode === 'mobile' ? '812px' : previewMode === 'tablet' ? '1024px' : '100%',
+                maxHeight: '100%',
+                transform: previewMode === 'desktop' ? 'scale(0.8)' : previewMode === 'tablet' ? 'scale(0.6)' : 'scale(0.7)'
+              }}
+            >
+              <div className="w-full h-full overflow-y-auto pointer-events-none scrollbar-luxury">
+                <PublicRestaurantPage previewData={formData} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      </div>
     </div>
   );
 }

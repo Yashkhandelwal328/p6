@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import type { StaffRole } from '@/types';
 import { LandingPage } from '@/pages/LandingPage';
+import { PublicRestaurantPage } from '@/pages/customer/PublicRestaurantPage';
 import { OrderPage } from '@/pages/customer/OrderPage';
 import { OrderStatusPage } from '@/pages/customer/OrderStatusPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
@@ -70,6 +71,11 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<SignupPage />} />
+
+      {/* Public Restaurant pages (by slug) */}
+      <Route path="/r/:slug" element={<PublicRestaurantPage />} />
+      <Route path="/r/:slug/order" element={<OrderPage />} />
+      <Route path="/r/:slug/order/status/:orderId" element={<OrderStatusPage />} />
 
       {/* Super Admin routes */}
       <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super_admin']}><SuperAdminDashboard /></ProtectedRoute>} />

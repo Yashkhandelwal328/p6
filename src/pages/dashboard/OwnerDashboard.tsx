@@ -62,12 +62,8 @@ export function OwnerDashboard() {
 
   const customerUrl = useMemo(() => {
     if (!restaurant?.subdomain) return '';
-    const isLocal = window.location.hostname === 'localhost';
-    if (isLocal) return `http://${restaurant.subdomain}.localhost:5173`;
-    const host = window.location.host;
-    // Remove admin subdomains if present to get base domain
-    const baseDomain = host.replace(/^app\./, '').replace(/^www\./, '');
-    return `https://${restaurant.subdomain}.${baseDomain}`;
+    const origin = window.location.origin;
+    return `${origin}/r/${restaurant.subdomain}`;
   }, [restaurant]);
 
   const copyLink = () => {

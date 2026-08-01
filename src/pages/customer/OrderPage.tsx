@@ -1,11 +1,13 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useSearchParams, useNavigate as useNavigateRouter } from 'react-router-dom';
+import { useSearchParams, useNavigate as useNavigateRouter, useParams } from 'react-router-dom';
 import { Search, Plus, Minus, ShoppingCart, X, Clock, Star, Flame, Leaf, Utensils, Filter, ShoppingBag, ArrowLeft, MessageSquare, ChefHat, Store, MapPin, Navigation } from 'lucide-react';
-import { supabase, DEFAULT_RESTAURANT_ID } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { formatCurrency, formatTime } from '@/lib/format';
 import type { Category, MenuItem, CartItem, Portion, Restaurant, Table } from '@/types';
+import { useTheme } from '@/context/ThemeContext';
 
 export function OrderPage() {
+  const { slug } = useParams<{ slug?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateRouter();
   const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>('dine_in');
@@ -14,7 +16,16 @@ export function OrderPage() {
   const initialTable = parseInt(searchParams.get('table') || '1', 10);
   const [tableNumber, setTableNumber] = useState<number>(isNaN(initialTable) ? 1 : initialTable);
   
-  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const { restaurant: contextRestaurant, previewTheme } = useTheme();
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(contextRestaurant);
+  
+  // Keep local restaurant state in sync with context
+  useEffect(() => {
+    if (contextRestaurant) {
+      setRestaurant(contextRestaurant);
+    }
+  }, [contextRestaurant]);
+
   const [table, setTable] = useState<Table | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -72,25 +83,44 @@ export function OrderPage() {
 
   useEffect(() => {
     async function loadData() {
-      const [restRes, catRes, menuRes] = await Promise.all([
-        supabase.from('restaurants').select('*').eq('id', DEFAULT_RESTAURANT_ID).maybeSingle(),
-        supabase.from('categories').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).order('sort_order'),
-        supabase.from('menu_items').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).order('sort_order'),
+      let activeRestaurant = restaurant;
+      
+      // If we don't have a restaurant, try fetching by slug
+      if (!activeRestaurant && slug) {
+        try {
+          const { data } = await supabase.from('restaurants').select('*').eq('subdomain', slug).single();
+          if (data) {
+            activeRestaurant = data;
+            setRestaurant(data);
+            previewTheme(data);
+          }
+        } catch (err) {
+          console.error("Failed to load restaurant by slug", err);
+        }
+      }
+
+      if (!activeRestaurant) {
+        setLoading(false);
+        return;
+      }
+
+      const [catRes, menuRes] = await Promise.all([
+        supabase.from('categories').select('*').eq('restaurant_id', activeRestaurant.id).order('sort_order'),
+        supabase.from('menu_items').select('*').eq('restaurant_id', activeRestaurant.id).order('sort_order'),
       ]);
 
-      if (restRes.data) setRestaurant(restRes.data);
       if (catRes.data) setCategories(catRes.data);
       if (menuRes.data) setMenuItems(menuRes.data);
 
       if (orderType === 'dine_in') {
-        const tableRes = await supabase.from('tables').select('*').eq('restaurant_id', DEFAULT_RESTAURANT_ID).eq('table_number', tableNumber).maybeSingle();
+        const tableRes = await supabase.from('tables').select('*').eq('restaurant_id', activeRestaurant.id).eq('table_number', tableNumber).maybeSingle();
         if (tableRes.data) setTable(tableRes.data);
       }
       
       setLoading(false);
     }
     loadData();
-  }, [tableNumber, orderType]);
+  }, [tableNumber, orderType, slug, restaurant, previewTheme]);
 
   const topLevelCategories = useMemo(
     () => categories.filter((c) => !c.parent_id).sort((a, b) => a.sort_order - b.sort_order),
@@ -126,8 +156,8 @@ export function OrderPage() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cart.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
   const taxRate = restaurant?.tax_percentage ?? 0;
-  const taxAmount = 0; // Tax removed as requested
-  const grandTotal = cartTotal;
+  const taxAmount = (cartTotal * taxRate) / 100;
+  const grandTotal = cartTotal + taxAmount;
 
   const addToCart = useCallback((item: MenuItem, portion: Portion = 'full') => {
     const price = portion === 'half' && item.half_price ? item.half_price : item.full_price;
@@ -195,7 +225,7 @@ export function OrderPage() {
       const orderNumber = `NV${new Date().toISOString().slice(2, 10).replace(/-/g, '')}${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
 
       const orderPayload: any = {
-        restaurant_id: DEFAULT_RESTAURANT_ID,
+        restaurant_id: restaurant!.id,
         table_id: orderType === 'dine_in' ? table?.id : null,
         table_number: orderType === 'dine_in' ? tableNumber : null,
         order_type: orderType,
@@ -229,7 +259,7 @@ export function OrderPage() {
 
       const orderItems = cart.map((item) => ({
         order_id: order.id,
-        restaurant_id: DEFAULT_RESTAURANT_ID,
+        restaurant_id: restaurant!.id,
         menu_item_id: item.menu_item.id,
         menu_item_name: item.menu_item.name,
         menu_item_image: item.menu_item.image_url,
@@ -244,7 +274,7 @@ export function OrderPage() {
       if (itemsError) throw itemsError;
 
       await supabase.from('notifications').insert({
-        restaurant_id: DEFAULT_RESTAURANT_ID,
+        restaurant_id: restaurant!.id,
         order_id: order.id,
         type: 'new_order',
         title: orderType === 'delivery' ? 'New Delivery Order' : 'New Order Received',

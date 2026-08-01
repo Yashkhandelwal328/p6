@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt, ShoppingBag, MapPin, Bike } from 'lucide-react';
-import { supabase, DEFAULT_RESTAURANT_ID } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { formatCurrency, formatTime, timeAgo } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus, Restaurant } from '@/types';
 
@@ -24,7 +24,7 @@ const DELIVERY_STATUS_STEPS: { status: OrderStatus; label: string; icon: typeof 
 ];
 
 export function OrderStatusPage() {
-  const { orderId } = useParams<{ orderId: string }>();
+  const { slug, orderId } = useParams<{ slug?: string, orderId: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tableNumber = searchParams.get('table') || '';
@@ -41,7 +41,7 @@ export function OrderStatusPage() {
       const [orderRes, itemsRes, restRes] = await Promise.all([
         supabase.from('orders').select('*').eq('id', orderId!).maybeSingle(),
         supabase.from('order_items').select('*').eq('order_id', orderId!),
-        supabase.from('restaurants').select('*').eq('id', DEFAULT_RESTAURANT_ID).maybeSingle(),
+        supabase.from('restaurants').select('*').eq('subdomain', slug).maybeSingle(),
       ]);
 
       if (orderRes.data) setOrder(orderRes.data);

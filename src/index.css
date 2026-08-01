@@ -15,9 +15,18 @@
     
     /* Tenant Dynamic Theming (Will be overridden by ThemeProvider) */
     --tenant-primary: var(--color-primary);
+    --tenant-primary-hover: #1e2a38;
+    --tenant-primary-active: #151d27;
+    --tenant-primary-foreground: #ffffff;
     --tenant-secondary: var(--color-secondary);
     --tenant-accent: var(--color-accent);
     --tenant-background: var(--color-background);
+    --tenant-surface: var(--color-surface);
+    --tenant-card: var(--color-surface);
+    --tenant-text-primary: #111827;
+    --tenant-text-secondary: #4B5563;
+    --tenant-text-muted: #9CA3AF;
+    --tenant-border: rgba(0,0,0,0.1);
     --tenant-radius: 0.5rem;
     --tenant-font: 'Inter', sans-serif;
   }
@@ -26,14 +35,14 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--color-background);
-    color: var(--color-primary);
+    background-color: var(--tenant-background);
+    color: var(--tenant-text-primary);
     font-family: var(--tenant-font);
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    background-color: var(--color-accent);
-    color: var(--color-primary);
+    background-color: var(--tenant-primary);
+    color: var(--tenant-primary-foreground);
   }
 }
 

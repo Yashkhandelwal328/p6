@@ -46,7 +46,7 @@ export function RestaurantSettings() {
     accent_color: '#C8D9E6',
     background_color: '#F5EFEB',
     subdomain: '',
-    website_status: 'draft' as any,
+    website_status: 'published' as any,
     font_family: 'Inter',
     border_radius: '0.5rem',
   });
@@ -100,7 +100,7 @@ export function RestaurantSettings() {
         accent_color: data.accent_color ?? '#C8D9E6',
         background_color: data.background_color ?? '#F5EFEB',
         subdomain: data.subdomain ?? '',
-        website_status: data.website_status ?? 'draft',
+        website_status: data.website_status ?? 'published',
         font_family: data.font_family ?? 'Inter',
         border_radius: data.border_radius ?? '0.5rem',
       });
@@ -426,7 +426,7 @@ export function RestaurantSettings() {
             <div>
               <label className="block text-sm text-theme-primary mb-1.5 font-medium">Website Status</label>
               <select 
-                value={formData.website_status || 'draft'} 
+                value={formData.website_status || 'published'} 
                 onChange={(e) => setFormData({ ...formData, website_status: e.target.value as any })} 
                 className="input-luxury w-full border-theme-border"
               >

@@ -191,8 +191,19 @@ export function RestaurantSettings() {
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!restaurantId) return;
+    
+    const reservedPaths = ['login', 'register', 'forgot-password', 'pricing', 'features', 'about', 'contact', 'owner', 'sup', 'api', 'assets', 'settings', 'profile'];
+    if (!formData.subdomain || formData.subdomain.trim() === '') {
+      alert('Website link cannot be empty.');
+      return;
+    }
+    if (formData.subdomain && reservedPaths.includes(formData.subdomain.toLowerCase())) {
+      alert('This website link is reserved and cannot be used. Please choose another one.');
+      return;
+    }
+    
     setSaving(true);
-    await supabase.from('restaurants').update({
+    const { error } = await supabase.from('restaurants').update({
       name: formData.name,
       tagline: formData.tagline,
       description: formData.description,
@@ -221,6 +232,12 @@ export function RestaurantSettings() {
       font_family: formData.font_family,
       border_radius: formData.border_radius,
     }).eq('id', restaurantId);
+    
+    if (error) {
+      alert(`Failed to save settings: ${error.message}`);
+      setSaving(false);
+      return;
+    }
     
     await refreshTheme();
     

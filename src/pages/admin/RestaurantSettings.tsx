@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Settings, Save, Check, Upload, Hash, Palette, Power } from 'lucide-react';
+import { Settings, Save, Check, Upload, Hash, Palette, Power, Copy } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -440,9 +440,25 @@ export function RestaurantSettings() {
                   type="text" 
                   value={formData.subdomain || ''} 
                   onChange={(e) => setFormData({ ...formData, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} 
-                  className="input-luxury w-full rounded-l-none" 
+                  className="input-luxury w-full rounded-none" 
                   placeholder="pizza-palace"
                 />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (formData.subdomain) {
+                      const url = `${window.location.protocol}//${window.location.host}/${formData.subdomain}`;
+                      navigator.clipboard.writeText(url);
+                      alert('Website link copied to clipboard!');
+                    } else {
+                      alert('Please enter a subdomain first.');
+                    }
+                  }}
+                  className="bg-gold-500 hover:bg-gold-400 text-ink-950 px-3 py-2.5 border border-gold-500 rounded-r-lg transition-colors flex items-center justify-center"
+                  title="Copy Link"
+                >
+                  <Copy className="w-5 h-5" />
+                </button>
               </div>
               <p className="text-xs text-ink-500 mt-1">Changing this will break old links!</p>
             </div>

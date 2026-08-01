@@ -10,20 +10,31 @@ export function OrderPage() {
   const { slug } = useParams<{ slug?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateRouter();
-  const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>('dine_in');
-  
-  // Initialize table number from URL if present
+  // Local storage persistence key
+  const storageKey = `order_state_${slug || 'default'}`;
+
+  // Initialize state from local storage if available
+  const getInitialState = (key: string, defaultValue: any) => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed[key] !== undefined) return parsed[key];
+      }
+    } catch (e) {
+      console.error('Error reading from localStorage', e);
+    }
+    return defaultValue;
+  };
+
+  const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>(() => getInitialState('orderType', 'dine_in'));
   const initialTable = parseInt(searchParams.get('table') || '1', 10);
-  const [tableNumber, setTableNumber] = useState<number>(isNaN(initialTable) ? 1 : initialTable);
-  
+  const [tableNumber, setTableNumber] = useState<number>(() => getInitialState('tableNumber', isNaN(initialTable) ? 1 : initialTable));
   const { restaurant: contextRestaurant, previewTheme } = useTheme();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(contextRestaurant);
-  
-  // Keep local restaurant state in sync with context
+
   useEffect(() => {
-    if (contextRestaurant) {
-      setRestaurant(contextRestaurant);
-    }
+    if (contextRestaurant) setRestaurant(contextRestaurant);
   }, [contextRestaurant]);
 
   const [table, setTable] = useState<Table | null>(null);
@@ -33,19 +44,38 @@ export function OrderPage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [vegFilter, setVegFilter] = useState<'all' | 'veg' | 'nonveg'>('all');
-  const [cart, setCart] = useState<CartItem[]>([]);
+  
+  const [cart, setCart] = useState<CartItem[]>(() => getInitialState('cart', []));
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [specialInstructions, setSpecialInstructions] = useState('');
-  const [customerName, setCustomerName] = useState('');
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [deliveryAddress, setDeliveryAddress] = useState('');
-  const [deliveryLat, setDeliveryLat] = useState<number | null>(null);
-  const [deliveryLng, setDeliveryLng] = useState<number | null>(null);
+  const [specialInstructions, setSpecialInstructions] = useState(() => getInitialState('specialInstructions', ''));
+  const [customerName, setCustomerName] = useState(() => getInitialState('customerName', ''));
+  const [customerPhone, setCustomerPhone] = useState(() => getInitialState('customerPhone', ''));
+  const [deliveryAddress, setDeliveryAddress] = useState(() => getInitialState('deliveryAddress', ''));
+  const [deliveryLat, setDeliveryLat] = useState<number | null>(() => getInitialState('deliveryLat', null));
+  const [deliveryLng, setDeliveryLng] = useState<number | null>(() => getInitialState('deliveryLng', null));
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'>(() => getInitialState('paymentMethod', 'cash'));
+  
   const [gettingLocation, setGettingLocation] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'>('cash');
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync state to local storage
+  useEffect(() => {
+    const stateToSave = {
+      orderType,
+      tableNumber,
+      cart,
+      specialInstructions,
+      customerName,
+      customerPhone,
+      deliveryAddress,
+      deliveryLat,
+      deliveryLng,
+      paymentMethod
+    };
+    localStorage.setItem(storageKey, JSON.stringify(stateToSave));
+  }, [orderType, tableNumber, cart, specialInstructions, customerName, customerPhone, deliveryAddress, deliveryLat, deliveryLng, paymentMethod, storageKey]);
 
   // Haversine formula
   const getDistanceInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -72,7 +102,7 @@ export function OrderPage() {
         setDeliveryLat(position.coords.latitude);
         setDeliveryLng(position.coords.longitude);
         setGettingLocation(false);
-        setDeliveryAddress((prev) => prev ? prev : 'Location captured via GPS');
+        setDeliveryAddress((prev: string) => prev ? prev : 'Location captured via GPS');
       },
       () => {
         setError('Unable to retrieve your location. Please ensure you have granted location permissions.');

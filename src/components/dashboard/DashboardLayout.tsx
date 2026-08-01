@@ -22,6 +22,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import type { StaffRole } from '@/types';
+import { useTheme } from '@/context/ThemeContext';
 
 interface NavItem {
   label: string;
@@ -47,6 +48,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export function DashboardLayout() {
   const { staff, signOut, restaurantId } = useAuth();
+  const { restaurant } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -94,10 +96,12 @@ export function DashboardLayout() {
         <div className="flex flex-col h-full">
           <div className="px-6 py-5 border-b border-nirvana-400/10">
             <div className="flex items-center gap-3">
-
+              {restaurant?.logo_url && (
+                 <img src={restaurant.logo_url} alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white/5" />
+              )}
               <div>
-                <h1 className="font-serif text-lg text-gradient-gold leading-tight">The Infinito Cafe & Restaurants</h1>
-                <p className="text-xs text-ink-400">Family Restaurant</p>
+                <h1 className="font-serif text-lg text-gradient-gold leading-tight">{restaurant?.name || 'Restaurant Dashboard'}</h1>
+                <p className="text-xs text-ink-400">{restaurant?.tagline || 'SaaS Platform'}</p>
               </div>
             </div>
           </div>
@@ -180,8 +184,10 @@ export function DashboardLayout() {
             {sidebarOpen ? <X className="w-5 h-5 text-ink-300" /> : <Menu className="w-5 h-5 text-ink-300" />}
           </button>
           <div className="flex items-center gap-2">
-
-            <h1 className="font-serif text-lg text-gradient-gold">The Infinito Cafe & Restaurants</h1>
+            {restaurant?.logo_url && (
+               <img src={restaurant.logo_url} alt="Logo" className="w-6 h-6 rounded-md object-contain bg-white/5" />
+            )}
+            <h1 className="font-serif text-lg text-gradient-gold">{restaurant?.name || 'Restaurant Dashboard'}</h1>
           </div>
           <div className="w-10" />
         </header>

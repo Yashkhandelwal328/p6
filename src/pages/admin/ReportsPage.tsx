@@ -12,10 +12,13 @@ import { useAuth } from '@/context/AuthContext';
 import { formatCurrency, getDateRange, formatDate } from '@/lib/format';
 import type { Order } from '@/types';
 
+import { useTheme } from '@/context/ThemeContext';
+
 const GOLD = '#c9a227';
 
 export function ReportsPage() {
   const { restaurantId } = useAuth();
+  const { restaurant } = useTheme();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<7 | 30 | 90>(30);
@@ -58,7 +61,7 @@ export function ReportsPage() {
   function exportPDF() {
     const doc = new jsPDF();
     doc.setFontSize(18);
-    doc.text('The Infinito Cafe & Restaurants – Restaurant Report', 14, 20);
+    doc.text(`${restaurant?.name || 'Restaurant'} – Restaurant Report`, 14, 20);
     doc.setFontSize(10);
     doc.text(`Period: Last ${dateRange} days (${formatDate(range.start)} to ${formatDate(new Date().toISOString())})`, 14, 28);
     doc.text(`Total Revenue: ${formatCurrency(summary.totalRevenue)}`, 14, 36);

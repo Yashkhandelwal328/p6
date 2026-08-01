@@ -9,8 +9,11 @@ import { formatCurrency, formatDateTime, timeAgo, getTodayRange, formatOrderStat
 import type { Order, OrderItem, OrderStatus } from '@/types';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/types';
 
+import { useTheme } from '@/context/ThemeContext';
+
 export function OrdersPage() {
   const { restaurantId } = useAuth();
+  const { restaurant } = useTheme();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,7 +88,7 @@ export function OrdersPage() {
   function exportPDF() {
     const doc = new jsPDF();
     doc.setFontSize(16);
-    doc.text('The Infinito Cafe & Restaurants – Orders Report', 14, 20);
+    doc.text(`${restaurant?.name || 'Restaurant'} – Orders Report`, 14, 20);
     doc.setFontSize(10);
     doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
     doc.text(`Total Orders: ${filteredOrders.length}`, 14, 34);

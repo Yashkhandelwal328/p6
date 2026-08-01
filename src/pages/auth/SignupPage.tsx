@@ -1,203 +1,691 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, Eye, EyeOff, Utensils, AlertCircle, Store, User, Phone, MapPin, FileText, ArrowLeft } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { 
+  Store, User, Mail, Lock, Phone, MapPin, 
+  ChevronRight, ChevronLeft, Upload, Check, 
+  Palette, Clock, Globe, Plus, Trash2, Layout,
+  Coffee, Utensils
+} from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { THEME_PRESETS, type ThemePreset } from '@/lib/theme-presets';
+
+interface Category {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
+interface MenuItem {
+  id: string;
+  category_name: string;
+  name: string;
+  description: string;
+  price: number;
+  is_veg: boolean;
+  preparation_time: number;
+  image_url: string;
+  image_file?: File;
+}
 
 export function SignupPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    restaurantName: '',
-    ownerName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    address: '',
-    gstNumber: '',
-  });
-  const [showPassword, setShowPassword] = useState(false);
+  const location = useLocation();
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  // Auth User ID (created in Step 1)
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Form Data State
+  const [formData, setFormData] = useState({
+    // Step 1: Account
+    ownerName: '',
+    email: '',
+    password: '',
+    phone: '',
+
+    // Step 2: Restaurant Info
+    restaurantName: '',
+    tagline: '',
+    cuisineType: '',
+    description: '',
+    address: '',
+    contactNumber: '',
+    supportEmail: '',
+    instagram: '',
+    facebook: '',
+    website: '',
+
+    // Files (not submitted directly in json)
+    logoFile: null as File | null,
+    bannerFile: null as File | null,
+    logoUrl: '',
+    bannerUrl: '',
+
+    // Step 3: Business Details
+    openingTime: '09:00',
+    closingTime: '23:00',
+    deliveryAvailable: true,
+    dineInAvailable: true,
+    takeawayAvailable: true,
+    deliveryRadius: 5.0,
+    preparationTime: 15,
+    currency: '₹',
+    taxPercentage: 5,
+
+    // Step 4: Website Theme
+    primaryColor: THEME_PRESETS[0].primary_color,
+    secondaryColor: THEME_PRESETS[0].secondary_color,
+    accentColor: THEME_PRESETS[0].accent_color,
+    backgroundColor: THEME_PRESETS[0].background_color,
+    fontFamily: THEME_PRESETS[0].font_family,
+    buttonStyle: THEME_PRESETS[0].button_style,
+    borderRadius: THEME_PRESETS[0].border_radius,
+    darkMode: THEME_PRESETS[0].dark_mode,
+  });
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  // Helpers
+  const update = (field: keyof typeof formData, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const applyPreset = (preset: ThemePreset) => {
+    setFormData(prev => ({
+      ...prev,
+      primaryColor: preset.primary_color,
+      secondaryColor: preset.secondary_color,
+      accentColor: preset.accent_color,
+      backgroundColor: preset.background_color,
+      fontFamily: preset.font_family,
+      buttonStyle: preset.button_style,
+      borderRadius: preset.border_radius,
+      darkMode: preset.dark_mode,
+    }));
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    const { data, error } = await supabase.storage.from('menu-images').upload(fileName, file);
+    if (error) throw error;
+    const { data: publicData } = supabase.storage.from('menu-images').getPublicUrl(fileName);
+    return publicData.publicUrl;
+  };
+
+  // Step 1: Create Auth User
+  const handleStep1 = async () => {
     setError(null);
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+    if (!formData.ownerName || !formData.email || !formData.password || !formData.phone) {
+      setError('Please fill in all account fields');
       return;
     }
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-
     setLoading(true);
-
     try {
-      // 1. Create the auth user
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: { data: { full_name: formData.ownerName } },
-      });
-
-      if (signUpError) throw signUpError;
-      if (!authData.user) throw new Error('Failed to create account.');
-
-      const userId = authData.user.id;
-
-      // 2. Generate prefix from restaurant name
-      const prefix = formData.restaurantName
-        .toUpperCase()
-        .replace(/[^A-Z]/g, '')
-        .slice(0, 3)
-        .padEnd(3, 'X');
-
-      // 3. Call the SECURITY DEFINER function to create restaurant + staff + tables + categories
-      const urlParams = new URLSearchParams(window.location.search);
-      const plan = urlParams.get('plan') || 'starter';
-
-      const { error: rpcError } = await supabase.rpc('create_restaurant_account', {
-        p_restaurant_name: formData.restaurantName,
-        p_owner_name: formData.ownerName,
-        p_owner_email: formData.email,
-        p_user_id: userId,
-        p_prefix: prefix,
-        p_owner_phone: formData.phone || null,
-        p_address: formData.address || null,
-        p_gst_number: formData.gstNumber || null,
-        p_plan: plan,
-      });
-
-      if (rpcError) throw rpcError;
-
-      // 4. Sign in the user
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (signInError) throw signInError;
-
-      navigate('/owner/dashboard');
+      if (!userId) {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: { data: { full_name: formData.ownerName } }
+        });
+        if (signUpError) throw signUpError;
+        if (!data.user) throw new Error('Failed to create account');
+        setUserId(data.user.id);
+      }
+      setStep(2);
     } catch (err: any) {
-      console.error('Signup error:', err);
-      // Supabase errors might not be instances of Error, they are often plain objects with a message property
-      const errorMessage = err?.message || (err instanceof Error ? err.message : 'Failed to create account. Please try again.');
-      setError(errorMessage);
+      setError(err.message || 'Failed to create account');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const update = (key: string, value: string) => setFormData({ ...formData, [key]: value });
+  // Step Validation Handlers
+  const handleStep2 = () => {
+    if (!formData.restaurantName || !formData.cuisineType || !formData.address || !formData.description) {
+      setError('Please fill in all required restaurant information');
+      return;
+    }
+    setError(null);
+    setStep(3);
+  };
+
+  const handleStep3 = () => {
+    setError(null);
+    setStep(4);
+  };
+
+  const handleStep4 = () => {
+    setError(null);
+    setStep(5);
+  };
+
+  const handleStep5 = () => {
+    if (categories.length < 3) {
+      setError('Please add at least 3 menu categories');
+      return;
+    }
+    if (menuItems.length < 3) {
+      setError('Please add at least 3 menu items');
+      return;
+    }
+    setError(null);
+    setStep(6);
+  };
+
+  // Final Submit
+  const handleFinalSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // 1. Upload Images
+      let logoUrl = '';
+      let bannerUrl = '';
+      if (formData.logoFile) logoUrl = await uploadImage(formData.logoFile);
+      if (formData.bannerFile) bannerUrl = await uploadImage(formData.bannerFile);
+
+      // Upload Menu Item Images
+      const itemsWithUrls = await Promise.all(menuItems.map(async (item) => {
+        let url = item.image_url;
+        if (item.image_file) {
+          url = await uploadImage(item.image_file);
+        }
+        return { ...item, image_url: url };
+      }));
+
+      // 2. Prepare Payload
+      const plan = new URLSearchParams(location.search).get('plan') || 'starter';
+      const payload = {
+        user_id: userId,
+        plan,
+        restaurant_name: formData.restaurantName,
+        owner_name: formData.ownerName,
+        owner_email: formData.email,
+        phone: formData.phone,
+        tagline: formData.tagline,
+        cuisine_type: formData.cuisineType,
+        description: formData.description,
+        address: formData.address,
+        contact_number: formData.contactNumber || formData.phone,
+        support_email: formData.supportEmail || formData.email,
+        logo_url: logoUrl,
+        banner_url: bannerUrl,
+        social_links: {
+          instagram: formData.instagram,
+          facebook: formData.facebook,
+          website: formData.website
+        },
+        opening_time: formData.openingTime,
+        closing_time: formData.closingTime,
+        delivery_available: formData.deliveryAvailable,
+        dine_in_available: formData.dineInAvailable,
+        takeaway_available: formData.takeawayAvailable,
+        delivery_radius: formData.deliveryRadius,
+        preparation_time: formData.preparationTime,
+        currency: formData.currency,
+        tax_percentage: formData.taxPercentage,
+        primary_color: formData.primaryColor,
+        secondary_color: formData.secondaryColor,
+        accent_color: formData.accentColor,
+        background_color: formData.backgroundColor,
+        font_family: formData.fontFamily,
+        button_style: formData.buttonStyle,
+        border_radius: formData.borderRadius,
+        dark_mode: formData.darkMode,
+        categories: categories.map(c => ({ name: c.name, sort_order: c.sort_order })),
+        menu_items: itemsWithUrls.map(i => ({
+          name: i.name,
+          category_name: i.category_name,
+          description: i.description,
+          price: i.price,
+          is_veg: i.is_veg,
+          preparation_time: i.preparation_time,
+          image_url: i.image_url
+        }))
+      };
+
+      // 3. Call RPC
+      const { data, error: rpcError } = await supabase.rpc('create_restaurant_wizard', { p_payload: payload });
+      if (rpcError) throw rpcError;
+
+      // Success! Sign in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
+      });
+      if (signInError) throw signInError;
+
+      navigate('/owner');
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to create restaurant platform. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-nirvana-400/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-coffee-500/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative w-full max-w-lg">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-ink-400 hover:text-nirvana-300 transition-colors mb-6 animate-fade-in">
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
-
-        <div className="text-center mb-8 animate-fade-in-down">
-
-          <h1 className="font-serif text-3xl text-gradient-gold mb-1">Register Your Restaurant</h1>
-          <p className="text-sm text-ink-400">Get started in minutes — it's free to try</p>
+    <div className="min-h-screen bg-gradient-dark flex flex-col">
+      {/* Top Navigation */}
+      <header className="glass-dark border-b border-nirvana-400/10 p-4 sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 text-nirvana-300 font-serif text-xl">
+            <Layout className="w-6 h-6" /> Platform Setup
+          </Link>
+          <div className="text-ink-400 text-sm flex items-center gap-2">
+            Step {step} of 6
+          </div>
         </div>
+        {/* Progress Bar */}
+        <div className="max-w-4xl mx-auto mt-4 h-2 bg-ink-900 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-gold transition-all duration-500 ease-out"
+            style={{ width: `${(step / 6) * 100}%` }}
+          />
+        </div>
+      </header>
 
-        <form onSubmit={handleSubmit} className="glass-dark border border-nirvana-400/20 rounded-2xl p-6 sm:p-8 space-y-4 animate-fade-in-up">
-          {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm animate-fade-in">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+      <main className="flex-1 max-w-4xl w-full mx-auto p-4 py-8">
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center gap-3 animate-shake">
+            <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl">!</span>
             </div>
-          )}
-
-          <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Restaurant Name *</label>
-            <div className="relative">
-              <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" required value={formData.restaurantName} onChange={(e) => update('restaurantName', e.target.value)} placeholder="e.g. The Infinito Cafe & Restaurants" className="input-luxury w-full pl-12" />
-            </div>
+            <p className="text-sm font-medium">{error}</p>
           </div>
+        )}
 
-          <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Owner Name *</label>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" required value={formData.ownerName} onChange={(e) => update('ownerName', e.target.value)} placeholder="e.g. The Infinito Cafe & Restaurants Owner" className="input-luxury w-full pl-12" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Email *</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-                <input type="email" required value={formData.email} onChange={(e) => update('email', e.target.value)} placeholder="owner@nirvana.com" className="input-luxury w-full pl-12" />
+        <div className="card-luxury p-6 sm:p-8 relative overflow-hidden">
+          {/* Step 1: Account */}
+          {step === 1 && (
+            <div className="space-y-6 animate-fade-in">
+              <div>
+                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Create your account</h2>
+                <p className="text-ink-400">Let's start by securing your owner credentials.</p>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Mobile Number *</label>
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-                <input type="tel" required value={formData.phone} onChange={(e) => update('phone', e.target.value)} placeholder="+91 98765 43210" className="input-luxury w-full pl-12" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-ink-300 mb-2">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <input type="text" value={formData.ownerName} onChange={e => update('ownerName', e.target.value)} className="input-luxury w-full pl-12" placeholder="John Doe" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-ink-300 mb-2">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <input type="email" value={formData.email} onChange={e => update('email', e.target.value)} className="input-luxury w-full pl-12" placeholder="owner@restaurant.com" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-ink-300 mb-2">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <input type="password" value={formData.password} onChange={e => update('password', e.target.value)} className="input-luxury w-full pl-12" placeholder="••••••••" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-ink-300 mb-2">Phone Number</label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <input type="tel" value={formData.phone} onChange={e => update('phone', e.target.value)} className="input-luxury w-full pl-12" placeholder="+1 (555) 000-0000" />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Password *</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-                <input type={showPassword ? 'text' : 'password'} required minLength={8} value={formData.password} onChange={(e) => update('password', e.target.value)} placeholder="Min 8 characters" className="input-luxury w-full pl-12 pr-12" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-200 transition-colors">
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              <div className="flex justify-end pt-4">
+                <button onClick={handleStep1} disabled={loading} className="btn-gold flex items-center gap-2">
+                  {loading ? 'Processing...' : 'Continue'} <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Confirm Password *</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-                <input type={showPassword ? 'text' : 'password'} required minLength={8} value={formData.confirmPassword} onChange={(e) => update('confirmPassword', e.target.value)} placeholder="Re-enter password" className="input-luxury w-full pl-12" />
+          )}
+
+          {/* Step 2: Restaurant Info */}
+          {step === 2 && (
+            <div className="space-y-6 animate-fade-in-right">
+              <div>
+                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Restaurant Identity</h2>
+                <p className="text-ink-400">Tell us about your restaurant to personalize your website.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm text-ink-300 mb-2">Restaurant Name <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-500" />
+                    <input type="text" value={formData.restaurantName} onChange={e => update('restaurantName', e.target.value)} className="input-luxury w-full pl-12" placeholder="e.g. Luigi's Trattoria" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-ink-300 mb-2">Tagline</label>
+                  <input type="text" value={formData.tagline} onChange={e => update('tagline', e.target.value)} className="input-luxury w-full" placeholder="e.g. Authentic Italian Dining" />
+                </div>
+                <div>
+                  <label className="block text-sm text-ink-300 mb-2">Cuisine Type <span className="text-red-400">*</span></label>
+                  <input type="text" value={formData.cuisineType} onChange={e => update('cuisineType', e.target.value)} className="input-luxury w-full" placeholder="e.g. Italian, Mexican, Fusion" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm text-ink-300 mb-2">Description <span className="text-red-400">*</span></label>
+                  <textarea value={formData.description} onChange={e => update('description', e.target.value)} className="input-luxury w-full" rows={3} placeholder="Tell your customers about your restaurant's story..." />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm text-ink-300 mb-2">Complete Address <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-3 w-5 h-5 text-ink-500" />
+                    <textarea value={formData.address} onChange={e => update('address', e.target.value)} className="input-luxury w-full pl-12" rows={2} placeholder="123 Food Street, Culinary District..." />
+                  </div>
+                </div>
+                
+                {/* Images */}
+                <div className="card glass p-4 border border-white/5">
+                  <label className="block text-sm text-ink-300 mb-2 font-medium">Restaurant Logo</label>
+                  <input type="file" accept="image/*" onChange={e => e.target.files && update('logoFile', e.target.files[0])} className="text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-ink-950 hover:file:bg-gold-400 w-full" />
+                </div>
+                <div className="card glass p-4 border border-white/5">
+                  <label className="block text-sm text-ink-300 mb-2 font-medium">Hero Banner Image</label>
+                  <input type="file" accept="image/*" onChange={e => e.target.files && update('bannerFile', e.target.files[0])} className="text-sm text-ink-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-ink-950 hover:file:bg-gold-400 w-full" />
+                </div>
+              </div>
+              <div className="flex justify-between pt-4">
+                <button onClick={() => setStep(1)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep2} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
               </div>
             </div>
-          </div>
+          )}
 
-          <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Restaurant Address *</label>
-            <div className="relative">
-              <MapPin className="absolute left-4 top-4 w-5 h-5 text-ink-400" />
-              <textarea required value={formData.address} onChange={(e) => update('address', e.target.value)} placeholder="Full restaurant address" rows={2} className="input-luxury w-full pl-12 resize-none" />
+          {/* Step 3: Business Details */}
+          {step === 3 && (
+            <div className="space-y-6 animate-fade-in-right">
+              <div>
+                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Business Settings</h2>
+                <p className="text-ink-400">Configure how your operations will work.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-ink-200 border-b border-white/10 pb-2">Operating Hours</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-ink-300 mb-2">Opening Time</label>
+                      <input type="time" value={formData.openingTime} onChange={e => update('openingTime', e.target.value)} className="input-luxury w-full" />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-ink-300 mb-2">Closing Time</label>
+                      <input type="time" value={formData.closingTime} onChange={e => update('closingTime', e.target.value)} className="input-luxury w-full" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-ink-200 border-b border-white/10 pb-2">Services Offered</h3>
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+                      <input type="checkbox" checked={formData.dineInAvailable} onChange={e => update('dineInAvailable', e.target.checked)} className="form-checkbox rounded text-gold-500 bg-ink-900 border-white/20 focus:ring-gold-500/50 h-5 w-5" />
+                      <span className="text-ink-200 text-sm">Dine-In Available (QR Menu)</span>
+                    </label>
+                    <label className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+                      <input type="checkbox" checked={formData.takeawayAvailable} onChange={e => update('takeawayAvailable', e.target.checked)} className="form-checkbox rounded text-gold-500 bg-ink-900 border-white/20 focus:ring-gold-500/50 h-5 w-5" />
+                      <span className="text-ink-200 text-sm">Takeaway Available</span>
+                    </label>
+                    <label className="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+                      <input type="checkbox" checked={formData.deliveryAvailable} onChange={e => update('deliveryAvailable', e.target.checked)} className="form-checkbox rounded text-gold-500 bg-ink-900 border-white/20 focus:ring-gold-500/50 h-5 w-5" />
+                      <span className="text-ink-200 text-sm">Delivery Available</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="space-y-4 md:col-span-2">
+                  <h3 className="text-lg font-medium text-ink-200 border-b border-white/10 pb-2">Additional Details</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm text-ink-300 mb-2">Delivery Radius (km)</label>
+                      <input type="number" step="0.5" value={formData.deliveryRadius} onChange={e => update('deliveryRadius', parseFloat(e.target.value))} className="input-luxury w-full" />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-ink-300 mb-2">Avg. Prep Time (mins)</label>
+                      <input type="number" value={formData.preparationTime} onChange={e => update('preparationTime', parseInt(e.target.value))} className="input-luxury w-full" />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-ink-300 mb-2">Tax Percentage (%)</label>
+                      <input type="number" step="0.1" value={formData.taxPercentage} onChange={e => update('taxPercentage', parseFloat(e.target.value))} className="input-luxury w-full" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="flex justify-between pt-4">
+                <button onClick={() => setStep(2)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep3} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div>
-            <label className="block text-sm text-ink-300 mb-1.5">GST Number <span className="text-ink-500">(Optional)</span></label>
-            <div className="relative">
-              <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
-              <input type="text" value={formData.gstNumber} onChange={(e) => update('gstNumber', e.target.value)} placeholder="e.g. 27ABCDE1234F1Z5" className="input-luxury w-full pl-12" />
+          {/* Step 4: Website Theme */}
+          {step === 4 && (
+            <div className="space-y-6 animate-fade-in-right">
+              <div>
+                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Website Theme</h2>
+                <p className="text-ink-400">Choose a professional preset or customize everything to match your brand.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-ink-200 mb-3 uppercase tracking-wider">Designer Presets</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {THEME_PRESETS.map((preset) => (
+                    <button
+                      key={preset.name}
+                      onClick={() => applyPreset(preset)}
+                      className={`relative p-4 rounded-xl border flex flex-col gap-3 items-start transition-all ${
+                        formData.primaryColor === preset.primary_color && formData.backgroundColor === preset.background_color
+                          ? 'border-gold-500 bg-gold-500/10'
+                          : 'border-white/10 hover:border-white/30 bg-ink-900/50'
+                      }`}
+                    >
+                      <div className="flex gap-1 w-full h-8 rounded-md overflow-hidden">
+                        <div className="flex-1" style={{ backgroundColor: preset.primary_color }} />
+                        <div className="flex-1" style={{ backgroundColor: preset.background_color }} />
+                        <div className="flex-1" style={{ backgroundColor: preset.accent_color }} />
+                      </div>
+                      <span className="text-sm font-medium text-ink-200">{preset.name}</span>
+                      {formData.primaryColor === preset.primary_color && formData.backgroundColor === preset.background_color && (
+                        <div className="absolute top-2 right-2 text-gold-500">
+                          <Check className="w-4 h-4" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-white/10" style={{ backgroundColor: formData.backgroundColor }}>
+                <h3 className="text-lg font-medium mb-4" style={{ color: formData.primaryColor, fontFamily: formData.fontFamily }}>Theme Preview</h3>
+                <div className="flex gap-4 items-center">
+                  <button 
+                    style={{ 
+                      backgroundColor: formData.primaryColor, 
+                      color: formData.darkMode ? '#fff' : '#fff',
+                      fontFamily: formData.fontFamily,
+                      borderRadius: formData.buttonStyle === 'pill' ? '9999px' : formData.buttonStyle === 'rounded' ? formData.borderRadius : '0px'
+                    }} 
+                    className="px-6 py-2.5 font-medium shadow-lg"
+                  >
+                    Primary Button
+                  </button>
+                  <div className="flex gap-2">
+                    <span className="w-8 h-8 rounded-full" style={{ backgroundColor: formData.primaryColor }} />
+                    <span className="w-8 h-8 rounded-full" style={{ backgroundColor: formData.secondaryColor }} />
+                    <span className="w-8 h-8 rounded-full" style={{ backgroundColor: formData.accentColor }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <button onClick={() => setStep(3)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep4} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+              </div>
             </div>
-          </div>
+          )}
 
-          <button type="submit" disabled={loading} className="btn-gold w-full !py-4 text-base">
-            {loading ? 'Creating your restaurant...' : 'Create Restaurant Account'}
-          </button>
+          {/* Step 5: Menu Setup */}
+          {step === 5 && (
+            <div className="space-y-6 animate-fade-in-right">
+              <div>
+                <h2 className="text-2xl font-serif text-gradient-gold mb-2">Menu Setup</h2>
+                <p className="text-ink-400">Add at least 3 categories and 3 menu items to get started.</p>
+              </div>
 
-          <div className="text-center pt-2">
-            <p className="text-xs text-ink-500">
-              Already have an account? <Link to="/login" className="text-nirvana-400 hover:text-nirvana-300 transition-colors">Sign in</Link>
-            </p>
-          </div>
-        </form>
-      </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Categories */}
+                <div className="lg:col-span-1 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-ink-200">Categories ({categories.length}/3)</h3>
+                  </div>
+                  <div className="space-y-2">
+                    {categories.map((cat) => (
+                      <div key={cat.id} className="flex items-center justify-between p-3 rounded-xl bg-ink-900 border border-white/5">
+                        <span className="text-sm text-ink-200">{cat.name}</span>
+                        <button onClick={() => setCategories(categories.filter(c => c.id !== cat.id))} className="text-red-400 hover:text-red-300">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <form onSubmit={e => {
+                    e.preventDefault();
+                    const input = (e.target as any).categoryName;
+                    if (input.value.trim()) {
+                      setCategories([...categories, { id: Date.now().toString(), name: input.value.trim(), sort_order: categories.length + 1 }]);
+                      input.value = '';
+                    }
+                  }} className="flex gap-2">
+                    <input name="categoryName" type="text" placeholder="e.g. Starters" className="input-luxury flex-1 text-sm" />
+                    <button type="submit" className="btn-gold !px-3 !py-2"><Plus className="w-4 h-4" /></button>
+                  </form>
+                </div>
+
+                {/* Menu Items */}
+                <div className="lg:col-span-2 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-ink-200">Menu Items ({menuItems.length}/3)</h3>
+                  </div>
+                  <div className="space-y-3 max-h-80 overflow-y-auto scrollbar-luxury pr-2">
+                    {menuItems.map((item) => (
+                      <div key={item.id} className="flex gap-4 p-4 rounded-xl bg-ink-900 border border-white/5">
+                        <div className="w-16 h-16 rounded-lg bg-ink-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          {item.image_file ? (
+                            <img src={URL.createObjectURL(item.image_file)} alt="preview" className="w-full h-full object-cover" />
+                          ) : (
+                            <Coffee className="w-6 h-6 text-ink-600" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-ink-100 truncate">{item.name}</h4>
+                            <button onClick={() => setMenuItems(menuItems.filter(i => i.id !== item.id))} className="text-red-400 hover:text-red-300"><Trash2 className="w-4 h-4" /></button>
+                          </div>
+                          <p className="text-xs text-ink-400">{item.category_name} • {item.is_veg ? 'Veg' : 'Non-Veg'}</p>
+                          <p className="text-sm font-semibold text-nirvana-300 mt-1">{formData.currency}{item.price}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <form onSubmit={e => {
+                    e.preventDefault();
+                    const form = e.target as any;
+                    if (!form.cat.value || !form.name.value || !form.price.value) return;
+                    setMenuItems([...menuItems, {
+                      id: Date.now().toString(),
+                      category_name: form.cat.value,
+                      name: form.name.value,
+                      description: form.desc.value,
+                      price: parseFloat(form.price.value),
+                      is_veg: form.is_veg.checked,
+                      preparation_time: parseInt(form.prep.value) || 15,
+                      image_url: '',
+                      image_file: form.image.files[0]
+                    }]);
+                    form.reset();
+                  }} className="card glass p-4 border border-white/5 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <select name="cat" required className="input-luxury w-full text-sm">
+                        <option value="">Select Category</option>
+                        {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                      </select>
+                      <input name="name" required type="text" placeholder="Item Name" className="input-luxury w-full text-sm" />
+                      <input name="price" required type="number" step="0.01" placeholder="Price" className="input-luxury w-full text-sm" />
+                      <input name="prep" type="number" placeholder="Prep Mins" className="input-luxury w-full text-sm" />
+                      <div className="col-span-2">
+                        <input name="desc" type="text" placeholder="Description" className="input-luxury w-full text-sm" />
+                      </div>
+                      <div className="col-span-2 flex items-center justify-between">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input name="is_veg" type="checkbox" className="form-checkbox text-green-500 rounded bg-ink-900 border-white/20" />
+                          <span className="text-sm text-ink-300">Is Vegetarian</span>
+                        </label>
+                        <input name="image" type="file" accept="image/*" className="text-xs text-ink-400 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:bg-white/5 file:text-ink-200" />
+                      </div>
+                    </div>
+                    <button type="submit" className="w-full btn-outline-gold !py-2 text-sm flex items-center justify-center gap-2"><Plus className="w-4 h-4" /> Add Item</button>
+                  </form>
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4 border-t border-white/5">
+                <button onClick={() => setStep(4)} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Back</button>
+                <button onClick={handleStep5} className="btn-gold flex items-center gap-2">Continue <ChevronRight className="w-5 h-5" /></button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 6: Review */}
+          {step === 6 && (
+            <div className="space-y-6 animate-fade-in-right">
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8" />
+                </div>
+                <h2 className="text-3xl font-serif text-gradient-gold mb-2">Ready to Launch</h2>
+                <p className="text-ink-300 max-w-md mx-auto">Your SaaS platform instance is completely configured and ready to go live.</p>
+              </div>
+
+              <div className="card glass p-6 border border-white/10" style={{ backgroundColor: formData.backgroundColor }}>
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl mb-1" style={{ color: formData.primaryColor, fontFamily: formData.fontFamily }}>{formData.restaurantName}</h3>
+                  <p className="text-sm opacity-80" style={{ color: formData.secondaryColor }}>{formData.tagline}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                  <div className="p-4 rounded-xl border border-white/10 text-center bg-white/5">
+                    <p className="text-xs uppercase tracking-wider mb-1 opacity-70" style={{ color: formData.primaryColor }}>Categories</p>
+                    <p className="text-xl font-bold" style={{ color: formData.primaryColor }}>{categories.length}</p>
+                  </div>
+                  <div className="p-4 rounded-xl border border-white/10 text-center bg-white/5">
+                    <p className="text-xs uppercase tracking-wider mb-1 opacity-70" style={{ color: formData.primaryColor }}>Menu Items</p>
+                    <p className="text-xl font-bold" style={{ color: formData.primaryColor }}>{menuItems.length}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4 border-t border-white/5">
+                <button onClick={() => setStep(5)} disabled={loading} className="btn-outline flex items-center gap-2"><ChevronLeft className="w-5 h-5" /> Edit Menu</button>
+                <button onClick={handleFinalSubmit} disabled={loading} className="btn-gold shadow-gold-lg flex items-center gap-2">
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-ink-950/30 border-t-ink-950 rounded-full animate-spin" />
+                      Launching...
+                    </>
+                  ) : (
+                    <>Launch Restaurant <Globe className="w-5 h-5" /></>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

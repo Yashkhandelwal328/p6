@@ -485,7 +485,7 @@ export function OrderPage() {
             <p className="text-theme-secondary text-sm mt-1">Try a different search or category</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6">
             {filteredItems.map((item, idx) => {
               const fullQty = getCartQty(item.id, 'full');
               const halfQty = getCartQty(item.id, 'half');

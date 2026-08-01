@@ -54,17 +54,17 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
         
-        <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 max-w-7xl mx-auto flex items-end gap-6">
+        <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 max-w-7xl mx-auto flex flex-col sm:flex-row items-center sm:items-end text-center sm:text-left gap-4 sm:gap-6">
           {restaurant.logo_url && (
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden border-4 border-background bg-surface shadow-xl flex-shrink-0">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-4 border-background bg-surface shadow-xl flex-shrink-0">
               <img src={restaurant.logo_url} alt="Logo" className="w-full h-full object-cover" />
             </div>
           )}
-          <div className="pb-2">
-            <h1 className="text-3xl md:text-5xl font-serif text-primary font-bold drop-shadow-md">
+          <div className="pb-2 w-full">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-primary font-bold drop-shadow-md">
               {restaurant.name}
             </h1>
-            <p className="text-theme-text-secondary mt-1 text-lg flex items-center gap-2">
+            <p className="text-theme-text-secondary mt-1 text-lg flex items-center justify-center sm:justify-start gap-2">
               <Star className="w-4 h-4 text-primary fill-primary" />
               4.9 (120+ reviews)
             </p>
@@ -72,9 +72,9 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="max-w-7xl mx-auto px-6 py-12 flex flex-wrap gap-12">
         {/* Main Content */}
-        <div className="md:col-span-2 space-y-10">
+        <div className="flex-1 min-w-[280px] space-y-10">
           
           <section>
             <h2 className="text-2xl font-serif mb-4 flex items-center gap-2">
@@ -102,7 +102,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
         </div>
 
         {/* Sidebar Info */}
-        <div className="space-y-6">
+        <div className="w-full lg:w-[320px] flex-shrink-0 space-y-6">
           <div className="card-luxury p-6 space-y-6">
             <Link 
               to={menuUrl}

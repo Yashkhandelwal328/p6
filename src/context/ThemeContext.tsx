@@ -48,7 +48,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       ];
 
       const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
-      const isMainDomain = host.includes('infinito.com') || host.includes('platform.com') || host.includes('yourdomain'); // Fallbacks
+      const isMainDomain = host.includes('infinito.com') || host.includes('platform.com') || host.includes('yourdomain') || host.includes('vercel.app'); // Fallbacks
       
       // We assume if it's not the main app domain and not localhost, it's a custom domain
       // However, for local dev, we might be on localhost. So we check the path.

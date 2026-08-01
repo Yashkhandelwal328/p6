@@ -35,6 +35,13 @@ export function RestaurantSettings() {
     restaurant_longitude: 72.8777,
     is_active: true,
     payment_qr_url: '',
+    primary_color: '#2F4156',
+    secondary_color: '#567C8D',
+    accent_color: '#C8D9E6',
+    background_color: '#F5EFEB',
+    subdomain: '',
+    font_family: 'Inter',
+    border_radius: '0.5rem',
   });
 
   useEffect(() => {
@@ -66,6 +73,13 @@ export function RestaurantSettings() {
         restaurant_longitude: data.restaurant_longitude ?? 72.8777,
         is_active: data.is_active ?? true,
         payment_qr_url: data.payment_qr_url ?? '',
+        primary_color: data.primary_color ?? '#2F4156',
+        secondary_color: data.secondary_color ?? '#567C8D',
+        accent_color: data.accent_color ?? '#C8D9E6',
+        background_color: data.background_color ?? '#F5EFEB',
+        subdomain: data.subdomain ?? '',
+        font_family: data.font_family ?? 'Inter',
+        border_radius: data.border_radius ?? '0.5rem',
       });
     }
     setLoading(false);
@@ -175,6 +189,13 @@ export function RestaurantSettings() {
       restaurant_longitude: Number(formData.restaurant_longitude) || null,
       is_active: formData.is_active,
       payment_qr_url: formData.payment_qr_url || null,
+      primary_color: formData.primary_color,
+      secondary_color: formData.secondary_color,
+      accent_color: formData.accent_color,
+      background_color: formData.background_color,
+      subdomain: formData.subdomain,
+      font_family: formData.font_family,
+      border_radius: formData.border_radius,
     }).eq('id', restaurantId);
     setSaving(false);
     setSaved(true);
@@ -259,35 +280,62 @@ export function RestaurantSettings() {
             />
           </div>
 
-          {/* Theme Color */}
-          <div>
+          {/* Theme Colors */}
+          <div className="sm:col-span-2 space-y-4">
             <label className="block text-sm text-ink-300 mb-2 flex items-center gap-1">
-              <Palette className="w-4 h-4" /> Theme Color
+              <Palette className="w-4 h-4" /> Branding Colors
             </label>
-            <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={formData.theme_color}
-                onChange={(e) => setFormData({ ...formData, theme_color: e.target.value })}
-                className="w-14 h-14 rounded-xl border border-white/10 cursor-pointer bg-transparent"
-              />
-              <input
-                type="text"
-                value={formData.theme_color}
-                onChange={(e) => setFormData({ ...formData, theme_color: e.target.value })}
-                className="input-luxury flex-1"
-              />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs text-ink-400 mb-1">Primary Color</label>
+                <div className="flex items-center gap-2">
+                  <input type="color" value={formData.primary_color} onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
+                  <input type="text" value={formData.primary_color} onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-ink-400 mb-1">Secondary Color</label>
+                <div className="flex items-center gap-2">
+                  <input type="color" value={formData.secondary_color} onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
+                  <input type="text" value={formData.secondary_color} onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-ink-400 mb-1">Accent Color</label>
+                <div className="flex items-center gap-2">
+                  <input type="color" value={formData.accent_color} onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
+                  <input type="text" value={formData.accent_color} onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-ink-400 mb-1">Background</label>
+                <div className="flex items-center gap-2">
+                  <input type="color" value={formData.background_color} onChange={(e) => setFormData({ ...formData, background_color: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-none p-0" />
+                  <input type="text" value={formData.background_color} onChange={(e) => setFormData({ ...formData, background_color: e.target.value })} className="input-luxury w-full flex-1 text-sm py-1.5" />
+                </div>
+              </div>
             </div>
-            <div className="mt-3 flex gap-2">
-              {['#C9A227', '#D4AF37', '#B87333', '#8B4513', '#2E8B57', '#4A90D9'].map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setFormData({ ...formData, theme_color: color })}
-                  className="w-8 h-8 rounded-full border-2 border-white/10 hover:scale-110 transition-transform"
-                  style={{ backgroundColor: color }}
-                />
-              ))}
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+               <div>
+                  <label className="block text-sm text-ink-300 mb-1.5">Font Family</label>
+                  <select value={formData.font_family} onChange={(e) => setFormData({ ...formData, font_family: e.target.value })} className="input-luxury w-full">
+                    <option value="Inter">Inter (Modern Sans)</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Outfit">Outfit</option>
+                    <option value="Playfair Display">Playfair Display (Serif)</option>
+                  </select>
+               </div>
+               <div>
+                  <label className="block text-sm text-ink-300 mb-1.5">Border Radius</label>
+                  <select value={formData.border_radius} onChange={(e) => setFormData({ ...formData, border_radius: e.target.value })} className="input-luxury w-full">
+                    <option value="0rem">Square</option>
+                    <option value="0.25rem">Slightly Rounded</option>
+                    <option value="0.5rem">Rounded</option>
+                    <option value="1rem">Extra Rounded</option>
+                    <option value="9999px">Pill</option>
+                  </select>
+               </div>
             </div>
           </div>
         </div>

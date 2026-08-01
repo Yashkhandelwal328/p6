@@ -5,14 +5,35 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* SaaS Platform Default Theme */
+    --color-primary: #2F4156;
+    --color-secondary: #567C8D;
+    --color-accent: #C8D9E6;
+    --color-background: #F5EFEB;
+    --color-surface: #FFFFFF;
+    
+    /* Tenant Dynamic Theming (Will be overridden by ThemeProvider) */
+    --tenant-primary: var(--color-primary);
+    --tenant-secondary: var(--color-secondary);
+    --tenant-accent: var(--color-accent);
+    --tenant-background: var(--color-background);
+    --tenant-radius: 0.5rem;
+    --tenant-font: 'Inter', sans-serif;
+  }
+
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-ink-950 text-ink-100 font-sans antialiased;
+    background-color: var(--color-background);
+    color: var(--color-primary);
+    font-family: var(--tenant-font);
+    -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    @apply bg-nirvana-400/30 text-nirvana-100;
+    background-color: var(--color-accent);
+    color: var(--color-primary);
   }
 }
 

@@ -43,6 +43,31 @@ export interface Restaurant {
   restaurant_longitude: number | null;
   payment_qr_url: string | null;
   is_open: boolean;
+  
+  // SaaS Branding & Domain
+  subdomain: string | null;
+  custom_domain: string | null;
+  banner_url: string | null;
+  primary_color: string;
+  secondary_color: string;
+  accent_color: string;
+  background_color: string;
+  button_style: 'rounded' | 'pill' | 'square';
+  border_radius: string;
+  font_family: string;
+  
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Subscription {
+  id: string;
+  restaurant_id: string;
+  plan: 'starter' | 'pro' | 'enterprise';
+  status: 'active' | 'past_due' | 'cancelled' | 'trial';
+  current_period_end: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
   created_at: string;
   updated_at: string;
 }

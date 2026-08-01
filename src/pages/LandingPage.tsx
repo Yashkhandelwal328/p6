@@ -1,94 +1,160 @@
 import { useNavigate } from 'react-router-dom';
-import { Utensils, Store, ArrowRight, ShoppingBag, ChefHat, QrCode, BarChart3 } from 'lucide-react';
+import { Utensils, Store, ArrowRight, ShoppingBag, ChefHat, QrCode, BarChart3, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export function LandingPage() {
   const navigate = useNavigate();
 
   const features = [
-    { icon: ShoppingBag, title: 'Digital Menu', desc: 'QR-code ordering with live menu updates' },
-    { icon: ChefHat, title: 'Kitchen Display', desc: 'Real-time order tickets for your kitchen staff' },
-    { icon: QrCode, title: 'QR Code Generator', desc: 'Generate table-specific QR codes instantly' },
-    { icon: BarChart3, title: 'Analytics & Reports', desc: 'Track revenue, bestsellers, and peak hours' },
+    { icon: ShoppingBag, title: 'Digital Menu & Ordering', desc: 'QR-code ordering with live menu updates and payments.' },
+    { icon: ChefHat, title: 'Kitchen & Waiter Displays', desc: 'Real-time order tickets for your kitchen and floor staff.' },
+    { icon: QrCode, title: 'Instant Website', desc: 'Get a fully branded, customizable website instantly.' },
+    { icon: BarChart3, title: 'Advanced Analytics', desc: 'Track revenue, bestsellers, and peak hours effortlessly.' },
+  ];
+
+  const plans = [
+    {
+      name: 'Starter',
+      price: '$29',
+      period: '/mo',
+      features: ['Basic Dashboard', '50 Menu Items', 'QR Menu', 'Delivery Orders'],
+      buttonText: 'Start Free Trial',
+      highlight: false
+    },
+    {
+      name: 'Pro',
+      price: '$79',
+      period: '/mo',
+      features: ['Unlimited Menu', 'Coupons & Analytics', 'Staff Accounts', 'Custom Theme', 'Custom Domain'],
+      buttonText: 'Get Pro',
+      highlight: true
+    },
+    {
+      name: 'Enterprise',
+      price: 'Custom',
+      period: '',
+      features: ['Multi Branch', 'API Access', 'Priority Support', 'Advanced Analytics'],
+      buttonText: 'Contact Sales',
+      highlight: false
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-dark relative overflow-hidden">
-      {/* Background glows */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-nirvana-400/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-coffee-500/5 rounded-full blur-3xl" />
-      </div>
-
+    <div className="min-h-screen bg-background text-primary font-sans relative overflow-hidden">
       {/* Header */}
-      <header className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
+      <header className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-surface">
+            <Utensils className="w-6 h-6" />
+          </div>
           <div>
-            <h1 className="font-serif text-xl text-gradient-gold leading-tight">The Infinito Cafe & Restaurants</h1>
-            <p className="text-xs text-ink-400">Restaurant SaaS Platform</p>
+            <h1 className="font-bold text-xl leading-tight">GourmetSaaS</h1>
           </div>
         </div>
-        <button
-          onClick={() => navigate('/login')}
-          className="btn-outline-gold !py-2.5 !px-5 text-sm flex items-center gap-2"
-        >
-          <Store className="w-4 h-4" /> Owner Login
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate('/login')} className="text-secondary hover:text-primary font-medium transition-colors">
+            Login
+          </button>
+          <button
+            onClick={() => navigate('/register')}
+            className="bg-primary text-surface px-5 py-2.5 rounded-lg font-semibold hover:bg-secondary transition-colors"
+          >
+            Get Started
+          </button>
+        </div>
       </header>
 
       {/* Hero */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-6 animate-fade-in-down">
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-sm text-nirvana-300 font-medium">Complete Restaurant Management System</span>
+      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-20 pb-24 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/30 text-primary mb-8">
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="text-sm font-semibold">The All-in-One Restaurant Platform</span>
         </div>
 
-        <h2 className="font-serif text-4xl sm:text-6xl text-gradient-gold mb-4 animate-fade-in-up">
-          Run Your Restaurant<br />Like Never Before
+        <h2 className="text-5xl sm:text-7xl font-bold mb-6 tracking-tight text-primary">
+          Launch your restaurant<br />
+          <span className="text-secondary">in minutes.</span>
         </h2>
-        <p className="text-ink-300 text-base sm:text-lg max-w-2xl mx-auto mb-10 animate-fade-in">
-          From QR-code ordering to kitchen display, staff management, and real-time analytics —
-          everything you need to manage your restaurant in one elegant platform.
+        <p className="text-lg sm:text-xl text-primary/70 max-w-2xl mx-auto mb-10">
+          Everything you need to run your restaurant, cafe, or cloud kitchen. Sign up, customize your brand, and start accepting orders instantly.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
-            onClick={() => navigate('/order')}
-            className="btn-gold w-full sm:w-auto flex items-center justify-center gap-2 text-base !py-4 !px-8 bg-gradient-to-r from-orange-500 to-amber-500 border-none text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+            onClick={() => navigate('/register')}
+            className="bg-primary text-surface px-8 py-4 rounded-xl font-bold text-lg hover:bg-secondary transition-colors flex items-center gap-2"
           >
-            <Utensils className="w-5 h-5" /> Order Now
+            Start Your Free Trial <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       </section>
 
       {/* Features Grid */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {features.map((f, idx) => {
-            const Icon = f.icon;
-            return (
-              <div
-                key={f.title}
-                className="card-luxury p-5 text-center animate-fade-in-up"
-                style={{ animationDelay: `${idx * 80}ms` }}
-              >
-                <div className="w-12 h-12 rounded-xl glass-gold flex items-center justify-center mx-auto mb-3">
-                  <Icon className="w-6 h-6 text-nirvana-400" />
+      <section className="bg-surface py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-primary mb-4">Everything you need to succeed</h2>
+            <p className="text-primary/70 max-w-2xl mx-auto">Our platform handles the technical heavy lifting so you can focus on making great food.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((f, idx) => {
+              const Icon = f.icon;
+              return (
+                <div key={f.title} className="p-6 rounded-2xl bg-background border border-accent/30 hover:border-secondary/50 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center mb-4 text-primary">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-primary">{f.title}</h3>
+                  <p className="text-sm text-primary/70">{f.desc}</p>
                 </div>
-                <h3 className="font-serif text-base text-ink-100 mb-1">{f.title}</h3>
-                <p className="text-xs text-ink-400">{f.desc}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </section>
 
-
+      {/* Pricing Section */}
+      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold text-primary mb-4">Simple, transparent pricing</h2>
+          <p className="text-primary/70 max-w-2xl mx-auto">Choose the perfect plan for your restaurant's needs.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {plans.map((plan) => (
+            <div key={plan.name} className={`p-8 rounded-3xl ${plan.highlight ? 'bg-primary text-surface shadow-2xl scale-105' : 'bg-surface text-primary border border-accent/50'}`}>
+              <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">{plan.price}</span>
+                <span className={plan.highlight ? 'text-surface/70' : 'text-primary/60'}>{plan.period}</span>
+              </div>
+              <ul className="space-y-4 mb-8">
+                {plan.features.map(feat => (
+                  <li key={feat} className="flex items-center gap-3">
+                    <CheckCircle2 className={`w-5 h-5 ${plan.highlight ? 'text-accent' : 'text-secondary'}`} />
+                    <span className="text-sm font-medium">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+              <button 
+                onClick={() => navigate('/register')}
+                className={`w-full py-3 rounded-xl font-bold transition-colors ${plan.highlight ? 'bg-surface text-primary hover:bg-accent' : 'bg-accent/30 text-primary hover:bg-accent'}`}
+              >
+                {plan.buttonText}
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 py-6 text-center">
-        <p className="text-xs text-ink-500">The Infinito Cafe & Restaurants SaaS — Multi-tenant, secure, production-ready.</p>
+      <footer className="bg-primary text-surface py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Utensils className="w-5 h-5 text-accent" />
+            <span className="font-bold text-lg">GourmetSaaS</span>
+          </div>
+          <p className="text-sm text-surface/60">© 2026 GourmetSaaS. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );

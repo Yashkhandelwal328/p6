@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import type { StaffRole } from '@/types';
 import { LandingPage } from '@/pages/LandingPage';
 import { OrderPage } from '@/pages/customer/OrderPage';
@@ -24,8 +25,8 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
   const { session, staff, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen bg-ink-950 flex items-center justify-center">
-        <div className="w-12 h-12 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
@@ -36,15 +37,42 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
   return <>{children}</>;
 }
 
+import { SuperAdminDashboard } from '@/pages/admin/SuperAdminDashboard';
+import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
+
 function AppRoutes() {
+  const { restaurant, loading } = useTheme();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // If a restaurant is loaded, we are on a customer subdomain (e.g. pizzapalace.com)
+  if (restaurant) {
+    return (
+      <Routes>
+        <Route path="/" element={<OrderPage />} />
+        <Route path="/order" element={<OrderPage />} />
+        <Route path="/order/status/:orderId" element={<OrderStatusPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
+  }
+
+  // Otherwise, we are on the main SaaS platform domain
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public SaaS routes */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/order" element={<OrderPage />} />
-      <Route path="/order/status/:orderId" element={<OrderStatusPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<SignupPage />} />
+
+      {/* Super Admin routes */}
+      <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super_admin']}><SuperAdminDashboard /></ProtectedRoute>} />
 
       {/* Protected owner routes */}
       <Route
@@ -67,13 +95,9 @@ function AppRoutes() {
         <Route path="customers" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><CustomerManagement /></ProtectedRoute>} />
         <Route path="staff" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><StaffManagement /></ProtectedRoute>} />
         <Route path="settings" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><RestaurantSettings /></ProtectedRoute>} />
+        <Route path="billing" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><SubscriptionManagement /></ProtectedRoute>} />
         <Route path="reports" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><ReportsPage /></ProtectedRoute>} />
       </Route>
-
-      {/* Legacy redirect */}
-      <Route path="/dashboard" element={<Navigate to="/owner/dashboard" replace />} />
-      <Route path="/dashboard/*" element={<Navigate to="/owner/dashboard" replace />} />
-      <Route path="/signup" element={<Navigate to="/register" replace />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -82,10 +106,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

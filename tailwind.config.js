@@ -4,6 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: 'var(--tenant-primary)',
+        secondary: 'var(--tenant-secondary)',
+        accent: 'var(--tenant-accent)',
+        background: 'var(--tenant-background)',
+        surface: 'var(--color-surface)',
+        
         nirvana: {
           50: '#faf8f3',
           100: '#f3ede0',

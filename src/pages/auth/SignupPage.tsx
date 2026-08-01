@@ -55,6 +55,9 @@ export function SignupPage() {
         .padEnd(3, 'X');
 
       // 3. Call the SECURITY DEFINER function to create restaurant + staff + tables + categories
+      const urlParams = new URLSearchParams(window.location.search);
+      const plan = urlParams.get('plan') || 'starter';
+
       const { error: rpcError } = await supabase.rpc('create_restaurant_account', {
         p_restaurant_name: formData.restaurantName,
         p_owner_name: formData.ownerName,
@@ -64,6 +67,7 @@ export function SignupPage() {
         p_owner_phone: formData.phone || null,
         p_address: formData.address || null,
         p_gst_number: formData.gstNumber || null,
+        p_plan: plan,
       });
 
       if (rpcError) throw rpcError;

@@ -6,6 +6,7 @@ import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
 import { THEME_PRESETS, generateThemeVariables } from '@/lib/theme-presets';
 import { PublicRestaurantPage } from '@/pages/customer/PublicRestaurantPage';
+import { OrderPage } from '@/pages/customer/OrderPage';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 
 export function RestaurantSettings() {
@@ -19,6 +20,7 @@ export function RestaurantSettings() {
   const [uploadingQr, setUploadingQr] = useState(false);
   const [gettingLocation, setGettingLocation] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [previewRoute, setPreviewRoute] = useState<'home' | 'menu'>('home');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const qrInputRef = useRef<HTMLInputElement>(null);
@@ -718,11 +720,21 @@ export function RestaurantSettings() {
               style={previewStyle}
             >
               <div className={`${
-                previewMode === 'mobile' ? 'max-w-[375px] mx-auto border-x border-theme-border min-h-full bg-background' :
-                previewMode === 'tablet' ? 'max-w-[768px] mx-auto border-x border-theme-border min-h-full bg-background' :
-                'w-full min-h-full bg-background'
+                previewMode === 'mobile' ? 'max-w-[375px] mx-auto border-x border-theme-border min-h-full bg-background relative' :
+                previewMode === 'tablet' ? 'max-w-[768px] mx-auto border-x border-theme-border min-h-full bg-background relative' :
+                'w-full min-h-full bg-background relative'
               }`}>
-                <PublicRestaurantPage previewData={formData} />
+                {previewRoute === 'home' ? (
+                  <PublicRestaurantPage 
+                    previewData={formData} 
+                    onOrderClick={() => setPreviewRoute('menu')} 
+                  />
+                ) : (
+                  <OrderPage 
+                    previewData={formData}
+                    onBackClick={() => setPreviewRoute('home')}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -5,7 +5,13 @@ import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
 
-export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Restaurant> }) {
+export function PublicRestaurantPage({ 
+  previewData,
+  onOrderClick 
+}: { 
+  previewData?: Partial<Restaurant>,
+  onOrderClick?: () => void 
+}) {
   const { slug } = useParams<{ slug: string }>();
   const { restaurant: contextRestaurant, slug: contextSlug, isCustomDomain } = useTheme();
   const [restaurant, setRestaurant] = useState<Partial<Restaurant> | null>(previewData || contextRestaurant || null);
@@ -104,13 +110,23 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
         {/* Sidebar Info */}
         <div className="w-full lg:w-[320px] flex-shrink-0 space-y-6">
           <div className="card-luxury p-6 space-y-6">
-            <Link 
-              to={menuUrl}
-              className="w-full btn-primary flex items-center justify-center gap-2 text-lg shadow-lg"
-            >
-              <Utensils className="w-5 h-5" />
-              Order Now
-            </Link>
+            {previewData ? (
+              <button 
+                onClick={(e) => { e.preventDefault(); onOrderClick?.(); }}
+                className="w-full btn-primary flex items-center justify-center gap-2 text-lg shadow-lg"
+              >
+                <Utensils className="w-5 h-5" />
+                Order Now
+              </button>
+            ) : (
+              <Link 
+                to={menuUrl}
+                className="w-full btn-primary flex items-center justify-center gap-2 text-lg shadow-lg"
+              >
+                <Utensils className="w-5 h-5" />
+                Order Now
+              </Link>
+            )}
 
             <div className="space-y-4 pt-4 border-t border-theme-border">
               <div className="flex items-start gap-3">

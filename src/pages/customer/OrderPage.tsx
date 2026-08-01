@@ -6,7 +6,13 @@ import { formatCurrency, formatTime } from '@/lib/format';
 import type { Category, MenuItem, CartItem, Portion, Restaurant, Table } from '@/types';
 import { useTheme } from '@/context/ThemeContext';
 
-export function OrderPage() {
+export function OrderPage({ 
+  previewData,
+  onBackClick
+}: { 
+  previewData?: Partial<Restaurant>,
+  onBackClick?: () => void
+} = {}) {
   const { slug } = useParams<{ slug?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigateRouter();
@@ -31,11 +37,15 @@ export function OrderPage() {
   const initialTable = parseInt(searchParams.get('table') || '1', 10);
   const [tableNumber, setTableNumber] = useState<number>(() => getInitialState('tableNumber', isNaN(initialTable) ? 1 : initialTable));
   const { restaurant: contextRestaurant, previewTheme } = useTheme();
-  const [restaurant, setRestaurant] = useState<Restaurant | null>(contextRestaurant);
+  const [restaurant, setRestaurant] = useState<Partial<Restaurant> | null>(previewData || contextRestaurant || null);
 
   useEffect(() => {
-    if (contextRestaurant) setRestaurant(contextRestaurant);
-  }, [contextRestaurant]);
+    if (previewData) {
+      setRestaurant(previewData);
+    } else if (contextRestaurant) {
+      setRestaurant(contextRestaurant);
+    }
+  }, [previewData, contextRestaurant]);
 
   const [table, setTable] = useState<Table | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);

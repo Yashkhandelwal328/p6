@@ -2,10 +2,12 @@ import { useEffect, useState, useRef } from 'react';
 import { Settings, Save, Check, Upload, Hash, Palette, Power } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
 
 export function RestaurantSettings() {
   const { restaurantId } = useAuth();
+  const { previewTheme, refreshTheme } = useTheme();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -47,6 +49,31 @@ export function RestaurantSettings() {
   useEffect(() => {
     if (restaurantId) loadData();
   }, [restaurantId]);
+
+  useEffect(() => {
+    if (!loading) {
+      previewTheme({
+        primary_color: formData.primary_color,
+        secondary_color: formData.secondary_color,
+        accent_color: formData.accent_color,
+        background_color: formData.background_color,
+        border_radius: formData.border_radius,
+        font_family: formData.font_family,
+        name: formData.name,
+        logo_url: formData.logo_url,
+      });
+    }
+  }, [
+    formData.primary_color,
+    formData.secondary_color,
+    formData.accent_color,
+    formData.background_color,
+    formData.border_radius,
+    formData.font_family,
+    formData.name,
+    formData.logo_url,
+    loading
+  ]);
 
   async function loadData() {
     if (!restaurantId) return;
@@ -197,6 +224,9 @@ export function RestaurantSettings() {
       font_family: formData.font_family,
       border_radius: formData.border_radius,
     }).eq('id', restaurantId);
+    
+    await refreshTheme();
+    
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);

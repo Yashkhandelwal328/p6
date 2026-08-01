@@ -2,7 +2,10 @@ import { useEffect, useState, useMemo } from 'react';
 import {
   TrendingUp, ShoppingBag, Clock, CheckCircle2, XCircle, DollarSign,
   Receipt, Users, ArrowUpRight, ArrowDownRight, ChefHat, Utensils,
+  Copy, Download, ExternalLink, QrCode, Globe
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { useTheme } from '@/context/ThemeContext';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
@@ -55,6 +58,44 @@ export function OwnerDashboard() {
   const [statusBreakdown, setStatusBreakdown] = useState<{ name: string; value: number }[]>([]);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const { restaurant } = useTheme();
+
+  const customerUrl = useMemo(() => {
+    if (!restaurant?.subdomain) return '';
+    const isLocal = window.location.hostname === 'localhost';
+    if (isLocal) return `http://${restaurant.subdomain}.localhost:5173`;
+    const host = window.location.host;
+    // Remove admin subdomains if present to get base domain
+    const baseDomain = host.replace(/^app\./, '').replace(/^www\./, '');
+    return `https://${restaurant.subdomain}.${baseDomain}`;
+  }, [restaurant]);
+
+  const copyLink = () => {
+    if (customerUrl) {
+      navigator.clipboard.writeText(customerUrl);
+      alert('Link copied to clipboard!');
+    }
+  };
+
+  const downloadQR = () => {
+    const svg = document.getElementById('customer-qr-code');
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+      const pngFile = canvas.toDataURL('image/png');
+      const downloadLink = document.createElement('a');
+      downloadLink.download = `${restaurant?.name || 'restaurant'}-qr.png`;
+      downloadLink.href = `${pngFile}`;
+      downloadLink.click();
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+  };
 
   useEffect(() => {
     loadDashboardData();
@@ -191,6 +232,55 @@ export function OwnerDashboard() {
         <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1">Owner Dashboard</h1>
         <p className="text-sm text-ink-400">Real-time overview of your restaurant performance</p>
       </div>
+
+      {/* Customer Access Section */}
+      {restaurant && customerUrl && (
+        <div className="card-luxury p-5 md:p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-6 items-center">
+            <div className="flex-shrink-0 bg-white p-3 rounded-xl shadow-lg border border-white/20">
+              <QRCodeSVG
+                id="customer-qr-code"
+                value={customerUrl}
+                size={120}
+                bgColor={"#ffffff"}
+                fgColor={"#000000"}
+                level={"H"}
+                includeMargin={false}
+              />
+            </div>
+            <div className="flex-1 text-center md:text-left space-y-4">
+              <div>
+                <h3 className="font-serif text-lg text-nirvana-300 mb-1 flex items-center justify-center md:justify-start gap-2">
+                  <QrCode className="w-5 h-5" /> Customer Access
+                </h3>
+                <p className="text-sm text-ink-400">Customers can scan the QR code or use the link below to access your digital menu and order online.</p>
+              </div>
+              
+              <div className="flex items-center gap-2 p-3 bg-ink-900/50 border border-white/10 rounded-lg overflow-hidden">
+                <Globe className="w-4 h-4 text-ink-400 flex-shrink-0 ml-2" />
+                <input 
+                  type="text" 
+                  readOnly 
+                  value={customerUrl} 
+                  className="bg-transparent border-none focus:ring-0 text-sm text-ink-200 flex-1 w-full overflow-hidden text-ellipsis"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                <button onClick={copyLink} className="btn-outline !py-2 text-sm flex items-center gap-2">
+                  <Copy className="w-4 h-4" /> Copy Link
+                </button>
+                <button onClick={downloadQR} className="btn-outline !py-2 text-sm flex items-center gap-2">
+                  <Download className="w-4 h-4" /> Download QR
+                </button>
+                <a href={customerUrl} target="_blank" rel="noopener noreferrer" className="btn-gold !py-2 text-sm flex items-center gap-2">
+                  Open Website <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

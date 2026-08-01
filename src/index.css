@@ -39,28 +39,63 @@
 
 @layer components {
   .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    background: color-mix(in srgb, var(--tenant-surface, #ffffff) 5%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in srgb, var(--tenant-surface, #ffffff) 10%, transparent);
   }
-  .glass-gold {
-    @apply bg-nirvana-400/5 backdrop-blur-xl border border-nirvana-400/20;
+  .glass-gold, .glass-primary {
+    background: color-mix(in srgb, var(--tenant-primary) 5%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in srgb, var(--tenant-primary) 20%, transparent);
   }
-  .glass-dark {
-    @apply bg-ink-900/60 backdrop-blur-xl border border-white/5;
+  .glass-dark, .glass-secondary {
+    background: color-mix(in srgb, var(--tenant-secondary) 60%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 20%, transparent);
   }
-  .text-gradient-gold {
-    @apply bg-gradient-to-r from-nirvana-200 via-nirvana-400 to-nirvana-200 bg-clip-text text-transparent;
+  .text-gradient-gold, .text-gradient-primary {
+    background: linear-gradient(to right, var(--tenant-accent), var(--tenant-primary), var(--tenant-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  .btn-gold {
-    @apply bg-gradient-gold text-ink-950 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-gold-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  .btn-gold, .btn-primary {
+    background-color: var(--tenant-primary);
+    color: var(--tenant-background);
+    @apply font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    box-shadow: 0 4px 14px 0 color-mix(in srgb, var(--tenant-primary) 39%, transparent);
   }
-  .btn-outline-gold {
-    @apply border border-nirvana-400/40 text-nirvana-300 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:bg-nirvana-400/10 hover:border-nirvana-400/60 active:scale-[0.98];
+  .btn-gold:hover, .btn-primary:hover {
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--tenant-primary) 23%, transparent);
+  }
+  .btn-outline-gold, .btn-outline-primary {
+    border: 1px solid color-mix(in srgb, var(--tenant-primary) 40%, transparent);
+    color: var(--tenant-primary);
+    @apply font-semibold px-6 py-3 rounded-xl transition-all duration-300 active:scale-[0.98];
+  }
+  .btn-outline-gold:hover, .btn-outline-primary:hover {
+    background-color: color-mix(in srgb, var(--tenant-primary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--tenant-primary) 60%, transparent);
   }
   .card-luxury {
-    @apply glass-dark rounded-2xl transition-all duration-300 hover:border-nirvana-400/20 hover:shadow-gold;
+    background: color-mix(in srgb, var(--tenant-secondary) 60%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 10%, transparent);
+    @apply rounded-2xl transition-all duration-300;
+  }
+  .card-luxury:hover {
+    border-color: color-mix(in srgb, var(--tenant-primary) 20%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--tenant-primary) 15%, transparent);
   }
   .input-luxury {
-    @apply bg-ink-900/60 border border-white/10 rounded-xl px-4 py-3 text-ink-100 placeholder-ink-400 focus:outline-none focus:border-nirvana-400/50 focus:ring-1 focus:ring-nirvana-400/30 transition-all duration-200;
+    background: color-mix(in srgb, var(--tenant-secondary) 60%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tenant-surface, #ffffff) 10%, transparent);
+    color: var(--tenant-surface, #ffffff);
+    @apply rounded-xl px-4 py-3 focus:outline-none transition-all duration-200;
+  }
+  .input-luxury:focus {
+    border-color: color-mix(in srgb, var(--tenant-primary) 50%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tenant-primary) 30%, transparent);
   }
   .badge {
     @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border;
@@ -73,10 +108,11 @@
     @apply bg-transparent;
   }
   .scrollbar-luxury::-webkit-scrollbar-thumb {
-    @apply bg-nirvana-400/20 rounded-full;
+    background-color: color-mix(in srgb, var(--tenant-primary) 20%, transparent);
+    @apply rounded-full;
   }
   .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
-    @apply bg-nirvana-400/40;
+    background-color: color-mix(in srgb, var(--tenant-primary) 40%, transparent);
   }
 }
 

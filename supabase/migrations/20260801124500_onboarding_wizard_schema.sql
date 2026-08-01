@@ -41,6 +41,7 @@ DECLARE
   v_cat jsonb;
   v_item jsonb;
   v_cat_id uuid;
+  v_cat_idx int := 0;
 BEGIN
   v_user_id := (p_payload->>'user_id')::uuid;
   
@@ -132,12 +133,13 @@ BEGIN
 
   IF v_categories IS NOT NULL AND jsonb_typeof(v_categories) = 'array' THEN
     FOR v_cat IN SELECT * FROM jsonb_array_elements(v_categories) LOOP
+      v_cat_idx := v_cat_idx + 1;
       INSERT INTO categories (restaurant_id, name, slug, sort_order, is_active)
       VALUES (
         v_restaurant_id, 
         v_cat->>'name', 
-        lower(regexp_replace(v_cat->>'name', '[^A-Za-z0-9]', '-', 'g')), 
-        COALESCE((v_cat->>'sort_order')::int, 1), 
+        lower(regexp_replace(v_cat->>'name', '[^A-Za-z0-9]', '-', 'g')) || '-' || v_cat_idx::text, 
+        COALESCE((v_cat->>'sort_order')::int, v_cat_idx), 
         true
       ) RETURNING id INTO v_cat_id;
       

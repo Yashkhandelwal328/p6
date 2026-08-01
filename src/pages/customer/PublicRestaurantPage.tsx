@@ -102,7 +102,7 @@ export function PublicRestaurantPage({ previewData }: { previewData?: Partial<Re
         <div className="space-y-6">
           <div className="card-luxury p-6 space-y-6">
             <Link 
-              to={`/r/${slug}/order`}
+              to="menu"
               className="w-full btn-primary flex items-center justify-center gap-2 text-lg shadow-lg"
             >
               <Utensils className="w-5 h-5" />

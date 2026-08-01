@@ -96,13 +96,13 @@ BEGIN
     VALUES (v_restaurant_id, v_i, 4, 'available');
   END LOOP;
 
-  INSERT INTO categories (restaurant_id, name, sort_order, is_active)
+  INSERT INTO categories (restaurant_id, name, slug, sort_order, is_active)
   VALUES
-    (v_restaurant_id, 'Starters', 1, true),
-    (v_restaurant_id, 'Main Course', 2, true),
-    (v_restaurant_id, 'Biryani', 3, true),
-    (v_restaurant_id, 'Beverages', 4, true),
-    (v_restaurant_id, 'Desserts', 5, true);
+    (v_restaurant_id, 'Starters', 'starters', 1, true),
+    (v_restaurant_id, 'Main Course', 'main-course', 2, true),
+    (v_restaurant_id, 'Biryani', 'biryani', 3, true),
+    (v_restaurant_id, 'Beverages', 'beverages', 4, true),
+    (v_restaurant_id, 'Desserts', 'desserts', 5, true);
 
   RETURN json_build_object(
     'restaurant_id', v_restaurant_id,

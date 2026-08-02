@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Search, Filter, Download, FileText, FileSpreadsheet, Eye, X, Clock } from 'lucide-react';
+import { Search, Filter, Download, FileText, FileSpreadsheet, Eye, X, Clock, CheckCircle2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -245,9 +245,20 @@ export function OrdersPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`badge capitalize ${order.payment_status === 'paid' ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-amber-500/15 text-amber-400 border-amber-500/30'}`}>
-                        {order.payment_status}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`badge capitalize ${order.payment_status === 'paid' ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-amber-500/15 text-amber-400 border-amber-500/30'}`}>
+                          {order.payment_status}
+                        </span>
+                        {order.payment_status === 'pending' && (
+                          <button
+                            onClick={() => confirmPayment(order.id)}
+                            className="p-1 hover:bg-green-500/20 text-green-500 rounded-full transition-colors"
+                            title="Mark as Paid"
+                          >
+                            <CheckCircle2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-ink-600 whitespace-nowrap">{timeAgo(order.created_at)}</td>
                     <td className="px-4 py-3">

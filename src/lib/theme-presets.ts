@@ -129,13 +129,20 @@ export function generateThemeVariables(
   secondary: string,
   accent: string,
   background: string,
-  style: 'light' | 'dark'
+  style?: 'light' | 'dark' // Kept parameter to avoid breaking calls, but ignored
 ) {
-  // Enforce strict readability rules based on the background style
-  const isDark = style === 'dark';
+  // Enforce strict readability rules by checking actual background luminance
+  const hex = background.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16) || 255;
+  const g = parseInt(hex.substring(2, 4), 16) || 255;
+  const b = parseInt(hex.substring(4, 6), 16) || 255;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // If luminance is low, the background is dark
+  const isDark = luminance < 0.5;
   
   // High contrast text colors
-  const textPrimary = isDark ? '#FFFFFF' : '#0F172A';
+  const textPrimary = isDark ? '#F8FAFC' : '#0F172A';
   const textSecondary = isDark ? '#E2E8F0' : '#334155';
   const textMuted = isDark ? '#94A3B8' : '#64748B';
   

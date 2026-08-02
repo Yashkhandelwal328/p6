@@ -141,6 +141,7 @@ export interface Order {
   service_charge: number;
   total_amount: number;
   special_instructions: string | null;
+  kitchen_message: string | null;
   items_count: number;
   accepted_at: string | null;
   preparing_at: string | null;

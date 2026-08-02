@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin } from 'lucide-react';
+import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin, MessageSquare, Send, Receipt } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { formatTime, timeAgo, formatOrderStatus } from '@/lib/format';
@@ -16,6 +16,9 @@ export function KitchenDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'new' | 'preparing' | 'ready' | 'completed'>('new');
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [messageOrderId, setMessageOrderId] = useState<string | null>(null);
+  const [messageText, setMessageText] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   useEffect(() => {
     loadOrders();
@@ -92,6 +95,25 @@ export function KitchenDashboard() {
     });
 
     // Instantly refresh the UI
+    loadOrders();
+  }, [restaurantId]);
+
+  const sendMessage = useCallback(async (orderId: string, msg: string) => {
+    if (!msg.trim()) return;
+    setSendingMessage(true);
+    await supabase.from('orders').update({ kitchen_message: msg.trim() }).eq('id', orderId);
+    setMessageOrderId(null);
+    setMessageText('');
+    setSendingMessage(false);
+    loadOrders();
+  }, [restaurantId]);
+
+  const sendBill = useCallback(async (order: OrderWithItems) => {
+    const billLines = order.order_items.map(i => `${i.menu_item_name} x${i.quantity} — ₹${i.total_price}`);
+    const msg = `🧾 Your Bill\n${billLines.join('\n')}\n\nTotal: ₹${order.total_amount}\nPayment: ${order.payment_method === 'cash' ? 'Cash' : 'Online'}\n\nThank you for dining with us! 🙏`;
+    setSendingMessage(true);
+    await supabase.from('orders').update({ kitchen_message: msg }).eq('id', order.id);
+    setSendingMessage(false);
     loadOrders();
   }, [restaurantId]);
 
@@ -227,8 +249,53 @@ export function KitchenDashboard() {
                 <span>{order.items_count} items</span>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-2">
+                {/* Message / Bill Buttons */}
+                <div className="flex gap-2 mb-3">
+                  <button 
+                    onClick={() => sendBill(order)} 
+                    disabled={sendingMessage}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors"
+                  >
+                    <Receipt className="w-3.5 h-3.5" /> Send Bill
+                  </button>
+                  <button 
+                    onClick={() => { setMessageOrderId(messageOrderId === order.id ? null : order.id); setMessageText(''); }}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" /> Message
+                  </button>
+                </div>
+
+                {messageOrderId === order.id && (
+                  <div className="mb-3 flex gap-2 animate-fade-in">
+                    <input 
+                      value={messageText}
+                      onChange={e => setMessageText(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && sendMessage(order.id, messageText)}
+                      placeholder="Type a message to customer..."
+                      className="flex-1 px-3 py-2 rounded-lg bg-ink-800 border border-white/10 text-sm text-ink-100 placeholder:text-ink-500 outline-none focus:border-nirvana-400/40"
+                      autoFocus
+                    />
+                    <button 
+                      onClick={() => sendMessage(order.id, messageText)}
+                      disabled={sendingMessage || !messageText.trim()}
+                      className="px-3 py-2 rounded-lg bg-nirvana-500/20 text-nirvana-300 hover:bg-nirvana-500/30 transition-colors disabled:opacity-50"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {order.kitchen_message && (
+                  <div className="mb-3 p-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                    <p className="text-xs text-green-400 whitespace-pre-wrap">
+                      <strong>Sent to customer:</strong> {order.kitchen_message.substring(0, 80)}{order.kitchen_message.length > 80 ? '...' : ''}
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
                 {order.status === 'new' && (
                   <button onClick={() => updateOrderStatus(order, 'accepted')} className="btn-gold flex-1 !py-2 text-sm">
                     {order.payment_method === 'online' ? 'Payment Received' : 'Accept'}

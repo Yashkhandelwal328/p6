@@ -205,6 +205,19 @@ export function OrderStatusPage() {
           </div>
         )}
 
+        {/* Kitchen Message / Bill */}
+        {order.kitchen_message && (
+          <div className="card-luxury p-5 animate-fade-in-up border border-nirvana-400/20 shadow-gold">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-ink-950">
+                <Receipt className="w-4 h-4" />
+              </div>
+              <h3 className="font-serif text-lg text-nirvana-300">Message from Restaurant</h3>
+            </div>
+            <p className="text-sm text-ink-200 whitespace-pre-wrap leading-relaxed">{order.kitchen_message}</p>
+          </div>
+        )}
+
         {isCancelled && (
           <div className="card-luxury p-6 text-center border-red-500/20">
             <XCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />

@@ -10,23 +10,23 @@
     --color-primary: #2F4156;
     --color-secondary: #567C8D;
     --color-accent: #C8D9E6;
-    --color-background: #F5EFEB;
+    --color-background: #F8FAFC;
     --color-surface: #FFFFFF;
     
     /* Tenant Dynamic Theming (Will be overridden by ThemeProvider) */
     --tenant-primary: var(--color-primary);
-    --tenant-primary-hover: #1e2a38;
-    --tenant-primary-active: #151d27;
-    --tenant-primary-foreground: #ffffff;
+    --tenant-primary-hover: #567C8D;
+    --tenant-primary-active: #1e2a38;
+    --tenant-primary-foreground: #FFFFFF;
     --tenant-secondary: var(--color-secondary);
     --tenant-accent: var(--color-accent);
     --tenant-background: var(--color-background);
     --tenant-surface: var(--color-surface);
-    --tenant-card: var(--color-surface);
-    --tenant-text-primary: #111827;
-    --tenant-text-secondary: #4B5563;
-    --tenant-text-muted: #9CA3AF;
-    --tenant-border: rgba(0,0,0,0.1);
+    --tenant-card: #FFFFFF;
+    --tenant-text-primary: #0F172A;
+    --tenant-text-secondary: #334155;
+    --tenant-text-muted: #64748B;
+    --tenant-border: #E2E8F0;
     --tenant-radius: 0.5rem;
     --tenant-font: 'Inter', sans-serif;
   }
@@ -44,73 +44,83 @@
     background-color: var(--tenant-primary);
     color: var(--tenant-primary-foreground);
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--tenant-text-primary);
+    font-weight: 600;
+  }
+  p {
+    color: var(--tenant-text-secondary);
+  }
 }
 
 @layer components {
   .glass {
     background: color-mix(in srgb, var(--tenant-surface, #ffffff) 95%, transparent);
     backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-border, #000000) 5%, transparent);
+    border: 1px solid var(--tenant-border);
   }
-  .glass-gold, .glass-primary {
-    background: color-mix(in srgb, var(--tenant-surface) 100%, transparent);
-    backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-primary) 10%, transparent);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  }
-  .glass-dark, .glass-secondary {
-    background: color-mix(in srgb, var(--tenant-surface) 100%, transparent);
-    backdrop-filter: blur(16px);
-    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 10%, transparent);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  }
-  .text-gradient-gold, .text-gradient-primary {
-    background: linear-gradient(to right, var(--tenant-accent), var(--tenant-primary), var(--tenant-accent));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .btn-gold, .btn-primary {
+  
+  .btn-primary {
     background-color: var(--tenant-primary);
-    color: var(--tenant-background);
-    @apply font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
-    box-shadow: 0 4px 14px 0 color-mix(in srgb, var(--tenant-primary) 39%, transparent);
+    color: var(--tenant-primary-foreground);
+    @apply font-medium px-5 py-2.5 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm;
   }
-  .btn-gold:hover, .btn-primary:hover {
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--tenant-primary) 23%, transparent);
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--tenant-primary-hover);
   }
-  .btn-outline-gold, .btn-outline-primary {
-    border: 1px solid color-mix(in srgb, var(--tenant-primary) 40%, transparent);
+  
+  .btn-secondary {
+    background-color: #FFFFFF;
     color: var(--tenant-primary);
-    @apply font-semibold px-6 py-3 rounded-xl transition-all duration-300 active:scale-[0.98];
+    border: 1px solid #CBD5E1;
+    @apply font-medium px-5 py-2.5 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm;
   }
-  .btn-outline-gold:hover, .btn-outline-primary:hover {
-    background-color: color-mix(in srgb, var(--tenant-primary) 10%, transparent);
-    border-color: color-mix(in srgb, var(--tenant-primary) 60%, transparent);
+  .btn-secondary:hover:not(:disabled) {
+    background-color: #F1F5F9;
   }
+  
+  .btn-outline {
+    background-color: transparent;
+    color: var(--tenant-primary);
+    border: 1px solid #CBD5E1;
+    @apply font-medium px-5 py-2.5 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-outline:hover:not(:disabled) {
+    background-color: #F1F5F9;
+  }
+
   .card-luxury {
-    background: var(--tenant-surface);
-    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 15%, transparent);
+    background: var(--tenant-card);
+    border: 1px solid var(--tenant-border);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-    @apply rounded-2xl transition-all duration-300;
+    @apply rounded-xl transition-all duration-300;
   }
-  .card-luxury:hover {
-    border-color: color-mix(in srgb, var(--tenant-primary) 30%, transparent);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  .card-luxury h1, .card-luxury h2, .card-luxury h3, .card-luxury h4, .card-luxury h5, .card-luxury h6, .card-luxury .card-title {
+    color: #0F172A;
   }
+  .card-luxury p, .card-luxury .card-body {
+    color: #334155;
+  }
+  
   .input-luxury {
-    background: var(--tenant-surface);
-    border: 1px solid color-mix(in srgb, var(--tenant-secondary) 20%, transparent);
-    color: var(--tenant-text-primary);
-    @apply rounded-xl px-4 py-3 focus:outline-none transition-all duration-200;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #0F172A;
+    @apply rounded-lg px-3 py-2.5 focus:outline-none transition-all duration-200 shadow-sm;
+  }
+  .input-luxury::placeholder {
+    color: #94A3B8;
   }
   .input-luxury:focus {
     border-color: var(--tenant-primary);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--tenant-primary) 20%, transparent);
   }
+  
   .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border;
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border border-theme-border bg-surface text-theme-text-secondary;
   }
+  
   .scrollbar-luxury::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -119,20 +129,16 @@
     @apply bg-transparent;
   }
   .scrollbar-luxury::-webkit-scrollbar-thumb {
-    background-color: color-mix(in srgb, var(--tenant-primary) 20%, transparent);
+    background-color: #CBD5E1;
     @apply rounded-full;
   }
   .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in srgb, var(--tenant-primary) 40%, transparent);
+    background-color: #94A3B8;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-  .shimmer-bg {
-    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.02) 100%);
-    background-size: 1000px 100%;
   }
 }

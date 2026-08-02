@@ -356,9 +356,10 @@ export function OwnerDashboard() {
         {statCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="card-luxury p-4 animate-fade-in-up" style={{ animationDelay: `${idx * 50}ms` }}>
-              <div className="flex items-start justify-between mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <div key={card.label} className={`card-luxury p-4 animate-fade-in-up border-t-2 relative overflow-hidden`} style={{ animationDelay: `${idx * 50}ms` }}>
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-current opacity-50 ${card.color.replace('text-', 'bg-')}`}></div>
+              <div className="flex items-start justify-between mb-2 mt-1">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gray-50 border border-gray-100`}>
                   <Icon className={`w-5 h-5 ${card.color}`} />
                 </div>
                 {card.trend === 'up' ? (
@@ -367,8 +368,8 @@ export function OwnerDashboard() {
                   <ArrowDownRight className="w-4 h-4 text-red-500/60" />
                 )}
               </div>
-              <p className="text-xs text-theme-secondary mb-1">{card.label}</p>
-              <p className="text-xl font-serif text-primary">{card.value}</p>
+              <p className="text-xs text-slate-500 font-medium mb-1">{card.label}</p>
+              <p className="text-xl font-serif text-slate-900">{card.value}</p>
             </div>
           );
         })}

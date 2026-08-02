@@ -125,15 +125,17 @@ export const THEME_PRESETS: ThemePreset[] = [
 
 export function getContrastColor(hexColor: string): string {
   const hex = hexColor.replace('#', '');
+  if (hex.length !== 6) return '#FFFFFF';
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+  return luminance > 0.5 ? '#0F172A' : '#FFFFFF';
 }
 
 export function adjustColor(hexColor: string, percent: number): string {
   const hex = hexColor.replace('#', '');
+  if (hex.length !== 6) return hexColor;
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
@@ -151,15 +153,22 @@ export function generateThemeVariables(
   background: string,
   style: 'light' | 'dark'
 ) {
+  // Enforce strict readability rules based on the background style
   const isDark = style === 'dark';
-  const textPrimary = isDark ? '#F9FAFB' : '#111827';
-  const textSecondary = isDark ? '#9CA3AF' : '#4B5563';
-  const textMuted = isDark ? '#6B7280' : '#9CA3AF';
-  const surface = isDark ? adjustColor(background, 10) : '#FFFFFF';
-  const card = isDark ? adjustColor(background, 15) : '#FFFFFF';
-  const border = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+  
+  // High contrast text colors
+  const textPrimary = isDark ? '#FFFFFF' : '#0F172A';
+  const textSecondary = isDark ? '#E2E8F0' : '#334155';
+  const textMuted = isDark ? '#94A3B8' : '#64748B';
+  
+  // Clean surfaces - do NOT tint with primary color
+  const surface = isDark ? '#1E293B' : '#FFFFFF';
+  const card = isDark ? '#0F172A' : '#FFFFFF';
+  const border = isDark ? '#334155' : '#E2E8F0';
+  
+  // Button interactions
   const primaryHover = isDark ? adjustColor(primary, 15) : adjustColor(primary, -15);
-  const primaryActive = isDark ? adjustColor(primary, -10) : adjustColor(primary, 10);
+  const primaryActive = isDark ? adjustColor(primary, -25) : adjustColor(primary, 10);
   const primaryForeground = getContrastColor(primary);
 
   return {

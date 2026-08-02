@@ -58,6 +58,7 @@ export function OrderPage({
   const [cart, setCart] = useState<CartItem[]>(() => getInitialState('cart', []));
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [variantItem, setVariantItem] = useState<MenuItem | null>(null);
   const [specialInstructions, setSpecialInstructions] = useState(() => getInitialState('specialInstructions', ''));
   const [customerName, setCustomerName] = useState(() => getInitialState('customerName', ''));
   const [customerPhone, setCustomerPhone] = useState(() => getInitialState('customerPhone', ''));
@@ -413,34 +414,34 @@ export function OrderPage({
       </div>
 
       {/* Search & Filter */}
-      <div className="sticky top-[73px] z-30 bg-background/90 backdrop-blur-xl border-b border-theme-border py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-3">
+      <div className="sticky top-[73px] z-30 bg-background/90 backdrop-blur-xl border-b border-theme-border py-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-2">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-secondary" />
             <input
               type="text"
               placeholder="Search dishes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-surface border border-theme-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-theme-primary placeholder:text-theme-secondary"
+              className="w-full pl-9 pr-3 py-2 bg-surface border border-theme-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-sm text-theme-primary placeholder:text-theme-secondary"
             />
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-0.5">
             <button
               onClick={() => setVegFilter('all')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all border flex items-center gap-1 ${vegFilter === 'all' ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface text-theme-secondary border-theme-border hover:border-primary'}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all border flex items-center gap-1 ${vegFilter === 'all' ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface text-theme-secondary border-theme-border hover:border-primary'}`}
             >
               <Filter className="w-3 h-3" /> All
             </button>
             <button
               onClick={() => setVegFilter('veg')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all border flex items-center gap-1 ${vegFilter === 'veg' ? 'bg-green-500 text-white border-green-500' : 'bg-surface text-theme-secondary border-theme-border hover:border-green-500'}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all border flex items-center gap-1 ${vegFilter === 'veg' ? 'bg-green-500 text-white border-green-500' : 'bg-surface text-theme-secondary border-theme-border hover:border-green-500'}`}
             >
               <Leaf className="w-3 h-3" /> Veg
             </button>
             <button
               onClick={() => setVegFilter('nonveg')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all border flex items-center gap-1 ${vegFilter === 'nonveg' ? 'bg-red-500 text-white border-red-500' : 'bg-surface text-theme-secondary border-theme-border hover:border-red-500'}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all border flex items-center gap-1 ${vegFilter === 'nonveg' ? 'bg-red-500 text-white border-red-500' : 'bg-surface text-theme-secondary border-theme-border hover:border-red-500'}`}
             >
               <Flame className="w-3 h-3" /> Non-Veg
             </button>
@@ -449,14 +450,14 @@ export function OrderPage({
       </div>
 
       {/* Category Tabs */}
-      <div className="sticky top-[145px] z-20 bg-background/90 backdrop-blur-md border-b border-theme-border">
+      <div className="sticky top-[138px] z-20 bg-background/90 backdrop-blur-md border-b border-theme-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-3">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2">
             <button
               onClick={() => setActiveCategory('all')}
-              className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                 activeCategory === 'all'
-                  ? 'bg-primary text-primary-foreground shadow-md'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'bg-surface text-theme-secondary hover:text-primary border border-theme-border'
               }`}
             >
@@ -466,9 +467,9 @@ export function OrderPage({
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                   activeCategory === cat.id
-                    ? 'bg-primary text-primary-foreground shadow-md'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'bg-surface text-theme-secondary hover:text-primary border border-theme-border'
                 }`}
               >
@@ -480,7 +481,7 @@ export function OrderPage({
       </div>
 
       {/* Menu Grid */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-4 pb-28">
         {subCategories.length > 0 && (
           <div className="flex items-center gap-2 mb-4 overflow-x-auto scrollbar-hide">
             {subCategories.map((sub) => (
@@ -497,19 +498,21 @@ export function OrderPage({
             <p className="text-theme-secondary text-sm mt-1">Try a different search or category</p>
           </div>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {filteredItems.map((item, idx) => {
               const fullQty = getCartQty(item.id, 'full');
               const halfQty = getCartQty(item.id, 'half');
+              const totalQty = fullQty + halfQty;
               const hasHalf = item.has_half_price && item.half_price != null;
+              const startPrice = hasHalf ? item.half_price! : item.full_price;
 
               return (
                 <div
                   key={item.id}
-                  className={`bg-surface rounded-2xl overflow-hidden group hover:shadow-lg transition-all border border-theme-border animate-fade-in-up flex flex-col h-full ${!item.is_available ? 'opacity-50 grayscale' : ''}`}
+                  className={`bg-surface rounded-[14px] overflow-hidden group hover:shadow-lg transition-all border border-theme-border animate-fade-in-up flex flex-col h-full ${!item.is_available ? 'opacity-50 grayscale' : ''}`}
                   style={{ animationDelay: `${idx * 30}ms` }}
                 >
-                  <div className="relative aspect-video overflow-hidden bg-background">
+                  <div className="relative h-28 sm:h-32 overflow-hidden bg-background shrink-0">
                     {item.image_url ? (
                       <img
                         src={item.image_url}
@@ -532,150 +535,99 @@ export function OrderPage({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Utensils className="w-12 h-12 text-theme-secondary/50" />
+                        <Utensils className="w-8 h-8 text-theme-secondary/50" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-
-                    {/* Veg/Non-Veg Badge */}
-                    <div className="absolute top-3 left-3">
-                      <span className={`badge ${item.is_veg ? 'bg-green-500/90 text-white border-green-400' : 'bg-red-500/90 text-white border-red-400'}`}>
-                        {item.is_veg ? <Leaf className="w-3 h-3" /> : <Flame className="w-3 h-3" />}
-                        {item.is_veg ? 'Veg' : 'Non-Veg'}
-                      </span>
-                    </div>
-
-                    {/* Bestseller & Chef's Special Badges */}
-                    <div className="absolute top-3 right-3 flex flex-col gap-1 items-end">
-                      {item.is_bestseller && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground flex items-center gap-1 shadow-sm uppercase tracking-wider">
-                          <Star className="w-2.5 h-2.5 fill-current" /> Bestseller
-                        </span>
-                      )}
-                      {item.is_chef_special && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white flex items-center gap-1 shadow-sm uppercase tracking-wider">
-                          <ChefHat className="w-2.5 h-2.5" /> Chef's Special
-                        </span>
-                      )}
-                    </div>
-
+                    
                     {/* Out of Stock overlay */}
                     {!item.is_available && (
                       <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
-                        <span className="px-3 py-1 rounded-full bg-red-500 text-white text-sm font-bold shadow-md">
+                        <span className="px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold shadow-md">
                           Out of Stock
                         </span>
                       </div>
                     )}
                   </div>
 
-                  <div className="p-4 flex flex-col flex-1">
+                  <div className="p-3 sm:p-4 flex flex-col flex-1">
+                    {/* Badges Row */}
+                    <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                      <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium border ${item.is_veg ? 'bg-green-500/10 text-green-700 border-green-200' : 'bg-red-500/10 text-red-700 border-red-200'}`}>
+                        {item.is_veg ? <Leaf className="w-2.5 h-2.5" /> : <Flame className="w-2.5 h-2.5" />}
+                        {item.is_veg ? 'Veg' : 'Non-Veg'}
+                      </span>
+                      {item.is_bestseller && (
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary text-primary-foreground">
+                          <Star className="w-2.5 h-2.5 fill-current" /> Bestseller
+                        </span>
+                      )}
+                    </div>
+                    
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <h3 className="font-serif text-lg text-theme-primary leading-tight">{item.name}</h3>
+                      <h3 className="font-serif text-[15px] sm:text-[16px] text-theme-primary leading-tight font-semibold line-clamp-1">{item.name}</h3>
                       {item.rating > 0 && (
-                        <span className="flex items-center gap-1 text-xs text-primary font-medium whitespace-nowrap bg-primary/10 px-1.5 py-0.5 rounded-md">
+                        <span className="flex items-center gap-0.5 text-[11px] text-primary font-bold whitespace-nowrap bg-primary/10 px-1 py-0.5 rounded shrink-0">
                           <Star className="w-3 h-3 fill-current" />
                           {item.rating.toFixed(1)}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-theme-secondary line-clamp-2 mb-4 flex-1">
+                    
+                    <p className="text-[12px] sm:text-[13px] text-theme-secondary line-clamp-2 flex-1 mb-2">
                       {item.description ?? 'No description available'}
                     </p>
 
-                    <div className="flex items-center gap-2 text-xs text-theme-secondary mb-4">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{item.preparation_time_minutes} min</span>
-                    </div>
-
-                    {item.is_available ? (
-                      <>
-                        <div className="flex items-center justify-between gap-2">
-                          {hasHalf ? (
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs text-theme-secondary">Half: <span className="text-primary font-bold">{formatCurrency(item.half_price!, restaurant?.currency)}</span></span>
-                              <span className="text-xs text-theme-secondary">Full: <span className="text-primary font-bold">{formatCurrency(item.full_price, restaurant?.currency)}</span></span>
-                            </div>
-                          ) : (
-                            <span className="text-xl font-serif text-primary font-bold">{formatCurrency(item.full_price, restaurant?.currency)}</span>
-                          )}
+                    <div className="flex items-end justify-between mt-auto">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-1 text-[11px] text-theme-secondary mb-0.5">
+                          <Clock className="w-3 h-3" />
+                          <span>{item.preparation_time_minutes}m</span>
                         </div>
+                        <div className="text-[14px] sm:text-[16px] font-serif text-theme-primary font-bold leading-none">
+                          {hasHalf ? <span className="text-[10px] text-theme-secondary font-sans font-normal block mb-0.5">Starting from</span> : null}
+                          {formatCurrency(startPrice, restaurant?.currency)}
+                        </div>
+                      </div>
 
-                        {hasHalf ? (
-                          <div className="mt-4 pt-4 border-t border-theme-border space-y-3">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-sm font-medium text-theme-primary">Half Portion</span>
-                              {halfQty === 0 ? (
-                                <button
-                                  onClick={() => addToCart(item, 'half')}
-                                  className="btn-primary !px-4 !py-1.5 text-sm flex items-center gap-1 rounded-lg"
-                                >
-                                  <Plus className="w-4 h-4" /> Add
-                                </button>
-                              ) : (
-                                <div className="flex items-center gap-2 bg-primary/10 rounded-lg p-1 border border-primary/20">
-                                  <button onClick={() => updateQty(item.id, 'half', -1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
-                                    <Minus className="w-4 h-4" />
-                                  </button>
-                                  <span className="text-primary font-bold w-6 text-center">{halfQty}</span>
-                                  <button onClick={() => updateQty(item.id, 'half', 1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
-                                    <Plus className="w-4 h-4" />
-                                  </button>
-                                </div>
+                      {item.is_available ? (
+                        <>
+                          {hasHalf ? (
+                            <button
+                              onClick={() => setVariantItem(item)}
+                              className="btn-outline !px-3 !py-1.5 text-xs font-semibold rounded-lg shadow-sm whitespace-nowrap border-primary/30 text-primary hover:bg-primary/5"
+                            >
+                              Choose
+                              {totalQty > 0 && (
+                                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center">
+                                  {totalQty}
+                                </span>
                               )}
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-sm font-medium text-theme-primary">Full Portion</span>
-                              {fullQty === 0 ? (
-                                <button
-                                  onClick={() => addToCart(item, 'full')}
-                                  className="btn-primary !px-4 !py-1.5 text-sm flex items-center gap-1 rounded-lg"
-                                >
-                                  <Plus className="w-4 h-4" /> Add
-                                </button>
-                              ) : (
-                                <div className="flex items-center gap-2 bg-primary/10 rounded-lg p-1 border border-primary/20">
-                                  <button onClick={() => updateQty(item.id, 'full', -1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
-                                    <Minus className="w-4 h-4" />
-                                  </button>
-                                  <span className="text-primary font-bold w-6 text-center">{fullQty}</span>
-                                  <button onClick={() => updateQty(item.id, 'full', 1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
-                                    <Plus className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="mt-4 pt-4 border-t border-theme-border">
-                            {fullQty === 0 ? (
+                            </button>
+                          ) : (
+                            totalQty === 0 ? (
                               <button
                                 onClick={() => addToCart(item, 'full')}
-                                className="btn-primary w-full !py-2.5 text-sm flex items-center justify-center gap-1 rounded-xl shadow-sm"
+                                className="btn-primary !px-3 !py-1.5 text-xs font-semibold flex items-center gap-1 rounded-lg shadow-sm"
                               >
-                                <Plus className="w-4 h-4" /> Add to Cart
+                                <Plus className="w-3.5 h-3.5" /> Add
                               </button>
                             ) : (
-                              <div className="flex items-center justify-between gap-2 bg-primary/10 rounded-xl p-1.5 border border-primary/20">
-                                <button onClick={() => updateQty(item.id, 'full', -1)} className="w-9 h-9 flex items-center justify-center text-primary hover:bg-primary/20 rounded-lg transition-colors">
-                                  <Minus className="w-4 h-4" />
+                              <div className="flex items-center gap-1.5 bg-primary/10 rounded-lg p-1 border border-primary/20">
+                                <button onClick={() => updateQty(item.id, 'full', -1)} className="w-6 h-6 flex items-center justify-center text-primary hover:bg-primary/20 rounded transition-colors">
+                                  <Minus className="w-3 h-3" />
                                 </button>
-                                <span className="text-primary font-bold text-lg">{fullQty}</span>
-                                <button onClick={() => updateQty(item.id, 'full', 1)} className="w-9 h-9 flex items-center justify-center text-primary hover:bg-primary/20 rounded-lg transition-colors">
-                                  <Plus className="w-4 h-4" />
+                                <span className="text-primary font-bold text-xs w-4 text-center">{totalQty}</span>
+                                <button onClick={() => updateQty(item.id, 'full', 1)} className="w-6 h-6 flex items-center justify-center text-primary hover:bg-primary/20 rounded transition-colors">
+                                  <Plus className="w-3 h-3" />
                                 </button>
                               </div>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="mt-4 pt-4 border-t border-theme-border">
-                        <button disabled className="w-full px-4 py-2.5 rounded-xl bg-surface text-theme-secondary text-sm font-medium cursor-not-allowed border border-theme-border opacity-60">
-                          Out of Stock
-                        </button>
-                      </div>
-                    )}
+                            )
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-xs text-red-500 font-semibold px-2 py-1 bg-red-50 rounded-md border border-red-100">Out</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -686,19 +638,19 @@ export function OrderPage({
 
       {/* Sticky Cart Bar */}
       {cartCount > 0 && !cartOpen && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 px-4 pb-4 animate-fade-in-up">
+        <div className="fixed bottom-0 left-0 right-0 z-30 px-3 pb-3 animate-fade-in-up">
           <div className="max-w-7xl mx-auto">
             <button
               onClick={() => setCartOpen(true)}
-              className="w-full btn-primary flex items-center justify-between px-6 py-4 shadow-lg rounded-xl"
+              className="w-full btn-primary flex items-center justify-between px-4 py-3 shadow-xl rounded-xl border border-primary/20"
             >
-              <span className="flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5" />
+              <span className="flex items-center gap-2 text-sm font-semibold">
+                <ShoppingBag className="w-4 h-4" />
                 {cartCount} {cartCount === 1 ? 'item' : 'items'}
               </span>
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 text-sm font-semibold">
                 {formatCurrency(cartTotal, restaurant?.currency)}
-                <span className="opacity-60">·</span>
+                <span className="opacity-60 text-xs px-1">·</span>
                 <span>View Cart</span>
               </span>
             </button>
@@ -776,6 +728,82 @@ export function OrderPage({
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Variant Selector Modal */}
+      {variantItem && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in" onClick={() => setVariantItem(null)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative w-full sm:max-w-md bg-background border border-theme-border rounded-t-2xl sm:rounded-2xl p-5 animate-slide-in-up sm:animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="font-serif text-lg text-theme-primary font-bold">{variantItem.name}</h3>
+                <p className="text-sm text-theme-secondary mt-1">Customize your portion</p>
+              </div>
+              <button onClick={() => setVariantItem(null)} className="w-8 h-8 flex items-center justify-center bg-surface border border-theme-border rounded-lg hover:bg-theme-border/50 transition-colors">
+                <X className="w-4 h-4 text-theme-secondary" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-xl border border-theme-border bg-surface">
+                <div>
+                  <p className="text-sm font-medium text-theme-primary">Half Portion</p>
+                  <p className="text-xs text-theme-secondary font-semibold">{formatCurrency(variantItem.half_price!, restaurant?.currency)}</p>
+                </div>
+                {getCartQty(variantItem.id, 'half') === 0 ? (
+                  <button
+                    onClick={() => addToCart(variantItem, 'half')}
+                    className="btn-outline !px-3 !py-1.5 text-xs font-semibold rounded-lg text-primary border-primary hover:bg-primary/5"
+                  >
+                    Add
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2 bg-primary/10 rounded-lg p-1 border border-primary/20">
+                    <button onClick={() => updateQty(variantItem.id, 'half', -1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="text-primary font-bold w-4 text-center text-xs">{getCartQty(variantItem.id, 'half')}</span>
+                    <button onClick={() => updateQty(variantItem.id, 'half', 1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex items-center justify-between p-3 rounded-xl border border-theme-border bg-surface">
+                <div>
+                  <p className="text-sm font-medium text-theme-primary">Full Portion</p>
+                  <p className="text-xs text-theme-secondary font-semibold">{formatCurrency(variantItem.full_price, restaurant?.currency)}</p>
+                </div>
+                {getCartQty(variantItem.id, 'full') === 0 ? (
+                  <button
+                    onClick={() => addToCart(variantItem, 'full')}
+                    className="btn-outline !px-3 !py-1.5 text-xs font-semibold rounded-lg text-primary border-primary hover:bg-primary/5"
+                  >
+                    Add
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2 bg-primary/10 rounded-lg p-1 border border-primary/20">
+                    <button onClick={() => updateQty(variantItem.id, 'full', -1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="text-primary font-bold w-4 text-center text-xs">{getCartQty(variantItem.id, 'full')}</span>
+                    <button onClick={() => updateQty(variantItem.id, 'full', 1)} className="w-7 h-7 flex items-center justify-center text-primary hover:bg-primary/20 rounded-md transition-colors">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <button onClick={() => setVariantItem(null)} className="btn-primary w-full shadow-md">
+                Done
+              </button>
+            </div>
           </div>
         </div>
       )}

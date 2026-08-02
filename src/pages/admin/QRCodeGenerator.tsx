@@ -13,10 +13,12 @@ export function QRCodeGenerator() {
   const [loading, setLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
+  const [subdomain, setSubdomain] = useState<string | null>(null);
   
   const getCustomerUrl = (tableNumber: number) => {
-    const baseUrl = restaurant?.subdomain 
-      ? `${window.location.origin}/${restaurant.subdomain}`
+    const tenantSlug = subdomain || restaurant?.subdomain;
+    const baseUrl = tenantSlug 
+      ? `${window.location.origin}/${tenantSlug}`
       : window.location.origin;
     return `${baseUrl}/menu?table=${tableNumber}`;
   };
@@ -25,6 +27,9 @@ export function QRCodeGenerator() {
 
   useEffect(() => {
     async function loadData() {
+      const { data: restData } = await supabase.from('restaurants').select('subdomain').eq('id', restaurantId).maybeSingle();
+      if (restData) setSubdomain(restData.subdomain);
+
       const { data } = await supabase.from('tables').select('*').eq('restaurant_id', restaurantId).order('table_number');
       setTables(data ?? []);
       if (data && data.length > 0) setSelectedTable(data[0]);
@@ -37,7 +42,7 @@ export function QRCodeGenerator() {
     if (!selectedTable) return;
     const orderUrl = getCustomerUrl(selectedTable.table_number);
     generateQR(orderUrl);
-  }, [selectedTable, restaurant]);
+  }, [selectedTable, restaurant, subdomain]);
 
   async function generateQR(text: string) {
     try {

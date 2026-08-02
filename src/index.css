@@ -97,10 +97,10 @@
     @apply rounded-xl transition-all duration-300;
   }
   .card-luxury h1, .card-luxury h2, .card-luxury h3, .card-luxury h4, .card-luxury h5, .card-luxury h6, .card-luxury .card-title {
-    color: #0F172A;
+    color: var(--tenant-text-primary);
   }
   .card-luxury p, .card-luxury .card-body {
-    color: #334155;
+    color: var(--tenant-text-secondary);
   }
   
   .input-luxury {

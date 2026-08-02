@@ -351,7 +351,7 @@ export function OrderPage({
   }
 
   return (
-    <div className="min-h-screen bg-background text-primary selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-theme-text-primary selection:bg-primary selection:text-primary-foreground">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-theme-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">

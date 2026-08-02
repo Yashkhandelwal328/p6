@@ -43,14 +43,14 @@ export function PublicRestaurantPage({
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
         <Store className="w-16 h-16 text-theme-text-muted mb-4" />
-        <h1 className="text-2xl font-serif text-primary mb-2">Restaurant Not Found</h1>
+        <h1 className="text-2xl font-serif text-theme-text-primary mb-2">Restaurant Not Found</h1>
         <p className="text-theme-text-secondary">We couldn't find the restaurant you're looking for.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-primary selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-theme-text-primary selection:bg-primary selection:text-primary-foreground">
       {/* Hero Banner */}
       <div className="relative h-64 md:h-96 w-full bg-surface overflow-hidden">
         {restaurant.logo_url ? (
@@ -67,7 +67,7 @@ export function PublicRestaurantPage({
             </div>
           )}
           <div className="pb-2 w-full">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-primary font-bold drop-shadow-md">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-theme-text-primary font-bold drop-shadow-md">
               {restaurant.name}
             </h1>
             <p className="text-theme-text-secondary mt-1 text-lg flex items-center justify-center sm:justify-start gap-2">

@@ -15,70 +15,122 @@ export function LandingPage() {
   const plans = [
     {
       name: 'Starter',
+      originalPrice: '₹4,999',
       price: '₹2,999',
-      period: '/ 3 Months',
+      period: '3 Months',
+      badge: 'Perfect for Small Restaurants',
+      savings: 'Save 40%',
       features: [
-        '1 Restaurant Account',
+        '1 Restaurant',
         '15 QR Codes',
         '15 Tables',
         'Up to 130 Menu Items',
         'Unlimited Orders',
-        'Owner, Kitchen & Waiter Dashboards',
-        'Basic Analytics & Reports',
+        'Owner Dashboard',
+        'Kitchen Dashboard',
+        'Waiter Dashboard',
+        'Customer Ordering Website',
+        'QR Menu',
+        'Table Management',
+        'Menu Management',
+        'Order Management',
+        'Customer Database',
+        'Basic Reports',
+        'Basic Analytics',
         'Email Support'
       ],
-      buttonText: 'Buy Now',
+      buttonText: 'Get Started',
       highlight: false,
       theme: 'border-ink-800 bg-ink-900/50 hover:border-nirvana-400/30 text-ink-100'
     },
     {
       name: 'Professional',
+      originalPrice: '₹5,999',
       price: '₹3,999',
-      period: '/ 3 Months',
-      badge: 'Most Popular',
+      period: '1 Year',
+      badge: '⭐ MOST POPULAR',
+      savings: 'Save 33%',
       features: [
-        'Everything in Starter',
-        'Unlimited QR Codes & Tables',
+        'Everything in Starter PLUS',
+        'Unlimited QR Codes',
+        'Unlimited Tables',
         'Unlimited Menu Items',
-        'Unlimited Staff',
-        'Advanced Analytics & Export PDF/Excel',
-        'Customer Feedback',
-        'Premium Dashboard & Custom Branding',
-        'Priority Support & Auto Backups'
+        'Unlimited Staff Accounts',
+        'Unlimited Categories',
+        'Advanced Analytics',
+        'Sales Dashboard',
+        'Peak Hour Analytics',
+        'Customer Insights',
+        'Export PDF',
+        'Export Excel',
+        'Premium Dashboard',
+        'Restaurant Branding',
+        'Custom Theme',
+        'Promotional Banners',
+        'Discount Management',
+        'QR Customization',
+        'Priority Support',
+        'Automatic Backups'
       ],
-      buttonText: 'Buy Now',
+      buttonText: 'Start Growing',
       highlight: true,
-      theme: 'border-nirvana-400/50 bg-gradient-to-b from-coffee-950 to-ink-950 text-nirvana-50 shadow-gold'
+      theme: 'border-nirvana-400/50 bg-gradient-to-b from-coffee-950 to-ink-950 text-nirvana-50 shadow-2xl scale-105 z-10'
     },
     {
       name: 'Enterprise',
+      originalPrice: '₹14,999',
       price: '₹11,499',
-      period: '/ Year',
-      badge: 'Best Value',
-      savings: 'Save ₹4,497/year compared to Pro',
+      period: '1 Year',
+      badge: '👑 BEST VALUE',
+      savings: 'Save 23%',
       features: [
-        'Everything in Professional',
+        'Everything in Professional PLUS',
         'Unlimited Everything',
+        'Multi-Branch Support',
+        'Branch Analytics',
+        'Dedicated Account Manager',
+        'Premium Support',
+        'White Label Branding',
+        'Custom Domain Support',
+        'API Access',
+        'Staff Roles & Permissions',
+        'Advanced Reports',
+        'Business Intelligence Dashboard',
+        'Early Access Features',
         'Premium Updates',
-        'Advanced Reports & Business Analytics',
-        'Dedicated Support',
-        'Early Access to New Features'
+        'Backup & Restore',
+        'Business Consultation',
+        'Future POS Integration',
+        'Future Inventory Management',
+        'Future Loyalty Program'
       ],
-      buttonText: 'Buy Now',
+      buttonText: 'Contact Sales',
       highlight: false,
       theme: 'border-ink-800 bg-ink-900/50 hover:border-nirvana-400/30 text-ink-100'
     }
   ];
 
   const compareFeatures = [
-    { feature: 'Restaurant Accounts', starter: '1', pro: '1', enterprise: 'Unlimited' },
-    { feature: 'QR Codes & Tables', starter: '15', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Restaurant Website', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Customer Ordering', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'QR Menu', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'QR Codes', starter: '15', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Tables', starter: '15', pro: 'Unlimited', enterprise: 'Unlimited' },
     { feature: 'Menu Items', starter: '130', pro: 'Unlimited', enterprise: 'Unlimited' },
     { feature: 'Orders', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
-    { feature: 'Staff Accounts', starter: 'Basic', pro: 'Unlimited', enterprise: 'Unlimited' },
-    { feature: 'Analytics', starter: 'Basic', pro: 'Advanced', enterprise: 'Business Analytics' },
-    { feature: 'Custom Branding', starter: '-', pro: 'Yes', enterprise: 'Yes + White Label' },
-    { feature: 'Support', starter: 'Email', pro: 'Priority', enterprise: 'Dedicated' },
+    { feature: 'Staff', starter: '—', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Analytics', starter: 'Basic', pro: 'Advanced', enterprise: 'Business Intelligence' },
+    { feature: 'Reports', starter: 'Basic', pro: 'Advanced', enterprise: 'Advanced' },
+    { feature: 'Export PDF', starter: '—', pro: '✓', enterprise: '✓' },
+    { feature: 'Export Excel', starter: '—', pro: '✓', enterprise: '✓' },
+    { feature: 'Restaurant Branding', starter: '—', pro: '✓', enterprise: '✓' },
+    { feature: 'Custom Theme', starter: '—', pro: '✓', enterprise: '✓' },
+    { feature: 'Priority Support', starter: '—', pro: '✓', enterprise: 'Premium' },
+    { feature: 'Auto Backup', starter: '—', pro: '✓', enterprise: '✓' },
+    { feature: 'Multi Branch', starter: '—', pro: '—', enterprise: '✓' },
+    { feature: 'Custom Domain', starter: '—', pro: '—', enterprise: '✓' },
+    { feature: 'API Access', starter: '—', pro: '—', enterprise: '✓' },
+    { feature: 'Dedicated Manager', starter: '—', pro: '—', enterprise: '✓' },
   ];
 
   return (
@@ -166,50 +218,54 @@ export function LandingPage() {
             <p className="text-ink-300 max-w-2xl mx-auto font-sans">Choose a plan that fits your culinary ambition. Premium tools for premium experiences.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-24 max-w-7xl mx-auto">
             {plans.map((plan) => (
               <div 
                 key={plan.name} 
                 className={`relative p-8 rounded-3xl border transition-all duration-300 hover:-translate-y-2 flex flex-col h-full ${plan.theme}`}
               >
                 {plan.badge && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-gold text-ink-950 text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap font-sans uppercase tracking-wider">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-full text-center">
+                    <span className="bg-gradient-gold text-ink-950 text-[11px] sm:text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap font-sans uppercase tracking-wider">
                       {plan.badge}
                     </span>
                   </div>
                 )}
                 
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
                 
-                <div className="mb-4">
-                  <span className="text-4xl md:text-5xl font-bold text-nirvana-300 tracking-tight">{plan.price}</span>
-                  <span className="text-ink-600 font-sans ml-2">{plan.period}</span>
+                <div className="mb-2">
+                  {plan.originalPrice && (
+                    <span className="text-ink-500 font-sans line-through text-lg mr-3">
+                      {plan.originalPrice}
+                    </span>
+                  )}
+                </div>
+                <div className="mb-3 flex items-baseline flex-wrap gap-2">
+                  <span className={`text-4xl md:text-5xl font-bold tracking-tight ${plan.highlight ? 'text-gradient-gold' : 'text-nirvana-300'}`}>
+                    {plan.price}
+                  </span>
+                  <span className="text-ink-400 font-sans font-medium text-sm">/{plan.period}</span>
                 </div>
                 
                 {plan.savings && (
-                  <div className="mb-6 inline-block bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-1 rounded-full font-sans font-medium">
-                    {plan.savings}
+                  <div className="mb-6">
+                    <span className="inline-block bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-1 rounded-full font-sans font-medium uppercase tracking-wider">
+                      {plan.savings}
+                    </span>
                   </div>
                 )}
                 
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-nirvana-400/20 to-transparent my-6" />
-                
-                <ul className="space-y-4 mb-8 flex-1 font-sans">
-                  {plan.features.map(feat => (
-                    <li key={feat} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-nirvana-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-medium leading-tight">{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-                
                 <button 
                   onClick={() => {
-                    const planId = plan.name.toLowerCase() === 'professional' ? 'pro' : plan.name.toLowerCase();
-                    navigate(`/register?plan=${planId}`);
+                    if (plan.name === 'Enterprise') {
+                      window.location.href = 'mailto:sales@gourmetsaas.com';
+                    } else {
+                      const planId = plan.name.toLowerCase() === 'professional' ? 'pro' : plan.name.toLowerCase();
+                      navigate(`/register?plan=${planId}`);
+                    }
                   }}
-                  className={`w-full py-4 rounded-xl font-bold font-sans uppercase tracking-widest text-sm transition-all duration-300 ${
+                  className={`w-full py-4 rounded-xl font-bold font-sans uppercase tracking-widest text-sm transition-all duration-300 mb-6 ${
                     plan.highlight 
                       ? 'bg-gradient-gold text-ink-950 shadow-gold hover:opacity-90' 
                       : 'bg-ink-800 text-nirvana-100 hover:bg-ink-700 hover:text-nirvana-300 border border-ink-700'
@@ -217,34 +273,72 @@ export function LandingPage() {
                 >
                   {plan.buttonText}
                 </button>
+
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-nirvana-400/20 to-transparent mb-6" />
+                
+                <ul className="space-y-4 mb-8 flex-1 font-sans">
+                  {plan.features.map(feat => (
+                    <li key={feat} className="flex items-start gap-3">
+                      <CheckCircle2 className={`w-5 h-5 shrink-0 mt-0.5 ${plan.highlight ? 'text-yellow-500' : 'text-nirvana-400'}`} />
+                      <span className={`text-sm font-medium leading-tight ${feat.includes('Everything in') ? 'font-bold' : ''}`}>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
           
           {/* Feature Comparison Table */}
-          <div className="max-w-4xl mx-auto mt-16 font-sans">
-            <h3 className="text-2xl md:text-3xl font-serif font-bold text-center text-nirvana-300 mb-10">Compare Features</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+          <div className="max-w-5xl mx-auto mt-16 font-sans">
+            <h3 className="text-2xl md:text-3xl font-serif font-bold text-center text-nirvana-300 mb-10">Detailed Comparison</h3>
+            <div className="overflow-x-auto pb-4">
+              <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
-                  <tr className="border-b border-ink-800 text-ink-300">
-                    <th className="py-4 px-6 font-medium">Features</th>
-                    <th className="py-4 px-6 font-medium">Starter</th>
-                    <th className="py-4 px-6 font-bold text-nirvana-400">Professional</th>
-                    <th className="py-4 px-6 font-medium">Enterprise</th>
+                  <tr className="border-b border-ink-800 text-ink-300 bg-ink-900/30">
+                    <th className="py-5 px-6 font-medium sticky left-0 bg-ink-950 lg:bg-transparent shadow-[4px_0_10px_rgba(0,0,0,0.1)] lg:shadow-none">Features</th>
+                    <th className="py-5 px-6 font-medium text-center">Starter</th>
+                    <th className="py-5 px-6 font-bold text-gradient-gold text-center">Professional</th>
+                    <th className="py-5 px-6 font-medium text-center">Enterprise</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-ink-800/50 text-sm">
                   {compareFeatures.map((row, idx) => (
                     <tr key={idx} className="hover:bg-ink-900/30 transition-colors">
-                      <td className="py-4 px-6 text-ink-100">{row.feature}</td>
-                      <td className="py-4 px-6 text-ink-600">{row.starter}</td>
-                      <td className="py-4 px-6 text-nirvana-300 font-medium">{row.pro}</td>
-                      <td className="py-4 px-6 text-ink-600">{row.enterprise}</td>
+                      <td className="py-4 px-6 text-ink-100 font-medium sticky left-0 bg-ink-950 lg:bg-transparent shadow-[4px_0_10px_rgba(0,0,0,0.1)] lg:shadow-none">{row.feature}</td>
+                      <td className={`py-4 px-6 text-center ${row.starter === '✓' ? 'text-green-400' : 'text-ink-500'}`}>{row.starter}</td>
+                      <td className={`py-4 px-6 text-center font-medium ${row.pro === '✓' ? 'text-green-400' : (row.pro === '—' ? 'text-ink-500' : 'text-nirvana-300')}`}>{row.pro}</td>
+                      <td className={`py-4 px-6 text-center ${row.enterprise === '✓' ? 'text-green-400' : 'text-ink-500'}`}>{row.enterprise}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+          
+          {/* Social Proof */}
+          <div className="max-w-4xl mx-auto mt-24 mb-12 text-center font-sans">
+            <h4 className="text-xl font-bold text-ink-300 mb-8">Trusted by growing restaurants.</h4>
+            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 text-sm font-medium text-ink-400">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <span>No hidden charges</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <span>Secure Cloud Platform</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <span>Free Setup Assistance</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <span>Premium Support</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <span>Cancel Anytime</span>
+              </div>
             </div>
           </div>
         </div>

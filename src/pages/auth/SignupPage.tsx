@@ -245,11 +245,22 @@ export function SignupPage() {
       const { data, error: rpcError } = await supabase.rpc('create_restaurant_wizard', { p_payload: payload });
       if (rpcError) throw rpcError;
 
-      // Update subscription to 'trial' instead of active because it's pending approval
+      // Update status based on plan
       if (data?.restaurant_id) {
-        await supabase.from('subscriptions')
-          .update({ status: 'trial' })
-          .eq('restaurant_id', data.restaurant_id);
+        if (plan === 'free_trial') {
+          await supabase.from('subscriptions')
+            .update({ status: 'trial' })
+            .eq('restaurant_id', data.restaurant_id);
+        } else {
+          // Paid plans go into pending approval
+          await supabase.from('subscriptions')
+            .update({ status: 'pending_approval' })
+            .eq('restaurant_id', data.restaurant_id);
+            
+          await supabase.from('restaurants')
+            .update({ is_active: false, website_status: 'pending' })
+            .eq('id', data.restaurant_id);
+        }
       }
 
       // Success! Sign in
@@ -259,7 +270,8 @@ export function SignupPage() {
       });
       if (signInError) throw signInError;
 
-      setStep(7);
+      // Navigate to owner dashboard (ProtectedRoute will catch pending approval and redirect to waiting page)
+      navigate('/owner/dashboard');
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to create restaurant platform. Please try again.');
@@ -268,27 +280,7 @@ export function SignupPage() {
     }
   };
 
-  const submitCallbackForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const form = e.target as any;
-      const { data, error } = await supabase.from('premium_leads').insert({
-        owner_name: form.name.value,
-        business_name: formData.restaurantName,
-        phone_number: form.phone.value,
-        email: formData.email,
-        preferred_call_time: form.time.value,
-        notes: form.notes.value
-      });
-      if (error) throw error;
-      navigate('/owner');
-    } catch (err: any) {
-      setError(err.message || 'Failed to submit callback request.');
-      setLoading(false);
-    }
-  };
+  // Removed old callback form, it is now in WaitingPage.tsx
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -708,66 +700,6 @@ export function SignupPage() {
             </div>
           )}
 
-          {/* Step 7: Premium Contact */}
-          {step === 7 && (
-            <div className="space-y-6 animate-fade-in-right">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-gold text-ink-950 flex items-center justify-center mx-auto mb-4 shadow-gold">
-                  <Check className="w-8 h-8" />
-                </div>
-                <h2 className="text-3xl font-serif text-primary font-bold mb-2">Almost There!</h2>
-                <p className="text-theme-secondary max-w-lg mx-auto">
-                  Thank you for choosing a premium plan! Our team will contact you shortly to complete your onboarding, verify your business requirements, and answer any questions.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div className="card-luxury p-6 border border-theme-border space-y-4 h-fit">
-                  <h3 className="font-serif text-xl font-bold text-primary">Contact Us</h3>
-                  <div className="space-y-3">
-                    <p className="flex items-center gap-3 text-sm text-theme-secondary">
-                      <Phone className="w-5 h-5 text-primary" /> +91 9876543210 (Phone & WhatsApp)
-                    </p>
-                    <p className="flex items-center gap-3 text-sm text-theme-secondary">
-                      <Mail className="w-5 h-5 text-primary" /> onboarding@gourmetsaas.com
-                    </p>
-                    <p className="flex items-center gap-3 text-sm text-theme-secondary">
-                      <Clock className="w-5 h-5 text-primary" /> Expected Response: 2-4 Hours
-                    </p>
-                  </div>
-                </div>
-
-                <div className="card-luxury p-6 border border-theme-border">
-                  <h3 className="font-serif text-xl font-bold text-primary mb-4">Request a Callback</h3>
-                  <form onSubmit={submitCallbackForm} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-1">Your Name</label>
-                      <input name="name" required defaultValue={formData.ownerName} className="input-luxury w-full" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-1">Phone Number</label>
-                      <input name="phone" required defaultValue={formData.phone} className="input-luxury w-full" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-1">Preferred Call Time</label>
-                      <select name="time" required className="input-luxury w-full">
-                        <option value="Morning (9AM - 12PM)">Morning (9AM - 12PM)</option>
-                        <option value="Afternoon (12PM - 4PM)">Afternoon (12PM - 4PM)</option>
-                        <option value="Evening (4PM - 7PM)">Evening (4PM - 7PM)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-1">Additional Notes (Optional)</label>
-                      <textarea name="notes" rows={2} className="input-luxury w-full" placeholder="Anything specific you'd like to discuss?" />
-                    </div>
-                    <button type="submit" disabled={loading} className="w-full btn-primary !py-3">
-                      {loading ? 'Submitting...' : 'Submit Request & Go To Dashboard'}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </main>
     </div>

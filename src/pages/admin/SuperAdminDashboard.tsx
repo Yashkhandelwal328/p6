@@ -22,6 +22,7 @@ export function SuperAdminDashboard() {
     totalCustomers: 0,
     avgOrderValue: 0,
     newThisMonth: 0,
+    pendingApprovals: 0,
   });
 
   const [revenueData, setRevenueData] = useState<any[]>([]);
@@ -38,7 +39,8 @@ export function SuperAdminDashboard() {
       const totalRests = restaurants?.length || 0;
       const activeRests = restaurants?.filter(r => r.website_status === 'published').length || 0;
       const suspended = restaurants?.filter(r => r.website_status === 'suspended').length || 0;
-      const premium = subscriptions?.filter(s => s.plan !== 'starter' && s.status === 'active').length || 0;
+      const premium = subscriptions?.filter(s => s.plan !== 'starter' && s.plan !== 'free_trial' && s.status === 'active').length || 0;
+      const pendingApprovals = subscriptions?.filter(s => s.status === 'pending_approval').length || 0;
       
       const totalRev = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
       const currentMonth = new Date().getMonth();
@@ -65,6 +67,7 @@ export function SuperAdminDashboard() {
         totalCustomers: customers?.length || 0,
         avgOrderValue: orders?.length ? totalRev / orders.length : 0,
         newThisMonth,
+        pendingApprovals,
       });
 
       // Generate dummy chart data based on real stats for visual purposes
@@ -196,6 +199,19 @@ export function SuperAdminDashboard() {
             <p className="text-xs text-theme-secondary font-medium uppercase tracking-wider">Premium Subs</p>
             <p className="text-lg font-bold text-theme-primary">{stats.premiumRestaurants}</p>
           </div>
+        </div>
+        <div className="card-luxury p-6 border-l-4 border-l-amber-400">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
+              <Clock className="w-6 h-6 text-amber-400" />
+            </div>
+          </div>
+          <p className="text-sm font-medium text-ink-400 mb-1">Pending Approvals</p>
+          <div className="flex items-baseline gap-2 mb-4">
+            <h3 className="text-3xl font-serif font-bold text-amber-400">{stats.pendingApprovals}</h3>
+            <span className="text-sm text-ink-500">requests</span>
+          </div>
+          <a href="/sup/approvals" className="text-xs text-amber-400 hover:text-amber-300 font-medium">Review Now &rarr;</a>
         </div>
       </div>
 

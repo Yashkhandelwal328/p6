@@ -123,7 +123,7 @@ export function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/register?plan=free_trial')}
             className="btn-primary text-lg px-8 py-4 flex items-center gap-2"
           >
             Start Your Free Trial <ArrowRight className="w-5 h-5" />
@@ -205,7 +205,10 @@ export function LandingPage() {
                 </ul>
                 
                 <button 
-                  onClick={() => navigate('/register')}
+                  onClick={() => {
+                    const planId = plan.name.toLowerCase() === 'professional' ? 'pro' : plan.name.toLowerCase();
+                    navigate(`/register?plan=${planId}`);
+                  }}
                   className={`w-full py-4 rounded-xl font-bold font-sans uppercase tracking-widest text-sm transition-all duration-300 ${
                     plan.highlight 
                       ? 'bg-gradient-gold text-ink-950 shadow-gold hover:opacity-90' 

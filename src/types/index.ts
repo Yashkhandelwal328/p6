@@ -55,7 +55,7 @@ export interface Restaurant {
   button_style: 'rounded' | 'pill' | 'square';
   border_radius: string;
   font_family: string;
-  website_status: 'draft' | 'published' | 'maintenance' | 'suspended';
+  website_status: 'draft' | 'published' | 'maintenance' | 'suspended' | 'pending';
   
   created_at: string;
   updated_at: string;

@@ -25,13 +25,16 @@ import { SuperAdminDashboard } from '@/pages/admin/SuperAdminDashboard';
 import { SuperAdminRestaurants } from '@/pages/admin/SuperAdminRestaurants';
 import { SuperAdminRestaurantDetails } from '@/pages/admin/SuperAdminRestaurantDetails';
 import { SuperAdminLeads } from '@/pages/admin/SuperAdminLeads';
+import { PendingApprovals } from '@/pages/admin/PendingApprovals';
 import { SuperAdminLayout } from '@/components/admin/SuperAdminLayout';
 import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
 import { MediaManagement } from '@/pages/admin/MediaManagement';
 import { SeoHead } from '@/components/SeoHead';
 
-function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: StaffRole[] }) {
-  const { session, staff, loading } = useAuth();
+import { WaitingPage } from '@/pages/owner/WaitingPage';
+
+function ProtectedRoute({ children, allowedRoles, allowPending = false }: { children: React.ReactNode; allowedRoles?: StaffRole[]; allowPending?: boolean }) {
+  const { session, staff, loading, isPendingApproval } = useAuth();
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -41,6 +44,12 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
   }
   if (!session) return <Navigate to="/login" replace />;
   if (allowedRoles && staff && !allowedRoles.includes(staff.role)) {
+    return <Navigate to="/owner/dashboard" replace />;
+  }
+  if (isPendingApproval && !allowPending) {
+    return <Navigate to="/owner/waiting" replace />;
+  }
+  if (!isPendingApproval && allowPending && window.location.pathname === '/owner/waiting') {
     return <Navigate to="/owner/dashboard" replace />;
   }
   return <>{children}</>;
@@ -93,7 +102,7 @@ function TenantRouter() {
     );
   }
 
-  if (restaurant.website_status === 'suspended') {
+  if (restaurant.website_status === 'suspended' || restaurant.website_status === 'pending') {
     return (
       <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
         <div>
@@ -138,11 +147,13 @@ function MainPlatformRouter() {
         <Route path="restaurants" element={<SuperAdminRestaurants />} />
         <Route path="restaurants/:id" element={<SuperAdminRestaurantDetails />} />
         <Route path="leads" element={<SuperAdminLeads />} />
+        <Route path="approvals" element={<PendingApprovals />} />
       </Route>
 
-      {/* Protected owner routes */}
+      {/* Main App Routes */}
       <Route path="/owner" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-        <Route index element={<Navigate to="/owner/dashboard" replace />} />
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="waiting" element={<ProtectedRoute allowPending><WaitingPage /></ProtectedRoute>} />
         <Route path="dashboard" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><OwnerDashboard /></ProtectedRoute>} />
         <Route path="kitchen" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'chef']}><KitchenDashboard /></ProtectedRoute>} />
         <Route path="waiter" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'waiter']}><WaiterDashboard /></ProtectedRoute>} />

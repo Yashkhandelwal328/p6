@@ -9,6 +9,7 @@ interface AuthContextValue {
   restaurantId: string | null;
   role: StaffRole | null;
   loading: boolean;
+  isPendingApproval: boolean;
   impersonatedRestaurantId: string | null;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [staff, setStaff] = useState<Staff | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPendingApproval, setIsPendingApproval] = useState(false);
   const [impersonatedRestaurantId, setImpersonatedRestaurantId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -62,6 +64,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Failed to load staff:', error.message);
     }
     setStaff(data);
+
+    if (data?.restaurant_id) {
+      const { data: subData } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('restaurant_id', data.restaurant_id)
+        .maybeSingle();
+      
+      setIsPendingApproval(subData?.status === 'pending_approval');
+    }
+
     setLoading(false);
   }
 
@@ -88,6 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       restaurantId: activeRestaurantId, 
       role, 
       loading, 
+      isPendingApproval,
       impersonatedRestaurantId,
       signIn, 
       signOut,

@@ -56,8 +56,8 @@ export function CategoryManagement() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1">Category Management</h1>
-          <p className="text-sm text-ink-400">{topLevel.length} categories with sub-categories</p>
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Category Management</h1>
+          <p className="text-sm text-ink-600">{topLevel.length} categories with sub-categories</p>
         </div>
         <button onClick={() => { setEditingCat(null); setShowForm(true); }} className="btn-gold flex items-center gap-2">
           <Plus className="w-5 h-5" /> Add Category
@@ -74,11 +74,11 @@ export function CategoryManagement() {
                 </div>
                 <div>
                   <p className="font-serif text-base text-ink-100">{cat.name}</p>
-                  <p className="text-xs text-ink-400">/{cat.slug} · Order {cat.sort_order}</p>
+                  <p className="text-xs text-ink-600">/{cat.slug} · Order {cat.sort_order}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`badge ${cat.is_active ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-ink-500/15 text-ink-400 border-ink-500/30'}`}>
+                <span className={`badge ${cat.is_active ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-ink-500/15 text-ink-600 border-ink-500/30'}`}>
                   {cat.is_active ? 'Active' : 'Inactive'}
                 </span>
                 <button onClick={() => { setEditingCat(cat); setShowForm(true); }} className="w-8 h-8 flex items-center justify-center glass rounded-lg hover:bg-nirvana-400/10">
@@ -100,7 +100,7 @@ export function CategoryManagement() {
                     <div className="flex items-center gap-2">
                       <ChevronRight className="w-4 h-4 text-ink-500" />
                       <span className="text-sm text-ink-200">{child.name}</span>
-                      <span className="text-xs text-ink-400">/{child.slug}</span>
+                      <span className="text-xs text-ink-600">/{child.slug}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <button onClick={() => { setEditingCat(child); setShowForm(true); }} className="w-7 h-7 flex items-center justify-center glass rounded hover:bg-nirvana-400/10">
@@ -159,7 +159,7 @@ function CategoryForm({ category, categories, onClose, onSave }: {
       <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" />
       <form onSubmit={handleSubmit} className="relative w-full max-w-md glass-dark border border-nirvana-400/20 rounded-2xl p-6 animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-serif text-xl text-gradient-gold">{category ? 'Edit Category' : 'Add Category'}</h3>
+          <h3 className="font-serif text-xl text-ink-950">{category ? 'Edit Category' : 'Add Category'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
             <X className="w-5 h-5 text-ink-300" />
           </button>

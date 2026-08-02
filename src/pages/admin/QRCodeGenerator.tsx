@@ -97,10 +97,10 @@ export function QRCodeGenerator() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1 flex items-center gap-2">
             <QrCode className="w-7 h-7" /> QR Code Generator
           </h1>
-          <p className="text-sm text-ink-400">Generate and download QR codes for each table</p>
+          <p className="text-sm text-ink-600">Generate and download QR codes for each table</p>
         </div>
         <button onClick={downloadAll} className="btn-gold flex items-center gap-2">
           <Download className="w-5 h-5" /> Download All
@@ -124,7 +124,7 @@ export function QRCodeGenerator() {
               >
                 <Table2 className="w-6 h-6 mx-auto mb-1 text-nirvana-300" />
                 <p className="text-sm font-medium text-ink-100">Table {table.table_number}</p>
-                <p className="text-xs text-ink-400">{table.capacity} seats</p>
+                <p className="text-xs text-ink-600">{table.capacity} seats</p>
               </button>
             ))}
           </div>
@@ -139,7 +139,7 @@ export function QRCodeGenerator() {
                 <canvas ref={canvasRef} className="rounded-lg" />
               </div>
               <p className="font-serif text-lg text-ink-100 mb-1">Table {selectedTable.table_number}</p>
-              <p className="text-xs text-ink-400 mb-4 break-all">{orderUrl}</p>
+              <p className="text-xs text-ink-600 mb-4 break-all">{orderUrl}</p>
               <div className="flex gap-2 justify-center">
                 <button onClick={downloadQR} className="btn-gold flex items-center gap-2 !py-2 text-sm">
                   <Download className="w-4 h-4" /> Download PNG
@@ -151,7 +151,7 @@ export function QRCodeGenerator() {
               </div>
             </div>
           ) : (
-            <p className="text-ink-400 text-center py-8">Select a table to generate QR code</p>
+            <p className="text-ink-600 text-center py-8">Select a table to generate QR code</p>
           )}
         </div>
       </div>

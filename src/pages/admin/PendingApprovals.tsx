@@ -90,10 +90,10 @@ export function PendingApprovals() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-serif text-3xl text-gradient-gold mb-2 flex items-center gap-3">
+        <h1 className="font-serif text-3xl text-ink-950 mb-2 flex items-center gap-3">
           <Shield className="w-8 h-8" /> Pending Approvals
         </h1>
-        <p className="text-ink-400">Review and manage premium plan registrations</p>
+        <p className="text-ink-600">Review and manage premium plan registrations</p>
       </div>
 
       {restaurants.length === 0 ? (

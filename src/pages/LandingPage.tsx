@@ -184,7 +184,7 @@ export function LandingPage() {
                 
                 <div className="mb-4">
                   <span className="text-4xl md:text-5xl font-bold text-nirvana-300 tracking-tight">{plan.price}</span>
-                  <span className="text-ink-400 font-sans ml-2">{plan.period}</span>
+                  <span className="text-ink-600 font-sans ml-2">{plan.period}</span>
                 </div>
                 
                 {plan.savings && (
@@ -238,9 +238,9 @@ export function LandingPage() {
                   {compareFeatures.map((row, idx) => (
                     <tr key={idx} className="hover:bg-ink-900/30 transition-colors">
                       <td className="py-4 px-6 text-ink-100">{row.feature}</td>
-                      <td className="py-4 px-6 text-ink-400">{row.starter}</td>
+                      <td className="py-4 px-6 text-ink-600">{row.starter}</td>
                       <td className="py-4 px-6 text-nirvana-300 font-medium">{row.pro}</td>
-                      <td className="py-4 px-6 text-ink-400">{row.enterprise}</td>
+                      <td className="py-4 px-6 text-ink-600">{row.enterprise}</td>
                     </tr>
                   ))}
                 </tbody>

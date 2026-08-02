@@ -52,7 +52,7 @@ export function WaitingPage() {
             <Clock className="w-8 h-8 text-ink-950" />
           </div>
           
-          <h1 className="font-serif text-3xl text-gradient-gold mb-4">
+          <h1 className="font-serif text-3xl text-ink-950 mb-4">
             🎉 Thank you for registering!
           </h1>
           
@@ -62,7 +62,7 @@ export function WaitingPage() {
               Your selected premium plan is currently <strong className="text-nirvana-300">awaiting approval</strong> from our team.
               We will contact you shortly to complete your subscription and activate your restaurant.
             </p>
-            <p className="text-sm text-ink-400 p-4 bg-ink-900/50 rounded-lg border border-ink-800">
+            <p className="text-sm text-ink-600 p-4 bg-ink-900/50 rounded-lg border border-ink-800">
               Until then, your dashboard and customer website remain locked.
             </p>
           </div>
@@ -70,23 +70,23 @@ export function WaitingPage() {
           <div className="space-y-3">
             <h3 className="font-serif text-lg text-nirvana-100 mb-4 border-b border-white/10 pb-2">Business Details</h3>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-ink-400">Restaurant Name</span>
+              <span className="text-ink-600">Restaurant Name</span>
               <span className="text-ink-100 font-medium">{restaurant?.name}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-ink-400">Owner Name</span>
+              <span className="text-ink-600">Owner Name</span>
               <span className="text-ink-100 font-medium">{staff?.name}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-ink-400">Email Address</span>
+              <span className="text-ink-600">Email Address</span>
               <span className="text-ink-100 font-medium">{staff?.email}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-ink-400">Business Phone</span>
+              <span className="text-ink-600">Business Phone</span>
               <span className="text-ink-100 font-medium">{restaurant?.phone || 'Not provided'}</span>
             </div>
             <div className="flex justify-between items-center text-sm pt-3 border-t border-white/5">
-              <span className="text-ink-400">Expected Response</span>
+              <span className="text-ink-600">Expected Response</span>
               <span className="text-nirvana-300 font-medium">Within 24 Hours</span>
             </div>
           </div>
@@ -95,7 +95,7 @@ export function WaitingPage() {
         {/* Callback Form Section */}
         <div className="card-luxury p-8">
           <h2 className="font-serif text-2xl text-nirvana-100 mb-2">Request a Callback</h2>
-          <p className="text-ink-400 text-sm mb-6">Need immediate assistance? Let us know the best time to reach you.</p>
+          <p className="text-ink-600 text-sm mb-6">Need immediate assistance? Let us know the best time to reach you.</p>
 
           {submitted ? (
             <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6 text-center animate-fade-in-up">
@@ -175,10 +175,10 @@ export function WaitingPage() {
 
           <div className="mt-8 pt-6 border-t border-white/5 space-y-3">
             <h4 className="text-sm font-medium text-ink-300 mb-2">Direct Contact</h4>
-            <a href="mailto:support@gourmetsaas.com" className="flex items-center gap-2 text-sm text-ink-400 hover:text-nirvana-300 transition-colors">
+            <a href="mailto:support@gourmetsaas.com" className="flex items-center gap-2 text-sm text-ink-600 hover:text-nirvana-300 transition-colors">
               <Mail className="w-4 h-4" /> support@gourmetsaas.com
             </a>
-            <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-ink-400 hover:text-nirvana-300 transition-colors">
+            <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-ink-600 hover:text-nirvana-300 transition-colors">
               <Phone className="w-4 h-4" /> +91 98765 43210
             </a>
           </div>

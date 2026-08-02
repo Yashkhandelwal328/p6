@@ -78,10 +78,10 @@ export function WaiterDashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+        <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1 flex items-center gap-2">
           <BellRing className="w-7 h-7" /> Waiter Dashboard
         </h1>
-        <p className="text-sm text-ink-400">Ready orders, service requests, and table status</p>
+        <p className="text-sm text-ink-600">Ready orders, service requests, and table status</p>
       </div>
 
       {/* Tab Cards */}
@@ -94,7 +94,7 @@ export function WaiterDashboard() {
             <CheckCircle2 className="w-5 h-5 text-green-400" />
             <span className="text-2xl font-serif text-ink-100">{readyOrders.length}</span>
           </div>
-          <p className="text-xs text-ink-400">Ready to Serve</p>
+          <p className="text-xs text-ink-600">Ready to Serve</p>
         </button>
         <button
           onClick={() => setActiveTab('requests')}
@@ -104,7 +104,7 @@ export function WaiterDashboard() {
             <Hand className="w-5 h-5 text-amber-400" />
             <span className="text-2xl font-serif text-ink-100">{pendingRequests.length}</span>
           </div>
-          <p className="text-xs text-ink-400">Service Requests</p>
+          <p className="text-xs text-ink-600">Service Requests</p>
         </button>
         <button
           onClick={() => setActiveTab('tables')}
@@ -114,7 +114,7 @@ export function WaiterDashboard() {
             <Table2 className="w-5 h-5 text-nirvana-400" />
             <span className="text-2xl font-serif text-ink-100">{tables.filter(t => t.status === 'occupied').length}</span>
           </div>
-          <p className="text-xs text-ink-400">Tables Occupied</p>
+          <p className="text-xs text-ink-600">Tables Occupied</p>
         </button>
       </div>
 
@@ -125,7 +125,7 @@ export function WaiterDashboard() {
           {readyOrders.length === 0 ? (
             <div className="card-luxury p-12 text-center">
               <Utensils className="w-12 h-12 text-ink-600 mx-auto mb-3" />
-              <p className="text-ink-400">No orders ready to serve</p>
+              <p className="text-ink-600">No orders ready to serve</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -134,11 +134,11 @@ export function WaiterDashboard() {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <p className="font-serif text-lg text-nirvana-300">{order.order_number}</p>
-                      <p className="text-xs text-ink-400">Table {order.table_number} · {order.items_count} items</p>
+                      <p className="text-xs text-ink-600">Table {order.table_number} · {order.items_count} items</p>
                     </div>
                     <span className="badge bg-green-500/15 text-green-400 border-green-500/30">Ready</span>
                   </div>
-                  <p className="text-xs text-ink-400 mb-3">Ready since {order.ready_at ? timeAgo(order.ready_at) : '—'}</p>
+                  <p className="text-xs text-ink-600 mb-3">Ready since {order.ready_at ? timeAgo(order.ready_at) : '—'}</p>
                   <button onClick={() => updateOrderStatus(order.id, 'served')} className="btn-gold w-full !py-2 text-sm">
                     Mark as Served
                   </button>
@@ -169,12 +169,12 @@ export function WaiterDashboard() {
                           </div>
                           <div>
                             <p className="text-sm font-medium text-ink-100">{REQUEST_LABELS[req.request_type]}</p>
-                            <p className="text-xs text-ink-400">Table {req.table_number} · {timeAgo(req.created_at)}</p>
+                            <p className="text-xs text-ink-600">Table {req.table_number} · {timeAgo(req.created_at)}</p>
                           </div>
                         </div>
                       </div>
                       {req.note && (
-                        <p className="text-xs text-ink-400 mb-3 glass rounded-lg p-2">{req.note}</p>
+                        <p className="text-xs text-ink-600 mb-3 glass rounded-lg p-2">{req.note}</p>
                       )}
                       <button onClick={() => updateRequestStatus(req.id, 'acknowledged')} className="btn-gold w-full !py-2 text-sm">
                         Acknowledge
@@ -200,7 +200,7 @@ export function WaiterDashboard() {
                         </div>
                         <div>
                           <p className="text-sm font-medium text-ink-100">{REQUEST_LABELS[req.request_type]}</p>
-                          <p className="text-xs text-ink-400">Table {req.table_number}</p>
+                          <p className="text-xs text-ink-600">Table {req.table_number}</p>
                         </div>
                       </div>
                       <button onClick={() => updateRequestStatus(req.id, 'completed')} className="btn-outline-gold w-full !py-2 text-sm">
@@ -216,7 +216,7 @@ export function WaiterDashboard() {
           {requests.length === 0 && (
             <div className="card-luxury p-12 text-center">
               <BellRing className="w-12 h-12 text-ink-600 mx-auto mb-3" />
-              <p className="text-ink-400">No service requests</p>
+              <p className="text-ink-600">No service requests</p>
             </div>
           )}
         </div>
@@ -231,7 +231,7 @@ export function WaiterDashboard() {
               const statusColor = table.status === 'available' ? 'bg-green-500/15 text-green-400 border-green-500/30'
                 : table.status === 'occupied' ? 'bg-red-500/15 text-red-400 border-red-500/30'
                 : table.status === 'reserved' ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
-                : 'bg-ink-500/15 text-ink-400 border-ink-500/30';
+                : 'bg-ink-500/15 text-ink-600 border-ink-500/30';
 
               return (
                 <div key={table.id} className="card-luxury p-4 text-center">
@@ -239,7 +239,7 @@ export function WaiterDashboard() {
                     <Table2 className="w-6 h-6" />
                   </div>
                   <p className="font-serif text-lg text-ink-100">{table.name ?? `Table ${table.table_number}`}</p>
-                  <p className="text-xs text-ink-400 mb-2">Seats {table.capacity}</p>
+                  <p className="text-xs text-ink-600 mb-2">Seats {table.capacity}</p>
                   <span className={`badge capitalize ${statusColor}`}>{table.status}</span>
                 </div>
               );

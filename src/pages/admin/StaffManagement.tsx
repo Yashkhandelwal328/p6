@@ -87,10 +87,10 @@ export function StaffManagement() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1 flex items-center gap-2">
             <UserCog className="w-7 h-7" /> Staff Management
           </h1>
-          <p className="text-sm text-ink-400">{staff.length} staff members</p>
+          <p className="text-sm text-ink-600">{staff.length} staff members</p>
         </div>
         <button onClick={() => { setEditingStaff(null); setShowForm(true); }} className="btn-gold flex items-center gap-2">
           <Plus className="w-5 h-5" /> Add Staff
@@ -110,11 +110,11 @@ export function StaffManagement() {
             </div>
             <h3 className="font-serif text-lg text-ink-100 mb-1">{s.name}</h3>
             <div className="space-y-1 mb-3">
-              <p className="text-xs text-ink-400 flex items-center gap-1"><Mail className="w-3 h-3" /> {s.email}</p>
-              {s.phone && <p className="text-xs text-ink-400 flex items-center gap-1"><Phone className="w-3 h-3" /> {s.phone}</p>}
+              <p className="text-xs text-ink-600 flex items-center gap-1"><Mail className="w-3 h-3" /> {s.email}</p>
+              {s.phone && <p className="text-xs text-ink-600 flex items-center gap-1"><Phone className="w-3 h-3" /> {s.phone}</p>}
             </div>
             <div className="flex items-center justify-between">
-              <span className={`badge ${s.is_active ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-ink-500/15 text-ink-400 border-ink-500/30'}`}>
+              <span className={`badge ${s.is_active ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-ink-500/15 text-ink-600 border-ink-500/30'}`}>
                 {s.is_active ? 'Active' : 'Inactive'}
               </span>
               <div className="flex gap-1">
@@ -168,7 +168,7 @@ function StaffForm({ staff, onClose, onSave }: {
       <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" />
       <form onSubmit={handleSubmit} className="relative w-full max-w-md glass-dark border border-nirvana-400/20 rounded-2xl p-6 animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-serif text-xl text-gradient-gold">{staff ? 'Edit Staff' : 'Add Staff Member'}</h3>
+          <h3 className="font-serif text-xl text-ink-950">{staff ? 'Edit Staff' : 'Add Staff Member'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
             <X className="w-5 h-5 text-ink-300" />
           </button>

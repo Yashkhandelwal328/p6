@@ -150,8 +150,8 @@ export function OrdersPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1">All Orders</h1>
-          <p className="text-sm text-ink-400">Search, filter, and export orders</p>
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">All Orders</h1>
+          <p className="text-sm text-ink-600">Search, filter, and export orders</p>
         </div>
         <div className="flex gap-2">
           <button onClick={exportPDF} className="btn-outline-gold !py-2 flex items-center gap-2 text-sm">
@@ -167,7 +167,7 @@ export function OrdersPage() {
       <div className="card-luxury p-4 space-y-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-600" />
             <input
               type="text"
               placeholder="Search by order #, table, customer..."
@@ -186,7 +186,7 @@ export function OrdersPage() {
           </select>
         </div>
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-luxury">
-          <Filter className="w-4 h-4 text-ink-400 flex-shrink-0" />
+          <Filter className="w-4 h-4 text-ink-600 flex-shrink-0" />
           {statusOptions.map((status) => (
             <button
               key={status}
@@ -208,7 +208,7 @@ export function OrdersPage() {
         <div className="overflow-x-auto scrollbar-luxury">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-ink-400 border-b border-white/5">
+              <tr className="text-left text-ink-600 border-b border-white/5">
                 <th className="px-4 py-3 font-medium">Order #</th>
                 <th className="px-4 py-3 font-medium">Type</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
@@ -223,7 +223,7 @@ export function OrdersPage() {
             <tbody>
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-12 text-center text-ink-400">No orders found</td>
+                  <td colSpan={9} className="px-4 py-12 text-center text-ink-600">No orders found</td>
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
@@ -249,7 +249,7 @@ export function OrdersPage() {
                         {order.payment_status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-ink-400 whitespace-nowrap">{timeAgo(order.created_at)}</td>
+                    <td className="px-4 py-3 text-ink-600 whitespace-nowrap">{timeAgo(order.created_at)}</td>
                     <td className="px-4 py-3">
                       <button onClick={() => viewOrder(order)} className="w-8 h-8 flex items-center justify-center glass rounded-lg hover:bg-nirvana-400/10 transition-colors">
                         <Eye className="w-4 h-4 text-nirvana-300" />
@@ -270,8 +270,8 @@ export function OrdersPage() {
           <div className="relative w-full max-w-lg glass-dark border border-nirvana-400/20 rounded-2xl p-6 max-h-[90vh] overflow-y-auto scrollbar-luxury animate-scale-in" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="font-serif text-xl text-gradient-gold">{selectedOrder.order.order_number}</h3>
-                <p className="text-sm text-ink-400">
+                <h3 className="font-serif text-xl text-ink-950">{selectedOrder.order.order_number}</h3>
+                <p className="text-sm text-ink-600">
                   {selectedOrder.order.order_type === 'delivery' ? 'Delivery Order' : `Table ${selectedOrder.order.table_number}`} · {formatDateTime(selectedOrder.order.created_at)}
                 </p>
               </div>
@@ -286,7 +286,7 @@ export function OrdersPage() {
                   <span className={`w-2 h-2 rounded-full ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}`} />
                   <div className="flex-1">
                     <p className="text-sm text-ink-100">{item.menu_item_name}</p>
-                    <p className="text-xs text-ink-400 capitalize">{item.portion} · {item.quantity}x</p>
+                    <p className="text-xs text-ink-600 capitalize">{item.portion} · {item.quantity}x</p>
                   </div>
                   <span className="text-sm text-nirvana-300">{formatCurrency(item.total_price)}</span>
                 </div>
@@ -322,7 +322,7 @@ export function OrdersPage() {
 
             <div className="mt-4 flex flex-col gap-3 glass rounded-lg p-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-ink-400">Payment Status</span>
+                <span className="text-sm text-ink-600">Payment Status</span>
                 <div className="flex items-center gap-2">
                   <span className={`badge capitalize ${selectedOrder.order.payment_status === 'paid' ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-amber-500/15 text-amber-400 border-amber-500/30'}`}>
                     {selectedOrder.order.payment_status}
@@ -338,7 +338,7 @@ export function OrdersPage() {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-ink-400">Status</span>
+                <span className="text-sm text-ink-600">Status</span>
                 <span className={`badge capitalize ${ORDER_STATUS_COLORS[selectedOrder.order.status]}`}>
                   {formatOrderStatus(selectedOrder.order.status, selectedOrder.order.order_type)}
                 </span>

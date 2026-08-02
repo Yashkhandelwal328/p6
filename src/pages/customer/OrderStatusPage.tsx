@@ -102,7 +102,7 @@ export function OrderStatusPage() {
             <span className="text-sm">Back to Menu</span>
           </button>
           <div className="text-right">
-            <p className="text-xs text-ink-400">Order</p>
+            <p className="text-xs text-ink-600">Order</p>
             <p className="font-serif text-nirvana-300">{order.order_number}</p>
           </div>
         </div>
@@ -112,7 +112,7 @@ export function OrderStatusPage() {
         <main className="max-w-lg mx-auto px-4 sm:px-6 py-12 text-center animate-fade-in-up">
           {!hasPaidOnline ? (
             <div className="card-luxury p-8">
-              <h2 className="font-serif text-2xl text-gradient-gold mb-2">Complete Your Payment</h2>
+              <h2 className="font-serif text-2xl text-ink-950 mb-2">Complete Your Payment</h2>
               <p className="text-ink-300 text-sm mb-6">
                 Please scan the QR code below to pay <strong className="text-nirvana-300">{formatCurrency(order.total_amount, currency)}</strong>
               </p>
@@ -122,7 +122,7 @@ export function OrderStatusPage() {
                   <img src={restaurant.payment_qr_url} alt="Payment QR" className="w-full h-full object-contain" />
                 </div>
               ) : (
-                <div className="w-64 h-64 mx-auto glass rounded-xl flex items-center justify-center text-ink-400 mb-8 border border-white/5">
+                <div className="w-64 h-64 mx-auto glass rounded-xl flex items-center justify-center text-ink-600 mb-8 border border-white/5">
                   <span className="text-sm">QR Code not configured</span>
                 </div>
               )}
@@ -139,7 +139,7 @@ export function OrderStatusPage() {
               <div className="w-20 h-20 mx-auto glass-gold rounded-full flex items-center justify-center mb-6">
                 <Clock className="w-10 h-10 text-nirvana-400 animate-pulse" />
               </div>
-              <h2 className="font-serif text-2xl text-gradient-gold mb-3">Verifying Payment...</h2>
+              <h2 className="font-serif text-2xl text-ink-950 mb-3">Verifying Payment...</h2>
               <p className="text-ink-300">
                 We're waiting for the restaurant to confirm receipt of your payment. This page will update automatically once verified.
               </p>
@@ -163,10 +163,10 @@ export function OrderStatusPage() {
               </>
             )}
           </div>
-          <h1 className="font-serif text-3xl text-gradient-gold mb-2">
+          <h1 className="font-serif text-3xl text-ink-950 mb-2">
             {isCancelled ? 'Order Cancelled' : currentSteps[currentStepIndex]?.label ?? 'Order Status'}
           </h1>
-          <p className="text-ink-400 text-sm">
+          <p className="text-ink-600 text-sm">
             Placed {timeAgo(order.created_at)} · {formatTime(order.created_at)}
           </p>
         </div>
@@ -242,7 +242,7 @@ export function OrderStatusPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-ink-100">{item.menu_item_name}</p>
-                  <p className="text-xs text-ink-400 capitalize">{item.portion} · Qty {item.quantity}</p>
+                  <p className="text-xs text-ink-600 capitalize">{item.portion} · Qty {item.quantity}</p>
                 </div>
                 <span className="text-sm text-nirvana-300 font-medium">{formatCurrency(item.total_price, currency)}</span>
               </div>
@@ -271,7 +271,7 @@ export function OrderStatusPage() {
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between glass rounded-lg p-3">
-            <span className="text-sm text-ink-400">Payment Status</span>
+            <span className="text-sm text-ink-600">Payment Status</span>
             <span className={`badge capitalize ${order.payment_status === 'paid' ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-amber-500/15 text-amber-400 border-amber-500/30'}`}>
               {order.payment_status}
             </span>

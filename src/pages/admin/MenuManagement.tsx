@@ -95,8 +95,8 @@ export function MenuManagement() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1">Menu Management</h1>
-          <p className="text-sm text-ink-400">{items.length} items across {categories.length} categories</p>
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Menu Management</h1>
+          <p className="text-sm text-ink-600">{items.length} items across {categories.length} categories</p>
         </div>
         <button onClick={() => { setEditingItem(null); setShowForm(true); }} className="btn-gold flex items-center gap-2">
           <Plus className="w-5 h-5" /> Add Item
@@ -105,7 +105,7 @@ export function MenuManagement() {
 
       <div className="card-luxury p-4 flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-600" />
           <input
             type="text"
             placeholder="Search menu items..."
@@ -169,9 +169,9 @@ export function MenuManagement() {
                     </button>
                   </div>
                 </div>
-                <p className="text-xs text-ink-400 mb-2">{cat?.name ?? 'Uncategorized'}</p>
-                <p className="text-xs text-ink-400 line-clamp-1 mb-2">{item.description}</p>
-                <div className="flex items-center gap-2 text-xs text-ink-400 mb-3">
+                <p className="text-xs text-ink-600 mb-2">{cat?.name ?? 'Uncategorized'}</p>
+                <p className="text-xs text-ink-600 line-clamp-1 mb-2">{item.description}</p>
+                <div className="flex items-center gap-2 text-xs text-ink-600 mb-3">
                   <Clock className="w-3 h-3" /> {item.preparation_time_minutes} min
                 </div>
                 <div className="flex items-center justify-between mb-3">
@@ -336,7 +336,7 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
       <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" />
       <form onSubmit={handleSubmit} className="relative w-full max-w-lg glass-dark border border-nirvana-400/20 rounded-2xl p-6 max-h-[90vh] overflow-y-auto scrollbar-luxury animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-serif text-xl text-gradient-gold">{item ? 'Edit Item' : 'Add Menu Item'}</h3>
+          <h3 className="font-serif text-xl text-ink-950">{item ? 'Edit Item' : 'Add Menu Item'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
             <X className="w-5 h-5 text-ink-300" />
           </button>
@@ -380,7 +380,7 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
                   ) : (
                     <>
                       <Upload className="w-6 h-6 text-nirvana-400" />
-                      <span className="text-xs text-ink-400">Click to upload image</span>
+                      <span className="text-xs text-ink-600">Click to upload image</span>
                     </>
                   )}
                 </button>

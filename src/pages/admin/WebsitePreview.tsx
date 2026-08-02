@@ -14,29 +14,29 @@ export function WebsitePreview() {
     <div className="space-y-6 h-[calc(100vh-6rem)] flex flex-col animate-fade-in">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1">Website Preview</h1>
-          <p className="text-sm text-ink-400">See how your website looks across different devices.</p>
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Website Preview</h1>
+          <p className="text-sm text-ink-600">See how your website looks across different devices.</p>
         </div>
         
         <div className="flex items-center gap-4 bg-ink-900/50 p-2 rounded-xl border border-white/5">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setDevice('mobile')}
-              className={`p-2 rounded-lg transition-colors ${device === 'mobile' ? 'bg-gold-500/20 text-gold-400' : 'text-ink-400 hover:text-white'}`}
+              className={`p-2 rounded-lg transition-colors ${device === 'mobile' ? 'bg-gold-500/20 text-gold-400' : 'text-ink-600 hover:text-white'}`}
               title="Mobile View"
             >
               <Smartphone className="w-5 h-5" />
             </button>
             <button
               onClick={() => setDevice('tablet')}
-              className={`p-2 rounded-lg transition-colors ${device === 'tablet' ? 'bg-gold-500/20 text-gold-400' : 'text-ink-400 hover:text-white'}`}
+              className={`p-2 rounded-lg transition-colors ${device === 'tablet' ? 'bg-gold-500/20 text-gold-400' : 'text-ink-600 hover:text-white'}`}
               title="Tablet View"
             >
               <Tablet className="w-5 h-5" />
             </button>
             <button
               onClick={() => setDevice('desktop')}
-              className={`p-2 rounded-lg transition-colors ${device === 'desktop' ? 'bg-gold-500/20 text-gold-400' : 'text-ink-400 hover:text-white'}`}
+              className={`p-2 rounded-lg transition-colors ${device === 'desktop' ? 'bg-gold-500/20 text-gold-400' : 'text-ink-600 hover:text-white'}`}
               title="Desktop View"
             >
               <Monitor className="w-5 h-5" />

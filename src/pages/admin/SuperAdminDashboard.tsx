@@ -206,7 +206,7 @@ export function SuperAdminDashboard() {
               <Clock className="w-6 h-6 text-amber-400" />
             </div>
           </div>
-          <p className="text-sm font-medium text-ink-400 mb-1">Pending Approvals</p>
+          <p className="text-sm font-medium text-ink-600 mb-1">Pending Approvals</p>
           <div className="flex items-baseline gap-2 mb-4">
             <h3 className="text-3xl font-serif font-bold text-amber-400">{stats.pendingApprovals}</h3>
             <span className="text-sm text-ink-500">requests</span>

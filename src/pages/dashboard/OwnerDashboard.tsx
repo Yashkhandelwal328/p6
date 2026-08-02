@@ -227,7 +227,7 @@ export function OwnerDashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-serif text-2xl sm:text-3xl text-primary mb-1">Owner Dashboard</h1>
+        <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Owner Dashboard</h1>
         <p className="text-sm text-theme-secondary">Real-time overview of your restaurant performance</p>
       </div>
 

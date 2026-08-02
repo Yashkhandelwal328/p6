@@ -134,10 +134,10 @@ export function ReportsPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1 flex items-center gap-2">
             <FileBarChart className="w-7 h-7" /> Reports & Analytics
           </h1>
-          <p className="text-sm text-ink-400">Comprehensive business performance reports</p>
+          <p className="text-sm text-ink-600">Comprehensive business performance reports</p>
         </div>
         <div className="flex gap-2">
           <select value={dateRange} onChange={(e) => setDateRange(Number(e.target.value) as 7 | 30 | 90)} className="input-luxury !w-auto">
@@ -168,7 +168,7 @@ export function ReportsPage() {
               <div className="w-10 h-10 rounded-xl glass-gold flex items-center justify-center mb-2">
                 <Icon className="w-5 h-5 text-nirvana-400" />
               </div>
-              <p className="text-xs text-ink-400 mb-1">{card.label}</p>
+              <p className="text-xs text-ink-600 mb-1">{card.label}</p>
               <p className="text-xl font-serif text-ink-100">{card.value}</p>
             </div>
           );

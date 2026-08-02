@@ -147,14 +147,14 @@ Thank you for ordering! 🙏`;
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1 flex items-center gap-2">
             <ChefHat className="w-7 h-7" /> Kitchen Display
           </h1>
-          <p className="text-sm text-ink-400">Live order preparation system</p>
+          <p className="text-sm text-ink-600">Live order preparation system</p>
         </div>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className={`btn-outline-gold !py-2 flex items-center gap-2 ${soundEnabled ? 'text-nirvana-300' : 'text-ink-400'}`}
+          className={`btn-outline-gold !py-2 flex items-center gap-2 ${soundEnabled ? 'text-nirvana-300' : 'text-ink-600'}`}
         >
           <Bell className="w-4 h-4" />
           {soundEnabled ? 'Sound On' : 'Sound Off'}
@@ -180,7 +180,7 @@ Thank you for ordering! 🙏`;
                 <Icon className={`w-5 h-5 ${tab.color}`} />
                 <span className="text-2xl font-serif text-ink-100">{counts[tab.key]}</span>
               </div>
-              <p className="text-xs text-ink-400">{tab.label}</p>
+              <p className="text-xs text-ink-600">{tab.label}</p>
             </button>
           );
         })}
@@ -190,7 +190,7 @@ Thank you for ordering! 🙏`;
       {filteredOrders.length === 0 ? (
         <div className="card-luxury p-12 text-center">
           <ChefHat className="w-12 h-12 text-ink-600 mx-auto mb-3" />
-          <p className="text-ink-400">No orders in this category</p>
+          <p className="text-ink-600">No orders in this category</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -201,7 +201,7 @@ Thank you for ordering! 🙏`;
                   <p className="font-serif text-lg text-nirvana-300">
                     {order.order_number} {order.order_type === 'delivery' && <span className="ml-2 text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Delivery</span>}
                   </p>
-                  <p className="text-xs text-ink-400">
+                  <p className="text-xs text-ink-600">
                     {order.order_type === 'delivery' ? 'Delivery' : `Table ${order.table_number}`} · {timeAgo(order.created_at)}
                   </p>
                 </div>
@@ -241,13 +241,13 @@ Thank you for ordering! 🙏`;
                   <div key={item.id} className="flex items-center gap-2 glass rounded-lg p-2">
                     <span className={`w-2 h-2 rounded-full ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}`} />
                     <span className="flex-1 text-sm text-ink-200">{item.menu_item_name}</span>
-                    <span className="text-xs text-ink-400 capitalize">{item.portion}</span>
+                    <span className="text-xs text-ink-600 capitalize">{item.portion}</span>
                     <span className="text-sm font-semibold text-nirvana-300">{item.quantity}x</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex items-center justify-between text-xs text-ink-400 mb-3">
+              <div className="flex items-center justify-between text-xs text-ink-600 mb-3">
                 <span>{formatTime(order.created_at)}</span>
                 <span>{order.items_count} items</span>
               </div>

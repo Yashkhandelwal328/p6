@@ -98,10 +98,10 @@ export function MediaManagement() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-gradient-gold mb-1 flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1 flex items-center gap-2">
             <ImageIcon className="w-7 h-7" /> Media Library
           </h1>
-          <p className="text-sm text-ink-400">Manage all your restaurant images, logos, and banners here.</p>
+          <p className="text-sm text-ink-600">Manage all your restaurant images, logos, and banners here.</p>
         </div>
         
         <div>
@@ -125,7 +125,7 @@ export function MediaManagement() {
             <div className="w-8 h-8 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin" />
           </div>
         ) : files.length === 0 ? (
-          <div className="text-center py-12 text-ink-400">
+          <div className="text-center py-12 text-ink-600">
             <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p>No media files found. Upload your first image to get started.</p>
           </div>

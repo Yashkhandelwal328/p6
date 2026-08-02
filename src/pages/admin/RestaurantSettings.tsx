@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
-import { THEME_PRESETS, generateThemeVariables } from '@/lib/theme-presets';
+import { THEME_PRESETS, generateThemeVariables, getContrastColor } from '@/lib/theme-presets';
 import { PublicRestaurantPage } from '@/pages/customer/PublicRestaurantPage';
 import { OrderPage } from '@/pages/customer/OrderPage';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
@@ -339,11 +339,14 @@ export function RestaurantSettings() {
                           border_radius: preset.border_radius,
                         }));
                       }}
-                      className="px-3 py-2 text-xs rounded-xl border border-theme-border hover:border-primary transition-all text-left flex items-center justify-between"
-                      style={{ backgroundColor: preset.background_color, color: preset.primary_color }}
+                      className="px-3 py-2 text-xs rounded-xl border border-theme-border hover:border-primary transition-all text-left flex items-center justify-between shadow-sm"
+                      style={{ 
+                        backgroundColor: preset.background_color, 
+                        color: getContrastColor(preset.background_color) 
+                      }}
                     >
-                      <span className="font-medium truncate">{preset.name}</span>
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: preset.accent_color }} />
+                      <span className="font-semibold truncate">{preset.name}</span>
+                      <div className="w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm border border-black/10" style={{ backgroundColor: preset.primary_color }} />
                     </button>
                   ))}
                 </div>

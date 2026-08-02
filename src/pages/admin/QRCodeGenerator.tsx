@@ -3,14 +3,23 @@ import { QrCode, Download, Table2, Copy, Check } from 'lucide-react';
 import QRCode from 'qrcode';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import type { Table } from '@/types';
 
 export function QRCodeGenerator() {
   const { restaurantId } = useAuth();
+  const { restaurant } = useTheme();
   const [tables, setTables] = useState<Table[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
+  
+  const getCustomerUrl = (tableNumber: number) => {
+    const baseUrl = restaurant?.subdomain 
+      ? `${window.location.origin}/${restaurant.subdomain}`
+      : window.location.origin;
+    return `${baseUrl}/menu?table=${tableNumber}`;
+  };
   const [copied, setCopied] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,9 +35,9 @@ export function QRCodeGenerator() {
 
   useEffect(() => {
     if (!selectedTable) return;
-    const orderUrl = `${window.location.origin}/order?table=${selectedTable.table_number}`;
+    const orderUrl = getCustomerUrl(selectedTable.table_number);
     generateQR(orderUrl);
-  }, [selectedTable]);
+  }, [selectedTable, restaurant]);
 
   async function generateQR(text: string) {
     try {
@@ -61,7 +70,7 @@ export function QRCodeGenerator() {
 
   function copyUrl() {
     if (!selectedTable) return;
-    const url = `${window.location.origin}/order?table=${selectedTable.table_number}`;
+    const url = getCustomerUrl(selectedTable.table_number);
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -70,7 +79,7 @@ export function QRCodeGenerator() {
   function downloadAll() {
     tables.forEach((table, idx) => {
       setTimeout(async () => {
-        const url = `${window.location.origin}/order?table=${table.table_number}`;
+        const url = getCustomerUrl(table.table_number);
         const dataUrl = await QRCode.toDataURL(url, {
           width: 400, margin: 2,
           color: { dark: '#0d0c0a', light: '#c9a227' },
@@ -91,7 +100,7 @@ export function QRCodeGenerator() {
     );
   }
 
-  const orderUrl = selectedTable ? `${window.location.origin}/order?table=${selectedTable.table_number}` : '';
+  const orderUrl = selectedTable ? getCustomerUrl(selectedTable.table_number) : '';
 
   return (
     <div className="space-y-6 animate-fade-in">

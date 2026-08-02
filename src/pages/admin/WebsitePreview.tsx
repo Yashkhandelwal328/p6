@@ -56,7 +56,7 @@ export function WebsitePreview() {
 
       <div className="flex-1 bg-ink-950 rounded-xl border border-white/10 overflow-hidden flex flex-col relative">
         <div className="h-12 bg-ink-900 flex items-center px-4 border-b border-white/10">
-          <div className="flex items-center gap-2 w-full max-w-2xl mx-auto bg-ink-950 px-3 py-1.5 rounded-md text-sm text-ink-300">
+          <div className="flex items-center gap-2 w-full max-w-2xl mx-auto bg-ink-950 px-3 py-1.5 rounded-md text-sm text-ink-700">
             <Globe className="w-4 h-4 text-ink-500" />
             <span className="truncate">{previewUrl}</span>
           </div>

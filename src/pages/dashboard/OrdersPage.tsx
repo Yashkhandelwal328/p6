@@ -194,7 +194,7 @@ export function OrdersPage() {
               className={`badge whitespace-nowrap transition-all capitalize ${
                 statusFilter === status
                   ? 'bg-nirvana-400/20 text-nirvana-300 border-nirvana-400/40'
-                  : 'glass-dark text-ink-300 border-white/10'
+                  : 'glass-dark text-ink-700 border-white/10'
               }`}
             >
               {status === 'all' ? 'All Status' : ORDER_STATUS_LABELS[status]}
@@ -229,16 +229,16 @@ export function OrdersPage() {
                 filteredOrders.map((order) => (
                   <tr key={order.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                     <td className="px-4 py-3 text-nirvana-300 font-medium">{order.order_number}</td>
-                    <td className="px-4 py-3 text-ink-200">
+                    <td className="px-4 py-3 text-ink-800">
                       {order.order_type === 'delivery' ? (
                         <span className="badge bg-blue-500/15 text-blue-400 border-blue-500/30">Delivery</span>
                       ) : (
                         `Table ${order.table_number}`
                       )}
                     </td>
-                    <td className="px-4 py-3 text-ink-200">{order.customer_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-ink-200">{order.items_count}</td>
-                    <td className="px-4 py-3 text-ink-200">{formatCurrency(order.total_amount)}</td>
+                    <td className="px-4 py-3 text-ink-800">{order.customer_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-ink-800">{order.items_count}</td>
+                    <td className="px-4 py-3 text-ink-800">{formatCurrency(order.total_amount)}</td>
                     <td className="px-4 py-3">
                       <span className={`badge capitalize ${ORDER_STATUS_COLORS[order.status]}`}>
                         {formatOrderStatus(order.status, order.order_type)}
@@ -276,7 +276,7 @@ export function OrdersPage() {
                 </p>
               </div>
               <button onClick={() => setSelectedOrder(null)} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-                <X className="w-5 h-5 text-ink-300" />
+                <X className="w-5 h-5 text-ink-700" />
               </button>
             </div>
 
@@ -285,7 +285,7 @@ export function OrdersPage() {
                 <div key={item.id} className="flex items-center gap-3 glass rounded-xl p-3">
                   <span className={`w-2 h-2 rounded-full ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}`} />
                   <div className="flex-1">
-                    <p className="text-sm text-ink-100">{item.menu_item_name}</p>
+                    <p className="text-sm text-ink-950">{item.menu_item_name}</p>
                     <p className="text-xs text-ink-600 capitalize">{item.portion} · {item.quantity}x</p>
                   </div>
                   <span className="text-sm text-nirvana-300">{formatCurrency(item.total_price)}</span>
@@ -294,11 +294,11 @@ export function OrdersPage() {
             </div>
 
             <div className="glass rounded-xl p-4 space-y-2">
-              <div className="flex justify-between text-sm text-ink-300">
+              <div className="flex justify-between text-sm text-ink-700">
                 <span>Subtotal</span>
                 <span>{formatCurrency(selectedOrder.order.subtotal)}</span>
               </div>
-              <div className="flex justify-between text-sm text-ink-300">
+              <div className="flex justify-between text-sm text-ink-700">
                 <span>Tax</span>
                 <span>{formatCurrency(selectedOrder.order.tax_amount)}</span>
               </div>

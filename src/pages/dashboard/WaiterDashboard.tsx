@@ -92,7 +92,7 @@ export function WaiterDashboard() {
         >
           <div className="flex items-center justify-between mb-1">
             <CheckCircle2 className="w-5 h-5 text-green-400" />
-            <span className="text-2xl font-serif text-ink-100">{readyOrders.length}</span>
+            <span className="text-2xl font-serif text-ink-950">{readyOrders.length}</span>
           </div>
           <p className="text-xs text-ink-600">Ready to Serve</p>
         </button>
@@ -102,7 +102,7 @@ export function WaiterDashboard() {
         >
           <div className="flex items-center justify-between mb-1">
             <Hand className="w-5 h-5 text-amber-400" />
-            <span className="text-2xl font-serif text-ink-100">{pendingRequests.length}</span>
+            <span className="text-2xl font-serif text-ink-950">{pendingRequests.length}</span>
           </div>
           <p className="text-xs text-ink-600">Service Requests</p>
         </button>
@@ -112,7 +112,7 @@ export function WaiterDashboard() {
         >
           <div className="flex items-center justify-between mb-1">
             <Table2 className="w-5 h-5 text-nirvana-400" />
-            <span className="text-2xl font-serif text-ink-100">{tables.filter(t => t.status === 'occupied').length}</span>
+            <span className="text-2xl font-serif text-ink-950">{tables.filter(t => t.status === 'occupied').length}</span>
           </div>
           <p className="text-xs text-ink-600">Tables Occupied</p>
         </button>
@@ -168,7 +168,7 @@ export function WaiterDashboard() {
                             <Icon className="w-5 h-5 text-amber-400" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-ink-100">{REQUEST_LABELS[req.request_type]}</p>
+                            <p className="text-sm font-medium text-ink-950">{REQUEST_LABELS[req.request_type]}</p>
                             <p className="text-xs text-ink-600">Table {req.table_number} · {timeAgo(req.created_at)}</p>
                           </div>
                         </div>
@@ -199,7 +199,7 @@ export function WaiterDashboard() {
                           <Icon className="w-5 h-5 text-nirvana-400" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-ink-100">{REQUEST_LABELS[req.request_type]}</p>
+                          <p className="text-sm font-medium text-ink-950">{REQUEST_LABELS[req.request_type]}</p>
                           <p className="text-xs text-ink-600">Table {req.table_number}</p>
                         </div>
                       </div>
@@ -238,7 +238,7 @@ export function WaiterDashboard() {
                   <div className={`w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center border ${statusColor}`}>
                     <Table2 className="w-6 h-6" />
                   </div>
-                  <p className="font-serif text-lg text-ink-100">{table.name ?? `Table ${table.table_number}`}</p>
+                  <p className="font-serif text-lg text-ink-950">{table.name ?? `Table ${table.table_number}`}</p>
                   <p className="text-xs text-ink-600 mb-2">Seats {table.capacity}</p>
                   <span className={`badge capitalize ${statusColor}`}>{table.status}</span>
                 </div>

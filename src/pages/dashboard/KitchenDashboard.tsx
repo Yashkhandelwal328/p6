@@ -178,7 +178,7 @@ Thank you for ordering! 🙏`;
             >
               <div className="flex items-center justify-between mb-2">
                 <Icon className={`w-5 h-5 ${tab.color}`} />
-                <span className="text-2xl font-serif text-ink-100">{counts[tab.key]}</span>
+                <span className="text-2xl font-serif text-ink-950">{counts[tab.key]}</span>
               </div>
               <p className="text-xs text-ink-600">{tab.label}</p>
             </button>
@@ -240,7 +240,7 @@ Thank you for ordering! 🙏`;
                 {order.order_items.map((item) => (
                   <div key={item.id} className="flex items-center gap-2 glass rounded-lg p-2">
                     <span className={`w-2 h-2 rounded-full ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}`} />
-                    <span className="flex-1 text-sm text-ink-200">{item.menu_item_name}</span>
+                    <span className="flex-1 text-sm text-ink-800">{item.menu_item_name}</span>
                     <span className="text-xs text-ink-600 capitalize">{item.portion}</span>
                     <span className="text-sm font-semibold text-nirvana-300">{item.quantity}x</span>
                   </div>

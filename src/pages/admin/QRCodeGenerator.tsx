@@ -123,7 +123,7 @@ export function QRCodeGenerator() {
                 }`}
               >
                 <Table2 className="w-6 h-6 mx-auto mb-1 text-nirvana-300" />
-                <p className="text-sm font-medium text-ink-100">Table {table.table_number}</p>
+                <p className="text-sm font-medium text-ink-950">Table {table.table_number}</p>
                 <p className="text-xs text-ink-600">{table.capacity} seats</p>
               </button>
             ))}
@@ -138,7 +138,7 @@ export function QRCodeGenerator() {
               <div className="inline-block p-4 bg-nirvana-400 rounded-2xl mb-4">
                 <canvas ref={canvasRef} className="rounded-lg" />
               </div>
-              <p className="font-serif text-lg text-ink-100 mb-1">Table {selectedTable.table_number}</p>
+              <p className="font-serif text-lg text-ink-950 mb-1">Table {selectedTable.table_number}</p>
               <p className="text-xs text-ink-600 mb-4 break-all">{orderUrl}</p>
               <div className="flex gap-2 justify-center">
                 <button onClick={downloadQR} className="btn-gold flex items-center gap-2 !py-2 text-sm">

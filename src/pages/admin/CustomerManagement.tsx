@@ -82,10 +82,10 @@ export function CustomerManagement() {
               <tbody>
                 {filtered.map((customer) => (
                   <tr key={customer.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="px-4 py-3 text-ink-200">{customer.name ?? 'Guest'}</td>
-                    <td className="px-4 py-3 text-ink-200">{customer.phone ?? '—'}</td>
-                    <td className="px-4 py-3 text-ink-200">{customer.email ?? '—'}</td>
-                    <td className="px-4 py-3 text-ink-200">{customer.total_orders}</td>
+                    <td className="px-4 py-3 text-ink-800">{customer.name ?? 'Guest'}</td>
+                    <td className="px-4 py-3 text-ink-800">{customer.phone ?? '—'}</td>
+                    <td className="px-4 py-3 text-ink-800">{customer.email ?? '—'}</td>
+                    <td className="px-4 py-3 text-ink-800">{customer.total_orders}</td>
                     <td className="px-4 py-3 text-nirvana-300">{formatCurrency(customer.total_spent)}</td>
                     <td className="px-4 py-3 text-ink-600">{formatDate(customer.created_at)}</td>
                     <td className="px-4 py-3">
@@ -108,24 +108,24 @@ export function CustomerManagement() {
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-serif text-xl text-ink-950">Customer Details</h3>
               <button onClick={() => setSelectedCustomer(null)} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-                <X className="w-5 h-5 text-ink-300" />
+                <X className="w-5 h-5 text-ink-700" />
               </button>
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="glass rounded-xl p-3 text-center">
                 <ShoppingBag className="w-5 h-5 text-nirvana-400 mx-auto mb-1" />
-                <p className="text-lg font-serif text-ink-100">{selectedCustomer.customer.total_orders}</p>
+                <p className="text-lg font-serif text-ink-950">{selectedCustomer.customer.total_orders}</p>
                 <p className="text-xs text-ink-600">Orders</p>
               </div>
               <div className="glass rounded-xl p-3 text-center">
                 <DollarSign className="w-5 h-5 text-nirvana-400 mx-auto mb-1" />
-                <p className="text-lg font-serif text-ink-100">{formatCurrency(selectedCustomer.customer.total_spent)}</p>
+                <p className="text-lg font-serif text-ink-950">{formatCurrency(selectedCustomer.customer.total_spent)}</p>
                 <p className="text-xs text-ink-600">Spent</p>
               </div>
               <div className="glass rounded-xl p-3 text-center">
                 <Phone className="w-5 h-5 text-nirvana-400 mx-auto mb-1" />
-                <p className="text-sm text-ink-200">{selectedCustomer.customer.phone ?? '—'}</p>
+                <p className="text-sm text-ink-800">{selectedCustomer.customer.phone ?? '—'}</p>
                 <p className="text-xs text-ink-600">Phone</p>
               </div>
             </div>
@@ -138,7 +138,7 @@ export function CustomerManagement() {
                 {selectedCustomer.orders.map((order) => (
                   <div key={order.id} className="glass rounded-xl p-3 flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-ink-100">{order.order_number}</p>
+                      <p className="text-sm text-ink-950">{order.order_number}</p>
                       <p className="text-xs text-ink-600">Table {order.table_number} · {formatDateTime(order.created_at)}</p>
                     </div>
                     <span className="text-sm text-nirvana-300">{formatCurrency(order.total_amount)}</span>

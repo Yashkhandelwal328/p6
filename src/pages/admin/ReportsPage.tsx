@@ -169,7 +169,7 @@ export function ReportsPage() {
                 <Icon className="w-5 h-5 text-nirvana-400" />
               </div>
               <p className="text-xs text-ink-600 mb-1">{card.label}</p>
-              <p className="text-xl font-serif text-ink-100">{card.value}</p>
+              <p className="text-xl font-serif text-ink-950">{card.value}</p>
             </div>
           );
         })}

@@ -108,7 +108,7 @@ export function StaffManagement() {
                 <Shield className="w-3 h-3" /> {s.role.replace('_', ' ')}
               </span>
             </div>
-            <h3 className="font-serif text-lg text-ink-100 mb-1">{s.name}</h3>
+            <h3 className="font-serif text-lg text-ink-950 mb-1">{s.name}</h3>
             <div className="space-y-1 mb-3">
               <p className="text-xs text-ink-600 flex items-center gap-1"><Mail className="w-3 h-3" /> {s.email}</p>
               {s.phone && <p className="text-xs text-ink-600 flex items-center gap-1"><Phone className="w-3 h-3" /> {s.phone}</p>}
@@ -170,30 +170,30 @@ function StaffForm({ staff, onClose, onSave }: {
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif text-xl text-ink-950">{staff ? 'Edit Staff' : 'Add Staff Member'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-            <X className="w-5 h-5 text-ink-300" />
+            <X className="w-5 h-5 text-ink-700" />
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Name</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Name</label>
             <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Email</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Email</label>
             <input type="email" required disabled={!!staff} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="input-luxury w-full disabled:opacity-50" />
           </div>
           {!staff && (
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Password (default: nirvana123)</label>
+              <label className="block text-sm text-ink-700 mb-1.5">Password (default: nirvana123)</label>
               <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} placeholder="nirvana123" className="input-luxury w-full" />
             </div>
           )}
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Phone</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Phone</label>
             <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Role</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Role</label>
             <select value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value as StaffRole })} className="input-luxury w-full">
               <option value="manager">Manager</option>
               <option value="cashier">Cashier</option>
@@ -201,7 +201,7 @@ function StaffForm({ staff, onClose, onSave }: {
               <option value="waiter">Waiter</option>
             </select>
           </div>
-          <label className="flex items-center gap-2 text-sm text-ink-300 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
             <input type="checkbox" checked={formData.is_active} onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })} className="accent-nirvana-400" />
             Active
           </label>

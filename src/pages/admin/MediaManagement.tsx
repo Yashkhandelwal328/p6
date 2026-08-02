@@ -138,7 +138,7 @@ export function MediaManagement() {
                 </div>
                 
                 <div className="p-3">
-                  <p className="text-xs font-medium text-ink-200 truncate mb-1" title={file.name}>{file.name}</p>
+                  <p className="text-xs font-medium text-ink-800 truncate mb-1" title={file.name}>{file.name}</p>
                   <p className="text-[10px] text-ink-500">{formatSize(file.size)}</p>
                 </div>
                 

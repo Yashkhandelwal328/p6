@@ -99,7 +99,7 @@ export function PendingApprovals() {
       {restaurants.length === 0 ? (
         <div className="card-luxury p-12 text-center">
           <CheckCircle2 className="w-16 h-16 text-ink-600 mx-auto mb-4" />
-          <h2 className="text-xl font-serif text-ink-300 mb-2">All Caught Up!</h2>
+          <h2 className="text-xl font-serif text-ink-700 mb-2">All Caught Up!</h2>
           <p className="text-ink-500">There are no pending subscription approvals at this time.</p>
         </div>
       ) : (
@@ -120,7 +120,7 @@ export function PendingApprovals() {
                     </span>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-ink-300">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-ink-700">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-ink-500" />
                       {owner.name} ({owner.email})

@@ -76,7 +76,7 @@ export function TableManagement() {
             <div className={`w-14 h-14 rounded-xl mx-auto mb-3 flex items-center justify-center border ${STATUS_COLORS[table.status]}`}>
               <Table2 className="w-7 h-7" />
             </div>
-            <p className="font-serif text-lg text-ink-100">{table.name ?? `Table ${table.table_number}`}</p>
+            <p className="font-serif text-lg text-ink-950">{table.name ?? `Table ${table.table_number}`}</p>
             <p className="text-xs text-ink-600 mb-2 flex items-center justify-center gap-1">
               <Users className="w-3 h-3" /> {table.capacity} seats
             </p>
@@ -142,24 +142,24 @@ function TableForm({ table, onClose, onSave }: {
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif text-xl text-ink-950">{table ? 'Edit Table' : 'Add Table'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-            <X className="w-5 h-5 text-ink-300" />
+            <X className="w-5 h-5 text-ink-700" />
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Table Number</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Table Number</label>
             <input type="number" required min="1" value={formData.table_number} onChange={(e) => setFormData({ ...formData, table_number: e.target.value })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Name (optional)</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Name (optional)</label>
             <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g., Table 1" className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Capacity (seats)</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Capacity (seats)</label>
             <input type="number" min="1" max="20" value={formData.capacity} onChange={(e) => setFormData({ ...formData, capacity: Number(e.target.value) })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Status</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Status</label>
             <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value as TableStatus })} className="input-luxury w-full">
               <option value="available">Available</option>
               <option value="occupied">Occupied</option>

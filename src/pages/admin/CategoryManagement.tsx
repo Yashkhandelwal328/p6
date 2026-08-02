@@ -73,7 +73,7 @@ export function CategoryManagement() {
                   <FolderTree className="w-5 h-5 text-nirvana-400" />
                 </div>
                 <div>
-                  <p className="font-serif text-base text-ink-100">{cat.name}</p>
+                  <p className="font-serif text-base text-ink-950">{cat.name}</p>
                   <p className="text-xs text-ink-600">/{cat.slug} · Order {cat.sort_order}</p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ export function CategoryManagement() {
                   <div key={child.id} className="flex items-center justify-between glass rounded-lg p-2.5">
                     <div className="flex items-center gap-2">
                       <ChevronRight className="w-4 h-4 text-ink-500" />
-                      <span className="text-sm text-ink-200">{child.name}</span>
+                      <span className="text-sm text-ink-800">{child.name}</span>
                       <span className="text-xs text-ink-600">/{child.slug}</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -161,20 +161,20 @@ function CategoryForm({ category, categories, onClose, onSave }: {
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif text-xl text-ink-950">{category ? 'Edit Category' : 'Add Category'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-            <X className="w-5 h-5 text-ink-300" />
+            <X className="w-5 h-5 text-ink-700" />
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Name</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Name</label>
             <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Slug (URL-friendly name)</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Slug (URL-friendly name)</label>
             <input type="text" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value })} placeholder="auto-generated from name" className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-300 mb-1.5">Parent Category (leave empty for top-level)</label>
+            <label className="block text-sm text-ink-700 mb-1.5">Parent Category (leave empty for top-level)</label>
             <select value={formData.parent_id} onChange={(e) => setFormData({ ...formData, parent_id: e.target.value })} className="input-luxury w-full">
               <option value="">None (Top-level)</option>
               {categories.map((cat) => (
@@ -184,15 +184,15 @@ function CategoryForm({ category, categories, onClose, onSave }: {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Sort Order</label>
+              <label className="block text-sm text-ink-700 mb-1.5">Sort Order</label>
               <input type="number" value={formData.sort_order} onChange={(e) => setFormData({ ...formData, sort_order: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-300 mb-1.5">Icon Name</label>
+              <label className="block text-sm text-ink-700 mb-1.5">Icon Name</label>
               <input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} placeholder="lucide icon name" className="input-luxury w-full" />
             </div>
           </div>
-          <label className="flex items-center gap-2 text-sm text-ink-300 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
             <input type="checkbox" checked={formData.is_active} onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })} className="accent-nirvana-400" />
             Active
           </label>

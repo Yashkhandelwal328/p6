@@ -72,12 +72,13 @@ export function OrderStatusPage() {
   }
 
   if (!order) {
+    const basePath = slug ? `/${slug}` : '';
     return (
       <div className="min-h-screen bg-gradient-dark flex items-center justify-center p-6">
         <div className="text-center">
           <XCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <p className="text-ink-300 mb-4">Order not found</p>
-          <button onClick={() => navigate(`/order?table=${tableNumber || 1}`)} className="btn-gold">
+          <button onClick={() => navigate(`${basePath}/menu?table=${tableNumber || 1}`)} className="btn-gold">
             Back to Menu
           </button>
         </div>
@@ -95,7 +96,10 @@ export function OrderStatusPage() {
       <header className="glass-dark border-b border-nirvana-400/10">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <button
-            onClick={() => navigate(order.order_type === 'delivery' ? '/order?type=delivery' : `/order?table=${order.table_number}`)}
+            onClick={() => {
+              const basePath = slug ? `/${slug}` : '';
+              navigate(order.order_type === 'delivery' ? `${basePath}/menu?type=delivery` : `${basePath}/menu?table=${order.table_number}`);
+            }}
             className="flex items-center gap-2 text-ink-300 hover:text-nirvana-300 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />

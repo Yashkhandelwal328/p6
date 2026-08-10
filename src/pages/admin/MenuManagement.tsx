@@ -336,25 +336,25 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
       <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" />
       <form onSubmit={handleSubmit} className="relative w-full max-w-lg glass-dark border border-nirvana-400/20 rounded-2xl p-6 max-h-[90vh] overflow-y-auto scrollbar-luxury animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-serif text-xl text-ink-950">{item ? 'Edit Item' : 'Add Menu Item'}</h3>
+          <h3 className="font-serif text-xl text-white">{item ? 'Edit Item' : 'Add Menu Item'}</h3>
           <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-            <X className="w-5 h-5 text-ink-700" />
+            <X className="w-5 h-5 text-gray-300" />
           </button>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Name</label>
+            <label className="block text-sm text-gray-300 mb-1.5">Name</label>
             <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Description</label>
+            <label className="block text-sm text-gray-300 mb-1.5">Description</label>
             <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={2} className="input-luxury w-full resize-none" />
           </div>
 
           {/* Image Upload Section */}
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Food Image</label>
+            <label className="block text-sm text-gray-300 mb-1.5">Food Image</label>
             {formData.image_url ? (
               <div className="relative rounded-xl overflow-hidden h-32 group">
                 <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
@@ -362,7 +362,7 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
                   <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-gold !py-1.5 !px-3 text-xs flex items-center gap-1">
                     <Upload className="w-3.5 h-3.5" /> Replace
                   </button>
-                  <button type="button" onClick={removeImage} className="btn-outline-gold !py-1.5 !px-3 text-xs border-red-500/30 text-red-400 flex items-center gap-1">
+                  <button type="button" onClick={removeImage} className="btn-outline-gold text-white !py-1.5 !px-3 text-xs border-red-500/30 text-red-400 flex items-center gap-1">
                     <ImageOff className="w-3.5 h-3.5" /> Remove
                   </button>
                 </div>
@@ -379,8 +379,8 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
                     <div className="w-6 h-6 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Clock className="w-3.5 h-3.5 text-ink-600" />
-                      <span className="text-sm text-ink-600">Click to upload image</span>
+                      <Clock className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-sm text-gray-400">Click to upload image</span>
                     </>
                   )}
                 </button>
@@ -411,7 +411,7 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
                 type="button"
                 onClick={handleSuggestImage}
                 disabled={suggesting || !formData.name}
-                className="btn-outline-gold !py-2 !px-3 text-xs whitespace-nowrap flex items-center gap-1"
+                className="btn-outline-gold text-white !py-2 !px-3 text-xs whitespace-nowrap flex items-center gap-1"
               >
                 {suggesting ? (
                   <div className="w-3.5 h-3.5 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
@@ -427,7 +427,7 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
           </div>
 
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Category</label>
+            <label className="block text-sm text-gray-300 mb-1.5">Category</label>
             <select value={formData.category_id} onChange={(e) => setFormData({ ...formData, category_id: e.target.value })} className="input-luxury w-full">
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -436,40 +436,40 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-ink-700 mb-1.5">Full Price (₹)</label>
+              <label className="block text-sm text-gray-300 mb-1.5">Full Price (₹)</label>
               <input type="number" required step="0.01" value={formData.full_price} onChange={(e) => setFormData({ ...formData, full_price: e.target.value })} className="input-luxury w-full" />
             </div>
             <div>
-              <label className="block text-sm text-ink-700 mb-1.5">Prep Time (min)</label>
+              <label className="block text-sm text-gray-300 mb-1.5">Prep Time (min)</label>
               <input type="number" value={formData.preparation_time_minutes} onChange={(e) => setFormData({ ...formData, preparation_time_minutes: Number(e.target.value) })} className="input-luxury w-full" />
             </div>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
-            <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
               <input type="checkbox" checked={formData.is_veg} onChange={(e) => setFormData({ ...formData, is_veg: e.target.checked })} className="accent-nirvana-400" />
               Vegetarian
             </label>
-            <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
               <input type="checkbox" checked={formData.has_half_price} onChange={(e) => setFormData({ ...formData, has_half_price: e.target.checked })} className="accent-nirvana-400" />
               Has Half Price
             </label>
           </div>
           {formData.has_half_price && (
             <div>
-              <label className="block text-sm text-ink-700 mb-1.5">Half Price (₹)</label>
+              <label className="block text-sm text-gray-300 mb-1.5">Half Price (₹)</label>
               <input type="number" step="0.01" value={formData.half_price} onChange={(e) => setFormData({ ...formData, half_price: e.target.value })} className="input-luxury w-full" />
             </div>
           )}
           <div className="flex items-center gap-4 flex-wrap">
-            <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
               <input type="checkbox" checked={formData.is_available} onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })} className="accent-nirvana-400" />
               Available
             </label>
-            <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
               <input type="checkbox" checked={formData.is_bestseller} onChange={(e) => setFormData({ ...formData, is_bestseller: e.target.checked })} className="accent-nirvana-400" />
               Bestseller
             </label>
-            <label className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
               <input type="checkbox" checked={formData.is_chef_special} onChange={(e) => setFormData({ ...formData, is_chef_special: e.target.checked })} className="accent-amber-500" />
               Chef's Special
             </label>
@@ -477,7 +477,7 @@ function MenuForm({ item, categories, restaurantId, onClose, onSave }: {
         </div>
 
         <div className="flex gap-3 mt-6">
-          <button type="button" onClick={onClose} className="btn-outline-gold flex-1">Cancel</button>
+          <button type="button" onClick={onClose} className="btn-outline-gold text-white flex-1">Cancel</button>
           <button type="submit" className="btn-gold flex-1">{item ? 'Save Changes' : 'Add Item'}</button>
         </div>
       </form>

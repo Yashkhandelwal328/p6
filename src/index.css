@@ -61,6 +61,11 @@
     border: 1px solid var(--tenant-border);
   }
   
+  .glass-dark {
+    background: color-mix(in srgb, #0F172A 85%, transparent);
+    backdrop-filter: blur(16px);
+  }
+  
   .btn-primary {
     background-color: var(--tenant-primary);
     color: var(--tenant-primary-foreground);

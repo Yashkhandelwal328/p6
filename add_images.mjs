@@ -10,8 +10,8 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 
 async function run() {
   const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-    email: 'owner@nirvana.com',
-    password: 'Nirvana@123',
+    email: 'admin@nirvanacafe.com',
+    password: 'S3cur3Nirv@na2026',
   });
   if (authError) {
     console.error('❌ Auth failed:', authError.message);

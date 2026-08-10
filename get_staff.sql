@@ -1,1 +1,1 @@
-SELECT * FROM public.staff WHERE email = 'owner@nirvana.com';
+SELECT * FROM public.staff WHERE email = 'admin@nirvanacafe.com';

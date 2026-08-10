@@ -11,7 +11,7 @@ function slugify(text) {
 }
 
 async function run() {
-  await supabase.auth.signInWithPassword({ email: 'owner@nirvana.com', password: 'Nirvana@123' });
+  await supabase.auth.signInWithPassword({ email: 'admin@nirvanacafe.com', password: 'S3cur3Nirv@na2026' });
   
   const { data: items } = await supabase.from('menu_items').select('id, name, image_url');
   let count = 0;

@@ -10,7 +10,7 @@ async function run() {
   const authRes = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'apikey': supabaseKey },
-    body: JSON.stringify({ email: 'owner@nirvana.com', password: 'Nirvana@123' })
+    body: JSON.stringify({ email: 'admin@nirvanacafe.com', password: 'S3cur3Nirv@na2026' })
   });
   const authData = await authRes.json();
   const token = authData.access_token;

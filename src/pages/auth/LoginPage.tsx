@@ -109,7 +109,7 @@ export function LoginPage() {
                   <label className="block text-sm text-theme-primary font-medium mb-1.5">Email</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
-                    <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="owner@nirvana.com" className="input-luxury w-full pl-12" />
+                    <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="your@email.com" className="input-luxury w-full pl-12" />
                   </div>
                 </div>
                 <button type="submit" disabled={loading} className="btn-primary w-full">
@@ -133,7 +133,7 @@ export function LoginPage() {
               <label className="block text-sm text-theme-primary font-medium mb-1.5">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-secondary" />
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="owner@nirvana.com" className="input-luxury w-full pl-12" autoComplete="email" />
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" className="input-luxury w-full pl-12" autoComplete="email" />
               </div>
             </div>
 
@@ -163,9 +163,6 @@ export function LoginPage() {
             </button>
 
             <div className="text-center pt-2 space-y-1">
-              <p className="text-xs text-theme-secondary">
-                Demo: owner@nirvana.com / Nirvana@123
-              </p>
               <p className="text-xs text-theme-secondary">
                 New restaurant? <Link to="/register" className="text-primary hover:text-primary/80 transition-colors">Register here</Link>
               </p>

@@ -8,8 +8,8 @@ const supabase = createClient(supabaseUrl, supabaseKey, { realtime: { transport:
 
 async function run() {
   const { data: authUser, error: authErr } = await supabase.auth.signInWithPassword({
-    email: 'owner@nirvana.com',
-    password: 'Nirvana@123',
+    email: 'admin@nirvanacafe.com',
+    password: 'S3cur3Nirv@na2026',
   });
   console.log("Auth user id:", authUser?.user?.id);
   const { data: staff, error: staffErr } = await supabase.from('staff').select('*').eq('user_id', authUser?.user?.id);

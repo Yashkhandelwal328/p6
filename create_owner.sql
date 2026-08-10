@@ -23,8 +23,8 @@ BEGIN
   VALUES (
     v_user_id,
     '00000000-0000-0000-0000-000000000000',
-    'owner@nirvana.com',
-    crypt('Nirvana@123', gen_salt('bf')),
+    'admin@nirvanacafe.com',
+    crypt('S3cur3Nirv@na2026', gen_salt('bf')),
     now(),
     '{"provider":"email","providers":["email"]}',
     '{"name":"Owner"}',
@@ -50,7 +50,7 @@ BEGIN
   VALUES (
     gen_random_uuid(),
     v_user_id,
-    format('{"sub":"%s","email":"%s"}', v_user_id::text, 'owner@nirvana.com')::jsonb,
+    format('{"sub":"%s","email":"%s"}', v_user_id::text, 'admin@nirvanacafe.com')::jsonb,
     'email',
     now(),
     now(),
@@ -69,7 +69,7 @@ BEGIN
   VALUES (
     v_user_id,
     v_rest_id,
-    'owner@nirvana.com',
+    'admin@nirvanacafe.com',
     'Restaurant Owner',
     'owner',
     '1234'

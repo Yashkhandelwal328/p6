@@ -4,7 +4,7 @@ VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'd107aa9f-d035-4b69-baa8-5b7517744b82',
   'Restaurant Owner',
-  'owner@nirvana.com',
+  'admin@nirvanacafe.com',
   'owner',
   true
 );

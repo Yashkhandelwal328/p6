@@ -1,1 +1,1 @@
-SELECT id FROM auth.users WHERE email = 'owner@nirvana.com';
+SELECT id FROM auth.users WHERE email = 'admin@nirvanacafe.com';

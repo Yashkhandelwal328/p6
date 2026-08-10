@@ -86,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     await supabase.auth.signOut();
     setStaff(null);
+    window.location.href = '/login';
   }
 
   const restaurantId = staff?.restaurant_id ?? null;

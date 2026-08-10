@@ -11,8 +11,8 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 
 // Sign in as owner to bypass RLS
 const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-  email: 'owner@nirvana.com',
-  password: 'Nirvana@123',
+  email: 'admin@nirvanacafe.com',
+  password: 'S3cur3Nirv@na2026',
 });
 if (authError) {
   console.error('❌ Failed to authenticate:', authError.message);

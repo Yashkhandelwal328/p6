@@ -149,7 +149,7 @@ INSERT INTO tables (id, restaurant_id, table_number, name, capacity, qr_token, s
 -- ============================================================
 INSERT INTO staff (id, restaurant_id, user_id, name, email, phone, role, is_active, last_login, created_at, updated_at) VALUES
 ('8f26b8d8-deaf-4473-a641-a048fc3e6af3', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'f1a2b3c4-d5e6-7890-abcd-ef1234567890', 'The Infinito Cafe & Restaurants Admin', 'admin@nirvana.com', NULL, 'owner', true, NULL, '2026-07-29T08:18:17.711481+00:00', '2026-07-29T09:57:09.336924+00:00'),
-('8a083503-5267-454e-a06c-35f5bee6a407', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', '6499e9a2-93f7-41ee-94e0-f9744ea207b9', 'The Infinito Cafe & Restaurants Owner', 'owner@nirvana.com', NULL, 'owner', true, NULL, '2026-07-29T09:57:09.336924+00:00', '2026-07-29T09:57:09.336924+00:00');
+('8a083503-5267-454e-a06c-35f5bee6a407', 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', '6499e9a2-93f7-41ee-94e0-f9744ea207b9', 'The Infinito Cafe & Restaurants Owner', 'admin@nirvanacafe.com', NULL, 'owner', true, NULL, '2026-07-29T09:57:09.336924+00:00', '2026-07-29T09:57:09.336924+00:00');
 
 -- ============================================================
 -- TABLE: customers (0 rows)

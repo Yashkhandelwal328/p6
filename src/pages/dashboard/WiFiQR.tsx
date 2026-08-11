@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { Wifi, Check } from 'lucide-react';
+import QRCode from 'qrcode';
 import type { WiFiSettings } from '@/types';
 
 const SECURITY_TYPES = [
@@ -26,6 +27,7 @@ export function WiFiQR() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string>('');
 
   useEffect(() => {
     if (restaurantId) {
@@ -53,6 +55,26 @@ export function WiFiQR() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (!settings.ssid) {
+      setQrDataUrl('');
+      return;
+    }
+
+    let authType = 'WPA';
+    if (settings.security_type === 'WEP') authType = 'WEP';
+    else if (settings.security_type === 'Open') authType = 'nopass';
+
+    // Format: WIFI:T:WPA;S:mynetwork;P:mypass;;
+    const wifiString = `WIFI:T:${authType};S:${settings.ssid};P:${settings.security_type === 'Open' ? '' : (settings.password || '')};;`;
+
+    QRCode.toDataURL(wifiString, {
+      width: 200,
+      margin: 1,
+      color: { dark: '#000000', light: '#ffffff' }
+    }).then(url => setQrDataUrl(url)).catch(err => console.error(err));
+  }, [settings.ssid, settings.password, settings.security_type]);
 
   async function handleSave() {
     if (!restaurantId || !settings.ssid) {
@@ -247,9 +269,9 @@ export function WiFiQR() {
               <p className="text-[10px] text-theme-secondary mb-4 uppercase tracking-widest">Scan to connect to our WiFi</p>
               
               {settings.show_qr && (
-                <div className="aspect-square bg-white rounded-lg p-2 mb-4 mx-auto w-32 flex items-center justify-center">
-                  {settings.ssid ? (
-                    <div className="text-xs text-black/50 text-center">QR Code<br/>Generated</div>
+                <div className="aspect-square bg-white rounded-lg p-2 mb-4 mx-auto w-32 flex items-center justify-center overflow-hidden">
+                  {settings.ssid && qrDataUrl ? (
+                    <img src={qrDataUrl} alt="WiFi QR" className="w-full h-full object-contain" />
                   ) : (
                     <div className="w-full h-full border-2 border-dashed border-gray-300 rounded" />
                   )}

@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Printer, QrCode } from 'lucide-react';
+import QRCode from 'qrcode';
 import type { Room, QRTemplate } from '@/types';
 
 export function PrintQR() {
   const { restaurantId } = useAuth();
+  const { restaurant } = useTheme();
   const [activeTab, setActiveTab] = useState<'table' | 'room'>('room');
   const [rooms, setRooms] = useState<Room[]>([]);
   const [tables, setTables] = useState<{ id: string; table_number: number }[]>([]);
   const [selectedId, setSelectedId] = useState<string>('');
   const [template, setTemplate] = useState<QRTemplate | null>(null);
   const [loading, setLoading] = useState(true);
+  const [qrDataUrl, setQrDataUrl] = useState<string>('');
+  const [subdomain, setSubdomain] = useState<string | null>(null);
 
   useEffect(() => {
     if (restaurantId) {
@@ -47,6 +52,17 @@ export function PrintQR() {
         .maybeSingle();
       
       setTemplate(tmpl);
+
+      const { data: restData } = await supabase
+        .from('restaurants')
+        .select('subdomain, custom_domain')
+        .eq('id', restaurantId!)
+        .maybeSingle();
+      
+      if (restData) {
+        setSubdomain(restData.custom_domain || restData.subdomain);
+      }
+
       setSelectedId('');
     } catch (err) {
       console.error('Error loading data for print:', err);
@@ -54,6 +70,35 @@ export function PrintQR() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (!selectedId) {
+      setQrDataUrl('');
+      return;
+    }
+
+    const tenantSlug = subdomain || restaurant?.subdomain;
+    const baseUrl = tenantSlug 
+      ? `${window.location.origin}/${tenantSlug}`
+      : window.location.origin;
+
+    let targetUrl = '';
+    if (activeTab === 'room') {
+      const room = rooms.find(r => r.id === selectedId);
+      if (room) targetUrl = `${baseUrl}/menu?room=${encodeURIComponent(room.room_number)}`;
+    } else {
+      const table = tables.find(t => t.id === selectedId);
+      if (table) targetUrl = `${baseUrl}/menu?table=${table.table_number}`;
+    }
+
+    if (targetUrl) {
+      QRCode.toDataURL(targetUrl, {
+        width: 400,
+        margin: 2,
+        color: { dark: '#000000', light: '#ffffff' }
+      }).then(url => setQrDataUrl(url)).catch(err => console.error(err));
+    }
+  }, [selectedId, activeTab, rooms, tables, subdomain, restaurant]);
 
   function handlePrint() {
     if (!selectedId) {
@@ -166,8 +211,12 @@ export function PrintQR() {
                     {activeTab === 'room' ? 'Room Service Menu' : 'Table Menu'}
                   </p>
                   
-                  <div className="w-48 h-48 bg-gray-100 rounded-xl border border-gray-200 flex items-center justify-center mb-8">
-                    <QrCode className="w-32 h-32 text-black" />
+                  <div className="w-48 h-48 bg-white rounded-xl border border-gray-200 flex items-center justify-center mb-8 overflow-hidden">
+                    {qrDataUrl ? (
+                      <img src={qrDataUrl} alt="QR Code" className="w-full h-full object-contain" />
+                    ) : (
+                      <QrCode className="w-32 h-32 text-gray-300" />
+                    )}
                   </div>
                   
                   <div className="mt-auto pt-6 border-t border-gray-200 w-full text-center">

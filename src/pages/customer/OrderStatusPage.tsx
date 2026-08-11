@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt, ShoppingBag, MapPin, Bike } from 'lucide-react';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { CheckCircle2, Clock, ChefHat, BellRing, Utensils, XCircle, ArrowLeft, Receipt, ShoppingBag, MapPin, Bike, MessageSquare, Star } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useTheme } from '@/context/ThemeContext';
 import { formatCurrency, formatTime, timeAgo } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus, Restaurant } from '@/types';
 
@@ -25,6 +26,7 @@ const DELIVERY_STATUS_STEPS: { status: OrderStatus; label: string; icon: typeof 
 
 export function OrderStatusPage() {
   const { slug, orderId } = useParams<{ slug?: string, orderId: string }>();
+  const { isCustomDomain } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tableNumber = searchParams.get('table') || '';
@@ -293,6 +295,24 @@ export function OrderStatusPage() {
           <div className="card-luxury p-5 animate-fade-in-up">
             <h3 className="font-serif text-lg text-nirvana-300 mb-2">Delivery Address</h3>
             <p className="text-sm text-ink-300 whitespace-pre-wrap">{order.delivery_address}</p>
+          </div>
+        )}
+
+        {/* Review CTA (Only when completed) */}
+        {order.status === 'completed' && (
+          <div className="card-luxury p-6 text-center animate-fade-in-up border-nirvana-400/30 bg-gradient-to-br from-nirvana-400/10 to-transparent">
+            <div className="w-12 h-12 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+              <MessageSquare className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-serif text-xl text-nirvana-300 mb-2">How was your order?</h3>
+            <p className="text-sm text-ink-300 mb-4">We'd love to hear your feedback!</p>
+            <Link
+              to={isCustomDomain ? '/review' : (slug ? `/${slug}/review` : '/review')}
+              className="btn-primary w-full !py-3 flex items-center justify-center gap-2"
+            >
+              <Star className="w-4 h-4 fill-current" />
+              Leave a Review
+            </Link>
           </div>
         )}
       </main>

@@ -56,12 +56,16 @@ export function DashboardLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(true);
+  const [restaurantSubdomain, setRestaurantSubdomain] = useState<string | null>(null);
 
   useEffect(() => {
     if (!restaurantId) return;
     const fetchStatus = async () => {
-      const { data } = await supabase.from('restaurants').select('is_active').eq('id', restaurantId).maybeSingle();
-      if (data) setIsRestaurantOpen(data.is_active);
+      const { data } = await supabase.from('restaurants').select('is_active, subdomain, custom_domain').eq('id', restaurantId).maybeSingle();
+      if (data) {
+        setIsRestaurantOpen(data.is_active);
+        setRestaurantSubdomain(data.custom_domain || data.subdomain || null);
+      }
     };
     fetchStatus();
   }, [restaurantId]);
@@ -166,7 +170,7 @@ export function DashboardLayout() {
               </div>
             </div>
             <a
-              href={restaurant?.subdomain ? `/${restaurant.subdomain}/review` : '/review'}
+              href={restaurantSubdomain ? `/${restaurantSubdomain}/review` : '/review'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#E2E8F0] hover:bg-white/10 hover:text-white transition-colors mb-2"

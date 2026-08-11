@@ -307,7 +307,7 @@ export function OrderStatusPage() {
             <h3 className="font-serif text-xl text-nirvana-300 mb-2">How was your order?</h3>
             <p className="text-sm text-ink-300 mb-4">We'd love to hear your feedback!</p>
             <Link
-              to={isCustomDomain ? '/review' : (slug ? `/${slug}/review` : '/review')}
+              to={isCustomDomain ? '/review?source=order_page' : (slug ? `/${slug}/review?source=order_page` : '/review?source=order_page')}
               className="btn-primary w-full !py-3 flex items-center justify-center gap-2"
             >
               <Star className="w-4 h-4 fill-current" />

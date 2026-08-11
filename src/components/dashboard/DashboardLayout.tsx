@@ -170,7 +170,7 @@ export function DashboardLayout() {
               </div>
             </div>
             <a
-              href={restaurantSubdomain ? `/${restaurantSubdomain}/review` : '/review'}
+              href={restaurantSubdomain ? `/${restaurantSubdomain}/review?source=owner_dashboard` : '/review?source=owner_dashboard'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#E2E8F0] hover:bg-white/10 hover:text-white transition-colors mb-2"

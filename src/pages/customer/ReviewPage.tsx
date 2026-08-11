@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Star, Send, ArrowLeft, CheckCircle2, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/context/ThemeContext';
@@ -8,6 +8,13 @@ export function ReviewPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { restaurant, isCustomDomain } = useTheme();
+  const [searchParams] = useSearchParams();
+  const sourceParam = searchParams.get('source') || 'website';
+  
+  // Validate source against allowed enum values
+  const validSources = ['website', 'owner_dashboard', 'order_page'];
+  const source = validSources.includes(sourceParam) ? sourceParam : 'website';
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [name, setName] = useState('');
@@ -46,7 +53,7 @@ export function ReviewPage() {
         customer_phone: phone.trim() || null,
         rating,
         comment: comment.trim() || null,
-        source: 'website',
+        source: source,
       });
 
       if (insertError) throw insertError;

@@ -373,7 +373,7 @@ export function OrderPage({
               </button>
               <button
                 onClick={() => {
-                  const reviewPath = slug ? `/${slug}/review` : '/review';
+                  const reviewPath = slug ? `/${slug}/review?source=order_page` : '/review?source=order_page';
                   navigate(reviewPath);
                 }}
                 className="btn-outline !px-4 !py-2.5 flex items-center gap-2 text-sm text-theme-primary border-theme-border hover:border-primary hover:text-primary transition-colors"

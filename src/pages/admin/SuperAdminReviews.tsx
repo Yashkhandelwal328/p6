@@ -191,7 +191,13 @@ export function SuperAdminReviews() {
                     {review.customer_phone && (
                       <span>📱 {review.customer_phone}</span>
                     )}
-                    <span className="capitalize">via {review.source.replace('_', ' ')}</span>
+                    <span className="capitalize font-medium">
+                      {review.source === 'owner_dashboard' 
+                        ? 'Owner Review' 
+                        : review.source === 'order_page' 
+                          ? 'Customer Review' 
+                          : 'Website Review'}
+                    </span>
                     <span>{new Date(review.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                 </div>

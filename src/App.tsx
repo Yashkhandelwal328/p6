@@ -77,7 +77,7 @@ function TenantRouter() {
     return (
       <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
         <div>
-          <h1 className="font-serif text-4xl text-gradient-gold mb-2">Restaurant Not Found</h1>
+          <h1 className="font-serif text-4xl bg-gradient-gold bg-clip-text text-transparent mb-2">Restaurant Not Found</h1>
           <p className="text-ink-400 mb-6">The restaurant you are looking for does not exist or has been removed.</p>
           <a href="/" className="btn-gold !py-2">Go to Platform Home</a>
         </div>
@@ -90,7 +90,7 @@ function TenantRouter() {
     return (
       <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
         <div>
-          <h1 className="font-serif text-4xl text-gradient-gold mb-2">Coming Soon</h1>
+          <h1 className="font-serif text-4xl bg-gradient-gold bg-clip-text text-transparent mb-2">Coming Soon</h1>
           <p className="text-ink-400">This restaurant is not yet open. Please check back later!</p>
         </div>
       </div>
@@ -101,7 +101,7 @@ function TenantRouter() {
     return (
       <div className="min-h-screen bg-gradient-dark flex items-center justify-center text-center p-4">
         <div>
-          <h1 className="font-serif text-4xl text-gradient-gold mb-2">Maintenance Mode</h1>
+          <h1 className="font-serif text-4xl bg-gradient-gold bg-clip-text text-transparent mb-2">Maintenance Mode</h1>
           <p className="text-ink-400">We'll be back soon.</p>
         </div>
       </div>

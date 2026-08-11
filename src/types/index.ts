@@ -285,3 +285,17 @@ export interface PremiumLead {
   created_at: string;
   updated_at: string;
 }
+
+export interface Review {
+  id: string;
+  restaurant_id: string;
+  customer_name: string;
+  customer_phone: string | null;
+  rating: number;
+  comment: string | null;
+  order_id: string | null;
+  source: 'website' | 'owner_dashboard' | 'order_page';
+  is_read: boolean;
+  created_at: string;
+  restaurant?: Restaurant;
+}

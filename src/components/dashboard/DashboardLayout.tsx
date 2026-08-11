@@ -19,6 +19,7 @@ import {
   ShoppingBag,
   Power,
   Image as ImageIcon,
+  MessageSquare,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -164,6 +165,15 @@ export function DashboardLayout() {
                 <p className="text-xs text-theme-secondary capitalize">{userRole.replace('_', ' ')}</p>
               </div>
             </div>
+            <a
+              href={restaurant?.subdomain ? `/${restaurant.subdomain}/review` : '/review'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#E2E8F0] hover:bg-white/10 hover:text-white transition-colors mb-2"
+            >
+              <MessageSquare className="w-5 h-5" />
+              Leave a Review
+            </a>
             <button
               onClick={handleSignOut}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors"

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSearchParams, useNavigate as useNavigateRouter, useParams } from 'react-router-dom';
-import { Search, Plus, Minus, ShoppingCart, X, Clock, Star, Flame, Leaf, Utensils, Filter, ShoppingBag, ArrowLeft, MessageSquare, ChefHat, Store, MapPin, Navigation } from 'lucide-react';
+import { Search, Plus, Minus, ShoppingCart, X, Clock, Star, Flame, Leaf, Utensils, Filter, ShoppingBag, ArrowLeft, MessageSquare as MessageSquareIcon, ChefHat, Store, MapPin, Navigation } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { formatCurrency, formatTime } from '@/lib/format';
 import type { Category, MenuItem, CartItem, Portion, Restaurant, Table } from '@/types';
@@ -370,6 +370,16 @@ export function OrderPage({
               >
                 <Store className="w-4 h-4" />
                 <span className="hidden sm:inline">Owner Login</span>
+              </button>
+              <button
+                onClick={() => {
+                  const reviewPath = slug ? `/${slug}/review` : '/review';
+                  navigate(reviewPath);
+                }}
+                className="btn-outline !px-4 !py-2.5 flex items-center gap-2 text-sm text-theme-primary border-theme-border hover:border-primary hover:text-primary transition-colors"
+              >
+                <MessageSquareIcon className="w-4 h-4" />
+                <span className="hidden sm:inline">Review</span>
               </button>
               <button
                 onClick={() => setCartOpen(true)}
@@ -908,7 +918,7 @@ export function OrderPage({
               </div>
               <div>
                 <label className="block text-sm text-theme-primary font-medium mb-1.5 flex items-center gap-1">
-                  <MessageSquare className="w-4 h-4" /> Special Instructions
+                  <MessageSquareIcon className="w-4 h-4" /> Special Instructions
                 </label>
                 <textarea
                   value={specialInstructions}

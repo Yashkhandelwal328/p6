@@ -8,7 +8,8 @@ import {
   Settings,
   Menu,
   X,
-  PhoneCall
+  PhoneCall,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -26,6 +27,7 @@ export function SuperAdminLayout() {
     { name: 'Overview', path: '/sup/dashboard', icon: LayoutDashboard },
     { name: 'Restaurants', path: '/sup/restaurants', icon: Store },
     { name: 'Premium Leads', path: '/sup/leads', icon: PhoneCall },
+    { name: 'Reviews', path: '/sup/reviews', icon: MessageSquare },
   ];
 
   return (

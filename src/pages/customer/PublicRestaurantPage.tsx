@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Store, MapPin, Clock, Phone, Utensils, Star, Image as ImageIcon } from 'lucide-react';
+import { Store, MapPin, Clock, Phone, Utensils, Star, Image as ImageIcon, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/context/ThemeContext';
 import type { Restaurant } from '@/types';
@@ -156,6 +156,19 @@ export function PublicRestaurantPage({
           </div>
         </div>
       </div>
+
+      {/* Review CTA */}
+      {!previewData && (
+        <div className="max-w-7xl mx-auto px-6 pb-12">
+          <Link
+            to={isCustomDomain ? '/review' : (activeSlug ? `/${activeSlug}/review` : '/review')}
+            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-surface border border-theme-border hover:border-primary/30 hover:bg-primary/5 transition-all text-theme-text-primary font-medium text-lg"
+          >
+            <MessageSquare className="w-5 h-5 text-primary" />
+            Leave a Review
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

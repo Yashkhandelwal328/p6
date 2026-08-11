@@ -6,6 +6,7 @@ import { LandingPage } from '@/pages/LandingPage';
 import { PublicRestaurantPage } from '@/pages/customer/PublicRestaurantPage';
 import { OrderPage } from '@/pages/customer/OrderPage';
 import { OrderStatusPage } from '@/pages/customer/OrderStatusPage';
+import { ReviewPage } from '@/pages/customer/ReviewPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { SignupPage } from '@/pages/auth/SignupPage';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
@@ -26,6 +27,7 @@ import { SuperAdminRestaurants } from '@/pages/admin/SuperAdminRestaurants';
 import { SuperAdminRestaurantDetails } from '@/pages/admin/SuperAdminRestaurantDetails';
 import { SuperAdminLeads } from '@/pages/admin/SuperAdminLeads';
 import { PendingApprovals } from '@/pages/admin/PendingApprovals';
+import { SuperAdminReviews } from '@/pages/admin/SuperAdminReviews';
 import { SuperAdminLayout } from '@/components/admin/SuperAdminLayout';
 import { SubscriptionManagement } from '@/pages/admin/SubscriptionManagement';
 import { MediaManagement } from '@/pages/admin/MediaManagement';
@@ -123,6 +125,7 @@ function TenantRouter() {
         <Route path="/" element={<PublicRestaurantPage />} />
         <Route path="/menu" element={<OrderPage />} />
         <Route path="/order/status/:orderId" element={<OrderStatusPage />} />
+        <Route path="/review" element={<ReviewPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
@@ -148,6 +151,7 @@ function MainPlatformRouter() {
         <Route path="restaurants/:id" element={<SuperAdminRestaurantDetails />} />
         <Route path="leads" element={<SuperAdminLeads />} />
         <Route path="approvals" element={<PendingApprovals />} />
+        <Route path="reviews" element={<SuperAdminReviews />} />
       </Route>
 
       {/* Main App Routes */}

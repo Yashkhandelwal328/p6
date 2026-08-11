@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin, Receipt, MessageSquare } from 'lucide-react';
+import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin, Receipt, MessageSquare, ArrowRight, Bike, BellRing, ClipboardList } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { formatTime, timeAgo, formatOrderStatus } from '@/lib/format';
@@ -10,11 +10,36 @@ interface OrderWithItems extends Order {
   order_items: OrderItem[];
 }
 
+const STATUS_FLOW: OrderStatus[] = ['new', 'accepted', 'preparing', 'ready', 'served', 'completed'];
+
+const STATUS_STEP_CONFIG: Record<string, { label: string; icon: typeof Clock; color: string }> = {
+  new: { label: 'Placed', icon: Receipt, color: 'text-blue-400' },
+  accepted: { label: 'Accepted', icon: CheckCircle2, color: 'text-sky-400' },
+  preparing: { label: 'Preparing', icon: ChefHat, color: 'text-amber-400' },
+  ready: { label: 'Ready', icon: BellRing, color: 'text-orange-400' },
+  served: { label: 'Served', icon: Utensils, color: 'text-green-400' },
+  completed: { label: 'Done', icon: CheckCircle2, color: 'text-emerald-400' },
+};
+
+const NEXT_ACTION_LABELS: Record<string, { label: string; deliveryLabel?: string }> = {
+  new: { label: 'Accept Order' },
+  accepted: { label: 'Start Preparing' },
+  preparing: { label: 'Mark Ready to Serve', deliveryLabel: 'Mark Out for Delivery' },
+  ready: { label: 'Mark Served', deliveryLabel: 'Mark Reached' },
+  served: { label: 'Complete Order' },
+};
+
+function getNextStatus(current: OrderStatus): OrderStatus | null {
+  const idx = STATUS_FLOW.indexOf(current);
+  if (idx === -1 || idx >= STATUS_FLOW.length - 1) return null;
+  return STATUS_FLOW[idx + 1];
+}
+
 export function KitchenDashboard() {
   const { restaurantId } = useAuth();
   const [orders, setOrders] = useState<OrderWithItems[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'new' | 'preparing' | 'ready' | 'completed'>('new');
+  const [activeTab, setActiveTab] = useState<'all' | 'new' | 'preparing' | 'ready' | 'completed'>('all');
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
@@ -80,6 +105,7 @@ export function KitchenDashboard() {
     const notifType = status === 'accepted' ? 'order_accepted'
       : status === 'preparing' ? 'order_preparing'
       : status === 'ready' ? 'order_ready'
+      : status === 'served' ? 'order_served'
       : status === 'completed' ? 'order_completed'
       : 'order_cancelled';
 
@@ -121,18 +147,20 @@ Thank you for ordering! 🙏`;
   }, []);
 
   const filteredOrders = orders.filter((o) => {
+    if (activeTab === 'all') return true;
     if (activeTab === 'new') return ['new', 'accepted'].includes(o.status);
     if (activeTab === 'preparing') return o.status === 'preparing';
-    if (activeTab === 'ready') return o.status === 'ready';
-    if (activeTab === 'completed') return o.status === 'completed' || o.status === 'served';
+    if (activeTab === 'ready') return ['ready', 'served'].includes(o.status);
+    if (activeTab === 'completed') return o.status === 'completed';
     return false;
   });
 
   const counts = {
+    all: orders.length,
     new: orders.filter(o => ['new', 'accepted'].includes(o.status)).length,
     preparing: orders.filter(o => o.status === 'preparing').length,
-    ready: orders.filter(o => o.status === 'ready').length,
-    completed: orders.filter(o => ['completed', 'served'].includes(o.status)).length,
+    ready: orders.filter(o => ['ready', 'served'].includes(o.status)).length,
+    completed: orders.filter(o => o.status === 'completed').length,
   };
 
   if (loading) {
@@ -162,12 +190,13 @@ Thank you for ordering! 🙏`;
       </div>
 
       {/* Tab Counts */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {([
+          { key: 'all', label: 'All Orders', icon: ClipboardList, color: 'text-nirvana-300' },
           { key: 'new', label: 'New Orders', icon: AlertCircle, color: 'text-blue-400' },
           { key: 'preparing', label: 'Preparing', icon: Clock, color: 'text-amber-400' },
-          { key: 'ready', label: 'Ready', icon: CheckCircle2, color: 'text-green-400' },
-          { key: 'completed', label: 'Completed', icon: Utensils, color: 'text-emerald-400' },
+          { key: 'ready', label: 'Ready / Served', icon: BellRing, color: 'text-green-400' },
+          { key: 'completed', label: 'Completed', icon: CheckCircle2, color: 'text-emerald-400' },
         ] as const).map((tab) => {
           const Icon = tab.icon;
           return (
@@ -194,7 +223,17 @@ Thank you for ordering! 🙏`;
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredOrders.map((order) => (
+          {filteredOrders.map((order) => {
+            const nextStatus = getNextStatus(order.status);
+            const currentStepIdx = STATUS_FLOW.indexOf(order.status);
+            const actionConfig = NEXT_ACTION_LABELS[order.status];
+            const actionLabel = actionConfig
+              ? (order.order_type === 'delivery' && actionConfig.deliveryLabel
+                ? actionConfig.deliveryLabel
+                : actionConfig.label)
+              : null;
+
+            return (
             <div key={order.id} className="card-luxury p-4 animate-fade-in-up">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -208,6 +247,41 @@ Thank you for ordering! 🙏`;
                 <span className={`badge ${ORDER_STATUS_COLORS[order.status]} capitalize`}>
                   {formatOrderStatus(order.status, order.order_type)}
                 </span>
+              </div>
+
+              {/* Inline Status Stepper */}
+              <div className="mb-4 p-3 glass rounded-xl">
+                <div className="flex items-center justify-between relative">
+                  {/* Background track */}
+                  <div className="absolute left-3 right-3 top-[13px] h-0.5 bg-white/10" />
+                  {/* Progress track */}
+                  <div
+                    className="absolute left-3 top-[13px] h-0.5 bg-gradient-to-r from-nirvana-400 to-nirvana-300 transition-all duration-500"
+                    style={{ width: `${currentStepIdx >= 0 ? (currentStepIdx / (STATUS_FLOW.length - 1)) * (100 - 6) : 0}%` }}
+                  />
+                  {STATUS_FLOW.map((s, idx) => {
+                    const stepConfig = STATUS_STEP_CONFIG[s];
+                    const Icon = stepConfig.icon;
+                    const isDone = idx <= currentStepIdx;
+                    const isCurrent = idx === currentStepIdx;
+                    return (
+                      <div key={s} className="relative z-10 flex flex-col items-center" style={{ minWidth: '26px' }}>
+                        <div
+                          className={`w-[26px] h-[26px] rounded-full flex items-center justify-center transition-all duration-300 ${
+                            isDone
+                              ? 'bg-gradient-gold text-ink-950'
+                              : 'bg-ink-800/60 text-ink-500'
+                          } ${isCurrent ? 'ring-2 ring-nirvana-400/40 scale-110' : ''}`}
+                        >
+                          <Icon className="w-3 h-3" />
+                        </div>
+                        <span className={`text-[9px] mt-1 whitespace-nowrap ${isDone ? 'text-nirvana-300' : 'text-ink-500'}`}>
+                          {stepConfig.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               {order.special_instructions && (
@@ -273,41 +347,32 @@ Thank you for ordering! 🙏`;
                   </div>
                 )}
 
-                {/* Action Buttons */}
+                {/* Primary Next-Action Button */}
                 <div className="flex gap-2">
-                {order.status === 'new' && (
-                  <button onClick={() => updateOrderStatus(order, 'accepted')} className="btn-gold flex-1 !py-2 text-sm">
-                    {order.payment_method === 'online' ? 'Payment Received' : 'Accept'}
-                  </button>
-                )}
-                {order.status === 'accepted' && (
-                  <button onClick={() => updateOrderStatus(order, 'preparing')} className="btn-gold flex-1 !py-2 text-sm">
-                    Start Preparing
-                  </button>
-                )}
-                {order.status === 'preparing' && (
-                  <button onClick={() => updateOrderStatus(order, 'ready')} className="btn-gold flex-1 !py-2 text-sm">
-                    {order.order_type === 'delivery' ? 'Out for Delivery' : 'Mark Ready'}
-                  </button>
-                )}
-                {order.status === 'ready' && (
-                  <button onClick={() => updateOrderStatus(order, 'served')} className="btn-gold flex-1 !py-2 text-sm">
-                    {order.order_type === 'delivery' ? 'Mark Reached' : 'Mark Served'}
-                  </button>
-                )}
-                {order.status === 'served' && (
-                  <button onClick={() => updateOrderStatus(order, 'completed')} className="btn-gold flex-1 !py-2 text-sm">
-                    Complete
-                  </button>
-                )}
-                {['new', 'accepted'].includes(order.status) && (
-                  <button onClick={() => updateOrderStatus(order, 'cancelled')} className="btn-outline-gold !py-2 !px-3 text-sm border-red-500/30 text-red-400 hover:bg-red-500/10">
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+                  {nextStatus && actionLabel && (
+                    <button
+                      onClick={() => updateOrderStatus(order, nextStatus)}
+                      className="btn-gold flex-1 !py-2.5 text-sm flex items-center justify-center gap-2 font-semibold"
+                    >
+                      {actionLabel}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  )}
+                  {order.status === 'completed' && (
+                    <div className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Order Complete
+                    </div>
+                  )}
+                  {['new', 'accepted'].includes(order.status) && (
+                    <button onClick={() => updateOrderStatus(order, 'cancelled')} className="btn-outline-gold !py-2 !px-3 text-sm border-red-500/30 text-red-400 hover:bg-red-500/10">
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
       )}
     </div>

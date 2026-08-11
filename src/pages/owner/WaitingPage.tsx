@@ -175,8 +175,8 @@ export function WaitingPage() {
 
           <div className="mt-8 pt-6 border-t border-white/5 space-y-3">
             <h4 className="text-sm font-medium text-ink-300 mb-2">Direct Contact</h4>
-            <a href="mailto:support@gourmetsaas.com" className="flex items-center gap-2 text-sm text-ink-600 hover:text-nirvana-300 transition-colors">
-              <Mail className="w-4 h-4" /> support@gourmetsaas.com
+            <a href="mailto:support@servera.com" className="flex items-center gap-2 text-sm text-ink-600 hover:text-nirvana-300 transition-colors">
+              <Mail className="w-4 h-4" /> support@servera.com
             </a>
             <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-ink-600 hover:text-nirvana-300 transition-colors">
               <Phone className="w-4 h-4" /> +91 98765 43210

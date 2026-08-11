@@ -142,7 +142,7 @@ export function LandingPage() {
             <Utensils className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="font-bold text-xl leading-tight">GourmetSaaS</h1>
+            <h1 className="font-bold text-xl leading-tight">Servera</h1>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -259,7 +259,7 @@ export function LandingPage() {
                 <button 
                   onClick={() => {
                     if (plan.name === 'Enterprise') {
-                      window.location.href = 'mailto:sales@gourmetsaas.com';
+                      window.location.href = 'mailto:sales@servera.com';
                     } else {
                       const planId = plan.name.toLowerCase() === 'professional' ? 'pro' : plan.name.toLowerCase();
                       navigate(`/register?plan=${planId}`);
@@ -349,9 +349,9 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Utensils className="w-5 h-5 text-accent" />
-            <span className="font-bold text-lg">GourmetSaaS</span>
+            <span className="font-bold text-lg">Servera</span>
           </div>
-          <p className="text-sm text-surface/60">© 2026 GourmetSaaS. All rights reserved.</p>
+          <p className="text-sm text-surface/60">© 2026 Servera. All rights reserved.</p>
         </div>
       </footer>
     </div>

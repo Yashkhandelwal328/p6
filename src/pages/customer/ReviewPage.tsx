@@ -60,36 +60,36 @@ export function ReviewPage() {
 
   if (!restaurant) {
     return (
-      <div className="min-h-screen bg-gradient-dark flex items-center justify-center">
-        <div className="w-12 h-12 border-2 border-nirvana-400/30 border-t-nirvana-400 rounded-full animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-dark flex items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6 text-theme-text-primary">
         <div className="w-full max-w-md text-center animate-fade-in-up">
-          <div className="card-luxury p-8">
-            <div className="w-20 h-20 mx-auto glass-gold rounded-full flex items-center justify-center mb-6">
-              <CheckCircle2 className="w-10 h-10 text-nirvana-400" />
+          <div className="bg-surface border border-theme-border p-8 rounded-2xl shadow-xl">
+            <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-6">
+              <CheckCircle2 className="w-10 h-10 text-primary" />
             </div>
-            <h1 className="font-serif text-3xl text-ink-950 mb-3">Thank You!</h1>
-            <p className="text-ink-300 mb-2">Your review has been submitted successfully.</p>
+            <h1 className="font-serif text-3xl font-bold text-theme-text-primary mb-3">Thank You!</h1>
+            <p className="text-theme-text-secondary mb-2">Your review has been submitted successfully.</p>
             <div className="flex justify-center gap-1 mb-6">
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  className={`w-6 h-6 ${s <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-ink-600'}`}
+                  className={`w-6 h-6 ${s <= rating ? 'text-primary fill-primary' : 'text-theme-text-muted opacity-30'}`}
                 />
               ))}
             </div>
-            <p className="text-ink-400 text-sm mb-8">We appreciate your feedback and will use it to improve our service.</p>
+            <p className="text-theme-text-secondary text-sm mb-8">We appreciate your feedback and will use it to improve our service.</p>
             <div className="flex gap-3">
-              <button onClick={() => navigate(homeUrl)} className="btn-outline-gold flex-1 !py-2.5">
+              <button onClick={() => navigate(homeUrl)} className="btn-outline flex-1 !py-2.5">
                 Home
               </button>
-              <button onClick={() => navigate(menuUrl)} className="btn-gold flex-1 !py-2.5">
+              <button onClick={() => navigate(menuUrl)} className="btn-primary flex-1 !py-2.5">
                 Order Again
               </button>
             </div>
@@ -100,37 +100,37 @@ export function ReviewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-dark">
-      <header className="glass-dark border-b border-nirvana-400/10">
+    <div className="min-h-screen bg-background text-theme-text-primary selection:bg-primary selection:text-primary-foreground">
+      <header className="bg-surface border-b border-theme-border sticky top-0 z-40">
         <div className="max-w-lg mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-ink-300 hover:text-nirvana-300 transition-colors"
+            className="flex items-center gap-2 text-theme-text-secondary hover:text-primary transition-colors font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="text-sm">Back</span>
           </button>
           <div className="text-right">
-            <p className="text-xs text-ink-600">Review</p>
-            <p className="font-serif text-nirvana-300">{restaurant.name}</p>
+            <p className="text-xs text-theme-text-secondary uppercase tracking-wider font-semibold">Review</p>
+            <p className="font-serif font-bold text-theme-text-primary">{restaurant.name}</p>
           </div>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 sm:px-6 py-8 space-y-6">
         <div className="text-center animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-4">
-            <MessageSquare className="w-4 h-4 text-nirvana-400" />
-            <span className="text-sm text-nirvana-300">Share Your Experience</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 mb-4">
+            <MessageSquare className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Share Your Experience</span>
           </div>
-          <h1 className="font-serif text-3xl text-ink-950 mb-2">Leave a Review</h1>
-          <p className="text-ink-600 text-sm">Your feedback helps us improve!</p>
+          <h1 className="font-serif text-3xl font-bold text-theme-text-primary mb-2">Leave a Review</h1>
+          <p className="text-theme-text-secondary text-sm">Your feedback helps us improve!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 animate-fade-in-up">
           {/* Star Rating */}
-          <div className="card-luxury p-6 text-center">
-            <p className="text-sm text-ink-400 mb-4">How would you rate your experience?</p>
+          <div className="bg-surface border border-theme-border rounded-2xl p-6 text-center shadow-sm">
+            <p className="text-sm font-medium text-theme-text-secondary mb-4">How would you rate your experience?</p>
             <div className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -139,20 +139,20 @@ export function ReviewPage() {
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
-                  className="transition-transform hover:scale-125 active:scale-95"
+                  className="transition-transform hover:scale-125 active:scale-95 p-1"
                 >
                   <Star
                     className={`w-10 h-10 transition-colors ${
                       star <= (hoverRating || rating)
-                        ? 'text-yellow-400 fill-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.4)]'
-                        : 'text-ink-600 hover:text-ink-500'
+                        ? 'text-primary fill-primary drop-shadow-md'
+                        : 'text-theme-text-muted opacity-30 hover:opacity-100'
                     }`}
                   />
                 </button>
               ))}
             </div>
             {rating > 0 && (
-              <p className="text-sm text-nirvana-300 mt-3 animate-fade-in">
+              <p className="text-sm font-medium text-primary mt-3 animate-fade-in">
                 {rating === 1 && 'Poor'}
                 {rating === 2 && 'Fair'}
                 {rating === 3 && 'Good'}
@@ -163,44 +163,44 @@ export function ReviewPage() {
           </div>
 
           {/* Name & Phone */}
-          <div className="card-luxury p-5 space-y-4">
+          <div className="bg-surface border border-theme-border rounded-2xl p-5 space-y-4 shadow-sm">
             <div>
-              <label className="block text-sm text-ink-400 mb-1.5">Your Name *</label>
+              <label className="block text-sm font-medium text-theme-text-primary mb-1.5">Your Name *</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
-                className="input-luxury w-full"
+                className="w-full px-4 py-3 rounded-xl bg-background border border-theme-border text-theme-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-theme-text-muted"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm text-ink-400 mb-1.5">Phone (optional)</label>
+              <label className="block text-sm font-medium text-theme-text-primary mb-1.5">Phone (optional)</label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Your phone number"
-                className="input-luxury w-full"
+                className="w-full px-4 py-3 rounded-xl bg-background border border-theme-border text-theme-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-theme-text-muted"
               />
             </div>
           </div>
 
           {/* Comment */}
-          <div className="card-luxury p-5">
-            <label className="block text-sm text-ink-400 mb-1.5">Your Review (optional)</label>
+          <div className="bg-surface border border-theme-border rounded-2xl p-5 shadow-sm">
+            <label className="block text-sm font-medium text-theme-text-primary mb-1.5">Your Review (optional)</label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Tell us about your experience..."
               rows={4}
-              className="input-luxury w-full resize-none"
+              className="w-full px-4 py-3 rounded-xl bg-background border border-theme-border text-theme-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-theme-text-muted resize-none"
             />
           </div>
 
           {error && (
-            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-sm font-medium text-center">
               {error}
             </div>
           )}
@@ -208,11 +208,11 @@ export function ReviewPage() {
           <button
             type="submit"
             disabled={submitting || !rating || !name.trim()}
-            className="btn-gold w-full !py-3 text-lg flex items-center justify-center gap-2 disabled:opacity-50"
+            className="btn-primary w-full !py-3.5 text-lg flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? (
               <>
-                <div className="w-5 h-5 border-2 border-ink-950/30 border-t-ink-950 rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                 Submitting...
               </>
             ) : (

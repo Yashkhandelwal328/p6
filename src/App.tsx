@@ -34,6 +34,10 @@ import { MediaManagement } from '@/pages/admin/MediaManagement';
 import { SeoHead } from '@/components/SeoHead';
 
 import { WaitingPage } from '@/pages/owner/WaitingPage';
+import { Rooms } from '@/pages/dashboard/Rooms';
+import { QRTemplates } from '@/pages/dashboard/QRTemplates';
+import { PrintQR } from '@/pages/dashboard/PrintQR';
+import { WiFiQR } from '@/pages/dashboard/WiFiQR';
 
 function ProtectedRoute({ children, allowedRoles, allowPending = false }: { children: React.ReactNode; allowedRoles?: StaffRole[]; allowPending?: boolean }) {
   const { session, staff, loading, isPendingApproval } = useAuth();
@@ -166,6 +170,13 @@ function MainPlatformRouter() {
         <Route path="categories" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><CategoryManagement /></ProtectedRoute>} />
         <Route path="tables" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><TableManagement /></ProtectedRoute>} />
         <Route path="qr-codes" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><QRCodeGenerator /></ProtectedRoute>} />
+        
+        {/* Rooms & QR Feature */}
+        <Route path="rooms" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><Rooms /></ProtectedRoute>} />
+        <Route path="qr-templates" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><QRTemplates /></ProtectedRoute>} />
+        <Route path="print-qr" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><PrintQR /></ProtectedRoute>} />
+        <Route path="wifi-qr" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><WiFiQR /></ProtectedRoute>} />
+        
         <Route path="customers" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager', 'cashier']}><CustomerManagement /></ProtectedRoute>} />
         <Route path="staff" element={<ProtectedRoute allowedRoles={['super_admin', 'owner']}><StaffManagement /></ProtectedRoute>} />
         <Route path="media" element={<ProtectedRoute allowedRoles={['super_admin', 'owner', 'manager']}><MediaManagement /></ProtectedRoute>} />

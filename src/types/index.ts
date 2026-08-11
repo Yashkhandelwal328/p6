@@ -299,3 +299,41 @@ export interface Review {
   created_at: string;
   restaurant?: Restaurant;
 }
+
+export interface Room {
+  id: string;
+  restaurant_id: string;
+  room_number: string;
+  room_name: string | null;
+  floor: string | null;
+  wing: string | null;
+  room_type: string | null;
+  status: 'active' | 'maintenance';
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QRTemplate {
+  id: string;
+  restaurant_id: string;
+  name: string;
+  type: 'table' | 'room';
+  layout_config: Record<string, any>;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WiFiSettings {
+  restaurant_id: string;
+  ssid: string;
+  password: string | null;
+  security_type: string;
+  show_name: boolean;
+  show_password: boolean;
+  show_qr: boolean;
+  created_at: string;
+  updated_at: string;
+}
+

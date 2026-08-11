@@ -31,6 +31,7 @@ interface NavItem {
   path: string;
   icon: typeof LayoutDashboard;
   roles: StaffRole[];
+  subItems?: { label: string; path: string }[];
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -41,7 +42,18 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Menu', path: 'menu', icon: UtensilsCrossed, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Categories', path: 'categories', icon: FolderTree, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Tables', path: 'tables', icon: Table2, roles: ['super_admin', 'owner', 'manager'] },
-  { label: 'QR Codes', path: 'qr-codes', icon: QrCode, roles: ['super_admin', 'owner', 'manager'] },
+  { 
+    label: 'Rooms & QR', 
+    path: 'rooms-qr-group', 
+    icon: QrCode, 
+    roles: ['super_admin', 'owner', 'manager'],
+    subItems: [
+      { label: 'Rooms', path: 'rooms' },
+      { label: 'QR Templates', path: 'qr-templates' },
+      { label: 'Print QR', path: 'print-qr' },
+      { label: 'WiFi QR', path: 'wifi-qr' }
+    ]
+  },
   { label: 'Media Library', path: 'media', icon: ImageIcon, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Customers', path: 'customers', icon: Users, roles: ['super_admin', 'owner', 'manager', 'cashier'] },
   { label: 'Staff', path: 'staff', icon: UserCog, roles: ['super_admin', 'owner'] },
@@ -57,6 +69,7 @@ export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(true);
   const [restaurantSubdomain, setRestaurantSubdomain] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   useEffect(() => {
     if (!restaurantId) return;
@@ -116,22 +129,58 @@ export function DashboardLayout() {
           <nav className="flex-1 overflow-y-auto scrollbar-luxury px-3 py-4 space-y-1">
             {visibleItems.map((item) => {
               const Icon = item.icon;
+              const hasSubItems = item.subItems && item.subItems.length > 0;
+              const isExpanded = expandedSection === item.path || (hasSubItems && item.subItems!.some(sub => isActive(sub.path)));
+
               return (
-                <button
-                  key={item.path}
-                  onClick={() => {
-                    navigate(`/owner${item.path ? `/${item.path}` : ''}`);
-                    setSidebarOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    isActive(item.path)
-                      ? 'bg-[#567C8D] text-white shadow-md'
-                      : 'text-[#E2E8F0] hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  {item.label}
-                </button>
+                <div key={item.path}>
+                  <button
+                    onClick={() => {
+                      if (hasSubItems) {
+                        setExpandedSection(isExpanded && expandedSection === item.path ? null : item.path);
+                      } else {
+                        navigate(`/owner${item.path ? `/${item.path}` : ''}`);
+                        setSidebarOpen(false);
+                      }
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                      (!hasSubItems && isActive(item.path))
+                        ? 'bg-[#567C8D] text-white shadow-md'
+                        : 'text-[#E2E8F0] hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-5 h-5" />
+                      {item.label}
+                    </div>
+                    {hasSubItems && (
+                      <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    )}
+                  </button>
+                  
+                  {hasSubItems && isExpanded && (
+                    <div className="pl-11 pr-3 py-2 space-y-1">
+                      {item.subItems!.map(sub => (
+                        <button
+                          key={sub.path}
+                          onClick={() => {
+                            navigate(`/owner/${sub.path}`);
+                            setSidebarOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                            isActive(sub.path)
+                              ? 'text-[#F5E6D3] bg-white/5 font-semibold'
+                              : 'text-[#E2E8F0]/70 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>

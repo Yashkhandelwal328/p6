@@ -33,9 +33,13 @@ export function OrderPage({
     return defaultValue;
   };
 
-  const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>(() => getInitialState('orderType', 'dine_in'));
+  const roomParam = searchParams.get('room');
+  const isRoomService = !!roomParam;
+  
+  const [orderType, setOrderType] = useState<'dine_in' | 'delivery'>(() => getInitialState('orderType', isRoomService ? 'delivery' : 'dine_in'));
   const initialTable = parseInt(searchParams.get('table') || '1', 10);
   const [tableNumber, setTableNumber] = useState<number>(() => getInitialState('tableNumber', isNaN(initialTable) ? 1 : initialTable));
+  const [roomNumber, setRoomNumber] = useState<string>(() => getInitialState('roomNumber', roomParam || ''));
   const { restaurant: contextRestaurant, previewTheme } = useTheme();
   const [restaurant, setRestaurant] = useState<Partial<Restaurant> | null>(previewData || contextRestaurant || null);
 
@@ -239,7 +243,7 @@ export function OrderPage({
         setError('Phone number is required for delivery.');
         return;
       }
-      if (!deliveryAddress) {
+      if (!isRoomService && !deliveryAddress) {
         setError('Delivery address is required.');
         return;
       }
@@ -267,9 +271,9 @@ export function OrderPage({
 
       const orderPayload: any = {
         restaurant_id: restaurant!.id,
-        table_id: orderType === 'dine_in' ? table?.id : null,
-        table_number: orderType === 'dine_in' ? tableNumber : null,
-        order_type: orderType,
+        table_id: !isRoomService && orderType === 'dine_in' ? table?.id : null,
+        table_number: !isRoomService && orderType === 'dine_in' ? tableNumber : null,
+        order_type: isRoomService ? 'delivery' : orderType,
         customer_name: customerName || null,
         customer_phone: customerPhone || null,
         order_number: orderNumber,
@@ -284,7 +288,9 @@ export function OrderPage({
         items_count: cartCount,
       };
 
-      if (orderType === 'delivery') {
+      if (isRoomService) {
+        orderPayload.delivery_address = `Room ${roomNumber}`;
+      } else if (orderType === 'delivery') {
         orderPayload.delivery_address = deliveryAddress;
         orderPayload.delivery_latitude = deliveryLat;
         orderPayload.delivery_longitude = deliveryLng;
@@ -830,26 +836,40 @@ export function OrderPage({
               </button>
             </div>
 
-            <div className="flex bg-surface rounded-lg p-1 mb-6 border border-theme-border">
-              <button
-                onClick={() => setOrderType('dine_in')}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                  orderType === 'dine_in' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-theme-secondary hover:text-theme-primary'
-                }`}
-              >
-                Dine-in
-              </button>
-              <button
-                onClick={() => setOrderType('delivery')}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                  orderType === 'delivery' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-theme-secondary hover:text-theme-primary'
-                }`}
-              >
-                Delivery
-              </button>
-            </div>
+            {!isRoomService && (
+              <div className="flex bg-surface rounded-lg p-1 mb-6 border border-theme-border">
+                <button
+                  onClick={() => setOrderType('dine_in')}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                    orderType === 'dine_in' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-theme-secondary hover:text-theme-primary'
+                  }`}
+                >
+                  Dine-in
+                </button>
+                <button
+                  onClick={() => setOrderType('delivery')}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                    orderType === 'delivery' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-theme-secondary hover:text-theme-primary'
+                  }`}
+                >
+                  Delivery
+                </button>
+              </div>
+            )}
 
-            {orderType === 'dine_in' ? (
+            {isRoomService ? (
+              <div className="mb-4 bg-surface rounded-xl p-4 border border-theme-border">
+                <label className="block text-sm text-theme-primary font-medium mb-1.5 flex items-center gap-1">
+                  <MapPin className="w-4 h-4" /> Room Number
+                </label>
+                <input
+                  type="text"
+                  value={`Room ${roomNumber}`}
+                  readOnly
+                  className="w-full px-4 py-2.5 bg-background border border-theme-border rounded-xl outline-none text-theme-primary font-bold opacity-80 cursor-not-allowed"
+                />
+              </div>
+            ) : orderType === 'dine_in' ? (
               <div className="mb-4 bg-surface rounded-xl p-4 border border-theme-border">
                 <label className="block text-sm text-theme-primary font-medium mb-1.5 flex items-center gap-1">
                   <Utensils className="w-4 h-4" /> Table Number

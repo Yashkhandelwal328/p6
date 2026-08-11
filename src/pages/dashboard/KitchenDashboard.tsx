@@ -117,7 +117,17 @@ export function KitchenDashboard() {
       message: `Order status updated to ${ORDER_STATUS_LABELS[status]}`,
     });
 
-    // Instantly refresh the UI
+    // Instantly refresh the UI and switch to the tab showing the updated order
+    const tabForStatus: Record<string, 'all' | 'new' | 'preparing' | 'ready' | 'completed'> = {
+      new: 'new',
+      accepted: 'new',
+      preparing: 'preparing',
+      ready: 'ready',
+      served: 'ready',
+      completed: 'completed',
+      cancelled: 'new',
+    };
+    setActiveTab(tabForStatus[status] ?? 'all');
     loadOrders();
   }, [restaurantId]);
 

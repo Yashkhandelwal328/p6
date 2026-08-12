@@ -58,14 +58,27 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         // Simple custom domain heuristic: if it's not our main saas domain, it's custom.
         isCustom = true;
         setIsCustomDomain(true);
-        // We'll leave custom domain fetching commented out until DB has custom_domain column
-        // const { data } = await supabase.from('restaurants').select('*').eq('custom_domain', host).single();
       } else if (pathParts.length > 0 && !reservedPaths.includes(pathParts[0])) {
         tenantSlug = pathParts[0];
         setSlug(tenantSlug);
       }
 
-      if (tenantSlug) {
+      if (isCustom) {
+        const { data, error } = await supabase
+          .from('restaurants')
+          .select('*')
+          .eq('custom_domain', host)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (!data) {
+          setError('not_found');
+          setRestaurant(null);
+        } else {
+          setRestaurant(data as Restaurant);
+          applyTheme(data);
+        }
+      } else if (tenantSlug) {
         const { data, error } = await supabase
           .from('restaurants')
           .select('*')

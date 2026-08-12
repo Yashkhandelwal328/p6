@@ -53,6 +53,7 @@ export function RestaurantSettings() {
     website_status: 'published' as any,
     font_family: 'Inter',
     border_radius: '0.5rem',
+    custom_domain: '',
   });
 
   useEffect(() => {
@@ -108,6 +109,7 @@ export function RestaurantSettings() {
         website_status: data.website_status ?? 'published',
         font_family: data.font_family ?? 'Inter',
         border_radius: data.border_radius ?? '0.5rem',
+        custom_domain: data.custom_domain ?? '',
       });
     }
     setLoading(false);
@@ -263,6 +265,7 @@ export function RestaurantSettings() {
       website_status: formData.website_status,
       font_family: formData.font_family,
       border_radius: formData.border_radius,
+      custom_domain: formData.custom_domain || null,
     }).eq('id', restaurantId);
     
     if (error) {
@@ -537,6 +540,20 @@ export function RestaurantSettings() {
                 </button>
               </div>
               <p className="text-xs text-theme-secondary mt-1">Changing this will break old links!</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 border-b border-theme-border pb-4">
+            <div>
+              <label className="block text-sm text-theme-primary mb-1.5 font-medium">Custom Domain</label>
+              <input 
+                type="text" 
+                value={formData.custom_domain || ''} 
+                onChange={(e) => setFormData({ ...formData, custom_domain: e.target.value.toLowerCase().trim() })} 
+                className="input-luxury w-full" 
+                placeholder="serveraa.in"
+              />
+              <p className="text-xs text-theme-secondary mt-1">Example: serveraa.in or www.serveraa.in. Ensure DNS is pointed.</p>
             </div>
           </div>
 

@@ -55,7 +55,7 @@ export function SuperAdminLayout() {
           </div>
           <div>
             <h1 className="font-bold text-theme-primary leading-tight">Super Admin</h1>
-            <p className="text-xs text-theme-secondary">Servera Platform</p>
+            <p className="text-xs text-theme-secondary">Serveraa Platform</p>
           </div>
         </div>
 

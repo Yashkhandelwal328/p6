@@ -166,6 +166,17 @@ export function LoginPage() {
               <p className="text-xs text-theme-secondary">
                 New restaurant? <Link to="/register" className="text-primary hover:text-primary/80 transition-colors">Register here</Link>
               </p>
+              <div className="mt-4 p-3 bg-primary/5 rounded-xl border border-primary/10 text-xs text-theme-secondary text-left inline-block w-full">
+                <p className="font-medium text-theme-primary mb-1">Demo Credentials:</p>
+                <div className="flex justify-between items-center mb-1">
+                  <span>Email:</span>
+                  <span className="font-mono text-primary select-all">admin@nirvanacafe.com</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Password:</span>
+                  <span className="font-mono text-primary select-all">S3cur3Nirv@na2026</span>
+                </div>
+              </div>
             </div>
           </form>
         )}

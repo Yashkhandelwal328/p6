@@ -226,9 +226,22 @@ export function OwnerDashboard() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Owner Dashboard</h1>
-        <p className="text-sm text-theme-secondary">Real-time overview of your restaurant performance</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Owner Dashboard</h1>
+          <p className="text-sm text-theme-secondary">Real-time overview of your restaurant performance</p>
+        </div>
+        {restaurant && customerUrl && (
+          <a
+            href={customerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-surface rounded-xl hover:bg-primary/90 transition-all active:scale-95 shadow-sm font-medium text-sm whitespace-nowrap"
+          >
+            <Globe className="w-4 h-4" />
+            View Live Website
+          </a>
+        )}
       </div>
 
       {/* Customer Access Section */}

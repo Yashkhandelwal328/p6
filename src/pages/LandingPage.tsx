@@ -180,6 +180,12 @@ export function LandingPage() {
           >
             Start Your Free Trial <ArrowRight className="w-5 h-5" />
           </button>
+          <button
+            onClick={() => navigate('/owner/dashboard')}
+            className="px-8 py-4 rounded-xl font-bold transition-all active:scale-95 text-lg flex items-center gap-2 bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-accent/10"
+          >
+            Live Demo
+          </button>
         </div>
       </section>
 

@@ -100,7 +100,7 @@ export function OrdersPage() {
         o.order_number,
         o.order_type === 'delivery' ? 'Delivery' : `Table ${o.table_number}`,
         String(o.items_count),
-        formatCurrency(o.total_amount),
+        formatCurrency(o.total_amount, 'Rs. '),
         formatOrderStatus(o.status, o.order_type),
         o.payment_status,
         formatDateTime(o.created_at),

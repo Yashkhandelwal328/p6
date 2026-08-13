@@ -64,16 +64,16 @@ export function ReportsPage() {
     doc.text(`${restaurant?.name || 'Restaurant'} – Restaurant Report`, 14, 20);
     doc.setFontSize(10);
     doc.text(`Period: Last ${dateRange} days (${formatDate(range.start)} to ${formatDate(new Date().toISOString())})`, 14, 28);
-    doc.text(`Total Revenue: ${formatCurrency(summary.totalRevenue)}`, 14, 36);
+    doc.text(`Total Revenue: ${formatCurrency(summary.totalRevenue, 'Rs. ')}`, 14, 36);
     doc.text(`Total Orders: ${summary.totalOrders}`, 14, 42);
     doc.text(`Completed: ${summary.completedOrders} | Cancelled: ${summary.cancelledOrders}`, 14, 48);
-    doc.text(`Average Order Value: ${formatCurrency(summary.avgOrderValue)}`, 14, 54);
+    doc.text(`Average Order Value: ${formatCurrency(summary.avgOrderValue, 'Rs. ')}`, 14, 54);
     doc.text(`Unique Tables Served: ${summary.uniqueTables}`, 14, 60);
 
     autoTable(doc, {
       startY: 68,
       head: [['Date', 'Orders', 'Revenue']],
-      body: dailyRevenue.map(d => [d.date, String(d.orders), formatCurrency(d.revenue)]),
+      body: dailyRevenue.map(d => [d.date, String(d.orders), formatCurrency(d.revenue, 'Rs. ')]),
       styles: { fontSize: 9 },
       headStyles: { fillColor: [201, 162, 39] },
     });
@@ -83,7 +83,7 @@ export function ReportsPage() {
       head: [['Order #', 'Table', 'Items', 'Total', 'Status', 'Date']],
       body: rangedOrders.slice(0, 50).map(o => [
         o.order_number, `Table ${o.table_number}`, String(o.items_count),
-        formatCurrency(o.total_amount), o.status, formatDate(o.created_at),
+        formatCurrency(o.total_amount, 'Rs. '), o.status, formatDate(o.created_at),
       ]),
       styles: { fontSize: 8 },
       headStyles: { fillColor: [201, 162, 39] },

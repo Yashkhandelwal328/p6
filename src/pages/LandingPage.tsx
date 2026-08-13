@@ -138,9 +138,7 @@ export function LandingPage() {
       {/* Header */}
       <header className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-surface">
-            <Utensils className="w-6 h-6" />
-          </div>
+          <img src="/logo.png" alt="Serveraa Logo" className="h-10 w-auto object-contain rounded-xl" />
           <div>
             <h1 className="font-bold text-xl leading-tight">Serveraa</h1>
           </div>
@@ -354,7 +352,7 @@ export function LandingPage() {
       <footer className="bg-primary text-surface py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Utensils className="w-5 h-5 text-accent" />
+            <img src="/logo.png" alt="Serveraa Logo" className="h-6 w-auto object-contain rounded-sm" />
             <span className="font-bold text-lg">Serveraa</span>
           </div>
           <p className="text-sm text-surface/60">© 2026 Serveraa. All rights reserved.</p>

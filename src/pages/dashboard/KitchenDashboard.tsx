@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { ChefHat, Clock, CheckCircle2, AlertCircle, Bell, Utensils, X, MapPin, Receipt, MessageSquare, ArrowRight, Bike, BellRing, ClipboardList } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { formatTime, timeAgo, formatOrderStatus } from '@/lib/format';
+import { formatTime, timeAgo, formatOrderStatus, getTodayRange } from '@/lib/format';
 import type { Order, OrderItem, OrderStatus } from '@/types';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/types';
 
@@ -76,10 +76,14 @@ export function KitchenDashboard() {
   }
 
   async function loadOrders() {
+    const today = getTodayRange();
+
     const { data } = await supabase
       .from('orders')
       .select('*, order_items(*)')
       .eq('restaurant_id', restaurantId)
+      .gte('created_at', today.start)
+      .lt('created_at', today.end)
       .in('status', ['new', 'accepted', 'preparing', 'ready', 'served', 'completed', 'cancelled'])
       .order('created_at', { ascending: true });
 

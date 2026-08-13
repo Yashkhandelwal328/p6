@@ -5,7 +5,6 @@ import {
   Copy, Download, ExternalLink, QrCode, Globe
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useTheme } from '@/context/ThemeContext';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
@@ -58,13 +57,13 @@ export function OwnerDashboard() {
   const [statusBreakdown, setStatusBreakdown] = useState<{ name: string; value: number }[]>([]);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const { restaurant } = useTheme();
+  const [restaurantDetails, setRestaurantDetails] = useState<any>(null);
 
   const customerUrl = useMemo(() => {
-    if (!restaurant?.subdomain) return '';
+    if (!restaurantDetails?.subdomain) return '';
     const origin = window.location.origin;
-    return `${origin}/${restaurant.subdomain}`;
-  }, [restaurant]);
+    return `${origin}/${restaurantDetails.subdomain}`;
+  }, [restaurantDetails]);
 
   const menuUrl = customerUrl ? `${customerUrl}/menu` : '';
 
@@ -88,7 +87,7 @@ export function OwnerDashboard() {
       ctx?.drawImage(img, 0, 0);
       const pngFile = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
-      downloadLink.download = `${restaurant?.name || 'restaurant'}-qr.png`;
+      downloadLink.download = `${restaurantDetails?.name || 'restaurant'}-qr.png`;
       downloadLink.href = `${pngFile}`;
       downloadLink.click();
     };
@@ -112,13 +111,18 @@ export function OwnerDashboard() {
     const today = getTodayRange();
     const week = getDateRange(7);
 
-    const [todayOrdersRes, allOrdersRes, weekOrdersRes, itemsRes, tablesRes] = await Promise.all([
+    const [todayOrdersRes, allOrdersRes, weekOrdersRes, itemsRes, tablesRes, restaurantRes] = await Promise.all([
       supabase.from('orders').select('*').eq('restaurant_id', restaurantId).gte('created_at', today.start).lt('created_at', today.end).order('created_at', { ascending: false }),
       supabase.from('orders').select('*').eq('restaurant_id', restaurantId),
       supabase.from('orders').select('*').eq('restaurant_id', restaurantId).gte('created_at', week.start).lt('created_at', week.end),
       supabase.from('order_items').select('menu_item_name, quantity').eq('restaurant_id', restaurantId).gte('created_at', today.start).lt('created_at', today.end),
       supabase.from('orders').select('table_number').eq('restaurant_id', restaurantId).gte('created_at', today.start).lt('created_at', today.end),
+      supabase.from('restaurants').select('*').eq('id', restaurantId).single(),
     ]);
+
+    if (restaurantRes.data) {
+      setRestaurantDetails(restaurantRes.data);
+    }
 
     const todayOrders = todayOrdersRes.data ?? [];
     const allOrders = allOrdersRes.data ?? [];
@@ -231,7 +235,7 @@ export function OwnerDashboard() {
           <h1 className="font-serif text-2xl sm:text-3xl text-ink-950 mb-1">Owner Dashboard</h1>
           <p className="text-sm text-theme-secondary">Real-time overview of your restaurant performance</p>
         </div>
-        {restaurant && customerUrl && (
+        {restaurantDetails && customerUrl && (
           <a
             href={customerUrl}
             target="_blank"
@@ -245,7 +249,7 @@ export function OwnerDashboard() {
       </div>
 
       {/* Customer Access Section */}
-      {restaurant && customerUrl && (
+      {restaurantDetails && customerUrl && (
         <div className="card-luxury p-5 md:p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="flex-shrink-0 bg-white p-3 rounded-xl shadow-lg border border-white/20">
@@ -317,7 +321,7 @@ export function OwnerDashboard() {
       )}
 
       {/* Setup Checklist (Only if draft or incomplete) */}
-      {restaurant && restaurant.website_status === 'draft' && (
+      {restaurantDetails && restaurantDetails.website_status === 'draft' && (
         <div className="card-luxury p-6 mb-6 border border-primary/30">
           <div className="flex items-center justify-between mb-4">
             <div>

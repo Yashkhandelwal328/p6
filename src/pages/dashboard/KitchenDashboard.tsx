@@ -39,7 +39,7 @@ export function KitchenDashboard() {
   const { restaurantId } = useAuth();
   const [orders, setOrders] = useState<OrderWithItems[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'all' | 'new' | 'preparing' | 'ready' | 'completed'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'new' | 'preparing' | 'ready' | 'history'>('all');
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export function KitchenDashboard() {
       .from('orders')
       .select('*, order_items(*)')
       .eq('restaurant_id', restaurantId)
-      .in('status', ['new', 'accepted', 'preparing', 'ready', 'served', 'completed'])
+      .in('status', ['new', 'accepted', 'preparing', 'ready', 'served', 'completed', 'cancelled'])
       .order('created_at', { ascending: true });
 
     setOrders((data ?? []) as OrderWithItems[]);
@@ -118,14 +118,14 @@ export function KitchenDashboard() {
     });
 
     // Instantly refresh the UI and switch to the tab showing the updated order
-    const tabForStatus: Record<string, 'all' | 'new' | 'preparing' | 'ready' | 'completed'> = {
+    const tabForStatus: Record<string, 'all' | 'new' | 'preparing' | 'ready' | 'history'> = {
       new: 'new',
       accepted: 'new',
       preparing: 'preparing',
       ready: 'ready',
       served: 'ready',
-      completed: 'completed',
-      cancelled: 'new',
+      completed: 'history',
+      cancelled: 'history',
     };
     setActiveTab(tabForStatus[status] ?? 'all');
     loadOrders();
@@ -157,20 +157,20 @@ Thank you for ordering! 🙏`;
   }, []);
 
   const filteredOrders = orders.filter((o) => {
-    if (activeTab === 'all') return true;
+    if (activeTab === 'all') return !['completed', 'cancelled'].includes(o.status);
     if (activeTab === 'new') return ['new', 'accepted'].includes(o.status);
     if (activeTab === 'preparing') return o.status === 'preparing';
     if (activeTab === 'ready') return ['ready', 'served'].includes(o.status);
-    if (activeTab === 'completed') return o.status === 'completed';
+    if (activeTab === 'history') return ['completed', 'cancelled'].includes(o.status);
     return false;
   });
 
   const counts = {
-    all: orders.length,
+    all: orders.filter(o => !['completed', 'cancelled'].includes(o.status)).length,
     new: orders.filter(o => ['new', 'accepted'].includes(o.status)).length,
     preparing: orders.filter(o => o.status === 'preparing').length,
     ready: orders.filter(o => ['ready', 'served'].includes(o.status)).length,
-    completed: orders.filter(o => o.status === 'completed').length,
+    history: orders.filter(o => ['completed', 'cancelled'].includes(o.status)).length,
   };
 
   if (loading) {
@@ -202,11 +202,11 @@ Thank you for ordering! 🙏`;
       {/* Tab Counts */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {([
-          { key: 'all', label: 'All Orders', icon: ClipboardList, color: 'text-nirvana-300' },
+          { key: 'all', label: 'Active Orders', icon: ClipboardList, color: 'text-nirvana-300' },
           { key: 'new', label: 'New Orders', icon: AlertCircle, color: 'text-blue-400' },
           { key: 'preparing', label: 'Preparing', icon: Clock, color: 'text-amber-400' },
           { key: 'ready', label: 'Ready / Served', icon: BellRing, color: 'text-green-400' },
-          { key: 'completed', label: 'Completed', icon: CheckCircle2, color: 'text-emerald-400' },
+          { key: 'history', label: 'History', icon: CheckCircle2, color: 'text-emerald-400' },
         ] as const).map((tab) => {
           const Icon = tab.icon;
           return (

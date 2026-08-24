@@ -126,21 +126,24 @@ export function QRCodeGenerator() {
         <div className="card-luxury p-5">
           <h3 className="font-serif text-lg text-nirvana-300 mb-4">Select a Table</h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-            {tables.map((table) => (
-              <button
-                key={table.id}
-                onClick={() => setSelectedTable(table)}
-                className={`p-4 rounded-xl border transition-all ${
-                  selectedTable?.id === table.id
-                    ? 'bg-nirvana-400/15 border-nirvana-400/40 shadow-gold'
-                    : 'glass-dark border-white/5 hover:border-nirvana-400/20'
-                }`}
-              >
-                <Table2 className="w-6 h-6 mx-auto mb-1 text-nirvana-300" />
-                <p className="text-sm font-medium text-ink-950">Table {table.table_number}</p>
-                <p className="text-xs text-ink-600">{table.capacity} seats</p>
-              </button>
-            ))}
+            {tables.map((table) => {
+              const isSelected = selectedTable?.id === table.id;
+              return (
+                <button
+                  key={table.id}
+                  onClick={() => setSelectedTable(table)}
+                  className={`p-4 rounded-xl border transition-all ${
+                    isSelected
+                      ? 'bg-nirvana-400/15 border-nirvana-400/40 shadow-gold'
+                      : 'glass-dark border-white/5 hover:border-nirvana-400/20'
+                  }`}
+                >
+                  <Table2 className={`w-6 h-6 mx-auto mb-1 ${isSelected ? 'text-nirvana-400' : 'text-nirvana-300'}`} />
+                  <p className={`text-sm font-medium ${isSelected ? 'text-ink-950' : 'text-white/90'}`}>Table {table.table_number}</p>
+                  <p className={`text-xs ${isSelected ? 'text-ink-600' : 'text-white/60'}`}>{table.capacity} seats</p>
+                </button>
+              );
+            })}
           </div>
         </div>
 

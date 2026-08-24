@@ -140,26 +140,26 @@ function TableForm({ table, onClose, onSave }: {
       <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" />
       <form onSubmit={handleSubmit} className="relative w-full max-w-md glass-dark border border-nirvana-400/20 rounded-2xl p-6 animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-serif text-xl text-ink-950">{table ? 'Edit Table' : 'Add Table'}</h3>
-          <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10">
-            <X className="w-5 h-5 text-ink-700" />
+          <h3 className="font-serif text-xl text-nirvana-300">{table ? 'Edit Table' : 'Add Table'}</h3>
+          <button type="button" onClick={onClose} className="w-9 h-9 flex items-center justify-center glass rounded-lg hover:bg-white/10 transition-colors">
+            <X className="w-5 h-5 text-white/70 hover:text-white" />
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Table Number</label>
+            <label className="block text-sm text-white/70 mb-1.5">Table Number</label>
             <input type="number" required min="1" value={formData.table_number} onChange={(e) => setFormData({ ...formData, table_number: e.target.value })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Name (optional)</label>
+            <label className="block text-sm text-white/70 mb-1.5">Name (optional)</label>
             <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g., Table 1" className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Capacity (seats)</label>
+            <label className="block text-sm text-white/70 mb-1.5">Capacity (seats)</label>
             <input type="number" min="1" max="20" value={formData.capacity} onChange={(e) => setFormData({ ...formData, capacity: Number(e.target.value) })} className="input-luxury w-full" />
           </div>
           <div>
-            <label className="block text-sm text-ink-700 mb-1.5">Status</label>
+            <label className="block text-sm text-white/70 mb-1.5">Status</label>
             <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value as TableStatus })} className="input-luxury w-full">
               <option value="available">Available</option>
               <option value="occupied">Occupied</option>

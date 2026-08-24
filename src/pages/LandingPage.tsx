@@ -47,7 +47,7 @@ export function LandingPage() {
       name: 'Professional',
       originalPrice: '₹5,999',
       price: '₹3,999',
-      period: '1 Year',
+      period: '3 Months',
       badge: '⭐ MOST POPULAR',
       savings: 'Save 33%',
       features: [

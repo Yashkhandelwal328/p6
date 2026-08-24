@@ -193,7 +193,9 @@ export function SignupPage() {
       }));
 
       // 2. Prepare Payload
-      const plan = new URLSearchParams(location.search).get('plan') || 'starter';
+      let plan = new URLSearchParams(location.search).get('plan') || 'starter';
+      const validPlans = ['starter', 'pro', 'enterprise', 'free_trial'];
+      if (!validPlans.includes(plan)) plan = 'starter';
       const payload = {
         user_id: userId,
         plan,

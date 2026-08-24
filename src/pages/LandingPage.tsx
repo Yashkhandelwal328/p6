@@ -173,7 +173,7 @@ export function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
-            onClick={() => navigate('/register?plan=free_trial')}
+            onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
             className="btn-primary text-lg px-8 py-4 flex items-center gap-2"
           >
             Start Your Free Trial <ArrowRight className="w-5 h-5" />
@@ -212,7 +212,7 @@ export function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-ink-950 font-serif relative overflow-hidden">
+      <section id="pricing" className="py-24 bg-ink-950 font-serif relative overflow-hidden">
         {/* Decorative background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-nirvana-400/5 blur-[120px] rounded-full pointer-events-none" />
         

@@ -78,7 +78,7 @@ BEGIN
     social_links, delivery_available, dine_in_available, takeaway_available,
     delivery_radius_km, preparation_time_minutes, dark_mode,
     primary_color, secondary_color, accent_color, background_color,
-    font_family, button_style, border_radius
+    font_family, button_style, border_radius, website_status
   ) VALUES (
     v_restaurant_name,
     p_payload->>'tagline',
@@ -89,7 +89,7 @@ BEGIN
     COALESCE((p_payload->>'tax_percentage')::numeric, 0),
     COALESCE(p_payload->>'opening_time', '09:00')::time,
     COALESCE(p_payload->>'closing_time', '23:00')::time,
-    true,
+    false, -- is_active
     p_payload->>'address',
     p_payload->>'support_email',
     p_payload->>'contact_number',
@@ -109,13 +109,14 @@ BEGIN
     COALESCE(p_payload->>'background_color', '#F5EFEB'),
     COALESCE(p_payload->>'font_family', 'Inter'),
     COALESCE(p_payload->>'button_style', 'rounded'),
-    COALESCE(p_payload->>'border_radius', '0.5rem')
+    COALESCE(p_payload->>'border_radius', '0.5rem'),
+    'pending' -- website_status
   )
   RETURNING id INTO v_restaurant_id;
 
   -- Insert Subscription
   INSERT INTO subscriptions (restaurant_id, plan, status)
-  VALUES (v_restaurant_id, COALESCE(p_payload->>'plan', 'starter'), 'active');
+  VALUES (v_restaurant_id, COALESCE(p_payload->>'plan', 'starter'), 'pending_approval');
 
   -- Insert Staff
   INSERT INTO staff (restaurant_id, user_id, name, email, phone, role, is_active)

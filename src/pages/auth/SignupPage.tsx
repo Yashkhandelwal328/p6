@@ -247,16 +247,7 @@ export function SignupPage() {
       const { data, error: rpcError } = await supabase.rpc('create_restaurant_wizard', { p_payload: payload });
       if (rpcError) throw rpcError;
 
-      // Set status to pending approval for all plans
-      if (data?.restaurant_id) {
-        await supabase.from('subscriptions')
-          .update({ status: 'pending_approval' })
-          .eq('restaurant_id', data.restaurant_id);
-          
-        await supabase.from('restaurants')
-          .update({ is_active: false, website_status: 'pending' })
-          .eq('id', data.restaurant_id);
-      }
+      // Set status to pending approval is now handled directly by the RPC function.
 
       // Success! Sign in
       const { error: signInError } = await supabase.auth.signInWithPassword({

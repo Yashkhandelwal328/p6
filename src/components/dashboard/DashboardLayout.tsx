@@ -42,18 +42,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Menu', path: 'menu', icon: UtensilsCrossed, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Categories', path: 'categories', icon: FolderTree, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Tables', path: 'tables', icon: Table2, roles: ['super_admin', 'owner', 'manager'] },
-  { 
-    label: 'Rooms & QR', 
-    path: 'rooms-qr-group', 
-    icon: QrCode, 
-    roles: ['super_admin', 'owner', 'manager'],
-    subItems: [
-      { label: 'Rooms', path: 'rooms' },
-      { label: 'QR Templates', path: 'qr-templates' },
-      { label: 'Print QR', path: 'print-qr' },
-      { label: 'WiFi QR', path: 'wifi-qr' }
-    ]
-  },
+  { label: 'QR Codes', path: 'qr-codes', icon: QrCode, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Media Library', path: 'media', icon: ImageIcon, roles: ['super_admin', 'owner', 'manager'] },
   { label: 'Customers', path: 'customers', icon: Users, roles: ['super_admin', 'owner', 'manager', 'cashier'] },
   { label: 'Staff', path: 'staff', icon: UserCog, roles: ['super_admin', 'owner'] },

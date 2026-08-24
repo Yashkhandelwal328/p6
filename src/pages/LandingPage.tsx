@@ -79,10 +79,10 @@ export function LandingPage() {
     {
       name: 'Enterprise',
       originalPrice: '₹14,999',
-      price: '₹11,499',
+      price: '₹11,999',
       period: '1 Year',
       badge: '👑 BEST VALUE',
-      savings: 'Save 23%',
+      savings: 'Save 20%',
       features: [
         'Everything in Professional PLUS',
         'Unlimited Everything',

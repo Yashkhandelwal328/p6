@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Utensils, Store, ArrowRight, ShoppingBag, ChefHat, QrCode, BarChart3, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
@@ -12,7 +13,10 @@ export function LandingPage() {
     { icon: BarChart3, title: 'Advanced Analytics', desc: 'Track revenue, bestsellers, and peak hours effortlessly.' },
   ];
 
-  const plans = [
+  
+  const [pricingType, setPricingType] = useState<'single' | 'franchise'>('single');
+
+  const singleRestaurantPlans = [
     {
       name: 'Starter',
       originalPrice: '₹4,999',
@@ -110,7 +114,93 @@ export function LandingPage() {
     }
   ];
 
-  const compareFeatures = [
+  const franchisePlans = [
+    {
+      name: 'Franchise Starter',
+      price: '₹9,999',
+      period: '3 Months',
+      badge: '',
+      savings: '',
+      features: [
+        'Everything in Enterprise PLUS',
+        'Up to 5 Restaurants',
+        'Centralized Franchise Dashboard',
+        'Individual Restaurant Dashboards',
+        'Restaurant-wise Settings',
+        'Restaurant-wise Menu Management',
+        'Restaurant-wise QR Codes',
+        'Restaurant-wise Tables',
+        'Restaurant-wise Staff Management',
+        'Restaurant-wise Orders',
+        'Restaurant-wise Customer Database',
+        'Restaurant-wise Analytics',
+        'Restaurant-wise Reports',
+        'Centralized Franchise Management',
+        'Restaurant Onboarding',
+        'Restaurant Activation/Deactivation',
+      ],
+      buttonText: 'Get Started',
+      highlight: false,
+      theme: 'border-ink-800 bg-ink-900/50 hover:border-nirvana-400/30 text-ink-100'
+    },
+    {
+      name: 'Franchise Growth',
+      price: '₹17,999',
+      period: '3 Months',
+      badge: '⭐ MOST POPULAR',
+      savings: '',
+      features: [
+        'Everything in Enterprise PLUS',
+        '5–10 Restaurants',
+        'Franchise-wide Sales Dashboard',
+        'Restaurant-wise Sales Analytics',
+        'Branch Performance Comparison',
+        'Revenue Comparison',
+        'Order Volume Analytics',
+        'Peak Hour Analytics',
+        'Customer Insights',
+        'Best/Worst Performing Restaurant Reports',
+        'Sales Trends',
+        'Business Intelligence Dashboard',
+        'Advanced Reports',
+        'Export PDF',
+        'Export Excel',
+      ],
+      buttonText: 'Start Growing',
+      highlight: true,
+      theme: 'border-nirvana-400/50 bg-gradient-to-b from-coffee-950 to-ink-950 text-nirvana-50 shadow-2xl scale-105 z-10'
+    },
+    {
+      name: 'Franchise Unlimited',
+      price: '₹24,999',
+      period: '3 Months',
+      badge: '👑 BEST VALUE',
+      savings: '',
+      features: [
+        'Everything in Enterprise PLUS',
+        'Unlimited Restaurants',
+        'Unlimited Staff Accounts',
+        'Staff Roles & Permissions',
+        'Owner/Admin Access',
+        'Franchise Manager Access',
+        'Restaurant Manager Access',
+        'Kitchen Staff Access',
+        'Waiter Access',
+        'Restaurant-level Access Control',
+        'Centralized Staff Management',
+        'White Label Branding',
+        'Custom Domain Support',
+        'Dedicated Account Manager',
+        'Premium Support',
+        'Business Consultation'
+      ],
+      buttonText: 'Contact Sales',
+      highlight: false,
+      theme: 'border-ink-800 bg-ink-900/50 hover:border-nirvana-400/30 text-ink-100'
+    }
+  ];
+
+  const compareFeaturesSingle = [
     { feature: 'Restaurant Website', starter: '✓', pro: '✓', enterprise: '✓' },
     { feature: 'Customer Ordering', starter: '✓', pro: '✓', enterprise: '✓' },
     { feature: 'QR Menu', starter: '✓', pro: '✓', enterprise: '✓' },
@@ -132,6 +222,48 @@ export function LandingPage() {
     { feature: 'API Access', starter: '—', pro: '—', enterprise: '✓' },
     { feature: 'Dedicated Manager', starter: '—', pro: '—', enterprise: '✓' },
   ];
+
+  const compareFeaturesFranchise = [
+    { feature: 'Restaurants', starter: 'Up to 5', pro: '5–10', enterprise: 'Unlimited' },
+    { feature: 'Restaurant Website', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Customer Ordering', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'QR Menu', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'QR Codes', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Tables', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Menu Items', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Orders', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Staff Accounts', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Categories', starter: 'Unlimited', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { feature: 'Centralized Dashboard', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Franchise Dashboard', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Branch Analytics', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Sales Dashboard', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Restaurant Comparison', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Peak Hour Analytics', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Customer Insights', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Business Intelligence', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Advanced Reports', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Export PDF', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Export Excel', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Restaurant Branding', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Custom Theme', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Promotional Banners', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Discount Management', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'QR Customization', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'White Label Branding', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Custom Domain', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Staff Roles & Permissions', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Automatic Backup', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'API Access', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Multi-Branch Management', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Dedicated Account Manager', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Premium Support', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Business Consultation', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Future POS Integration', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Future Inventory Management', starter: '✓', pro: '✓', enterprise: '✓' },
+    { feature: 'Future Loyalty Program', starter: '✓', pro: '✓', enterprise: '✓' },
+  ];
+
 
   return (
     <div className="min-h-screen bg-background text-primary font-sans relative overflow-hidden">
@@ -217,13 +349,30 @@ export function LandingPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-nirvana-400/5 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+          
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">Invest in Excellence</h2>
-            <p className="text-ink-300 max-w-2xl mx-auto font-sans">Choose a plan that fits your culinary ambition. Premium tools for premium experiences.</p>
+            <p className="text-ink-300 max-w-2xl mx-auto font-sans mb-8">Choose a plan that fits your culinary ambition. Premium tools for premium experiences.</p>
+            
+            <div className="inline-flex bg-ink-900 border border-ink-800 rounded-full p-1 font-sans">
+              <button
+                onClick={() => setPricingType('single')}
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${pricingType === 'single' ? 'bg-nirvana-400 text-ink-950 shadow-gold' : 'text-ink-300 hover:text-nirvana-100'}`}
+              >
+                Single Restaurant
+              </button>
+              <button
+                onClick={() => setPricingType('franchise')}
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${pricingType === 'franchise' ? 'bg-nirvana-400 text-ink-950 shadow-gold' : 'text-ink-300 hover:text-nirvana-100'}`}
+              >
+                Franchise
+              </button>
+            </div>
           </div>
+
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-24 max-w-7xl mx-auto">
-            {plans.map((plan) => (
+            {(pricingType === 'single' ? singleRestaurantPlans : franchisePlans).map((plan) => (
               <div 
                 key={plan.name} 
                 className={`relative p-8 rounded-3xl border transition-all duration-300 hover:-translate-y-2 flex flex-col h-full ${plan.theme}`}
@@ -298,15 +447,17 @@ export function LandingPage() {
             <div className="overflow-x-auto pb-4">
               <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
+                  
                   <tr className="border-b border-ink-800 text-ink-300 bg-ink-900/30">
                     <th className="py-5 px-6 font-medium sticky left-0 bg-ink-950 lg:bg-transparent shadow-[4px_0_10px_rgba(0,0,0,0.1)] lg:shadow-none">Features</th>
-                    <th className="py-5 px-6 font-medium text-center">Starter</th>
-                    <th className="py-5 px-6 font-bold bg-gradient-gold bg-clip-text text-transparent text-center">Professional</th>
-                    <th className="py-5 px-6 font-medium text-center">Enterprise</th>
+                    <th className="py-5 px-6 font-medium text-center">{pricingType === 'single' ? 'Starter' : 'Starter'}</th>
+                    <th className="py-5 px-6 font-bold bg-gradient-gold bg-clip-text text-transparent text-center">{pricingType === 'single' ? 'Professional' : 'Growth'}</th>
+                    <th className="py-5 px-6 font-medium text-center">{pricingType === 'single' ? 'Enterprise' : 'Unlimited'}</th>
                   </tr>
+
                 </thead>
                 <tbody className="divide-y divide-ink-800/50 text-sm">
-                  {compareFeatures.map((row, idx) => (
+                  {(pricingType === 'single' ? compareFeaturesSingle : compareFeaturesFranchise).map((row, idx) => (
                     <tr key={idx} className="hover:bg-ink-900/30 transition-colors">
                       <td className="py-4 px-6 text-ink-100 font-medium sticky left-0 bg-ink-950 lg:bg-transparent shadow-[4px_0_10px_rgba(0,0,0,0.1)] lg:shadow-none">{row.feature}</td>
                       <td className={`py-4 px-6 text-center ${row.starter === '✓' ? 'text-green-400' : 'text-ink-500'}`}>{row.starter}</td>
